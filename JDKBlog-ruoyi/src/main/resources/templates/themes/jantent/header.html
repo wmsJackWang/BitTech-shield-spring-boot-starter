@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="header(title,keywords)">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
+    <meta name="renderer" content="webkit"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-transform"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="keywords" th:content="${keywords ?: commons.site_option('site_keywords')}"/>
+    <meta name="description" th:content="${description ?:commons.site_option('site_description')}"/>
+    <link rel="shortcut icon" th:href="@{/user/img/logo.png}"/>
+    <link rel="apple-touch-icon" th:href="@{/user/img/apple-touch-icon.png}"/>
+    <title><th:block th:text="${title ?: '首页'}+' - '+${commons.site_option('site_title','比特科技博客')}"></th:block></title>
+    <link th:href="@{//cdn.bootcss.com/highlight.js/9.9.0/styles/xcode.min.css}" rel="stylesheet"/>
+    <link th:href="@{/user/css/style.min.css}" rel="stylesheet"/>
+    
+    <!-- Third-Party CSS -->
+    <link rel="stylesheet" href="http://favorites.ren/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" th:href="@{/jantent/assets/css/octicons/octicons.css}"> -->
+    <link rel="stylesheet" href="http://favorites.ren/bower_components/hover/css/hover-min.css">
+    <link rel="stylesheet" href="http://favorites.ren/bower_components/primer-markdown/dist/user-content.min.css">
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/syntax.css">
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/gitalk.css">
+    
+        
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/common.css">
+
+    <!-- CSS set in page -->
+    
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/blog-page.css">
+    
+    
+    <!-- CSS set in layout -->
+    
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    
+    <script type="text/javascript" src="http://favorites.ren/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="http://favorites.ren/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" th:src="@{/jantent/assets/js/lock.js}"></script>
+    
+    
+    <script th:src="@{//cdn.bootcss.com/jquery/2.2.3/jquery.min.js}"></script>
+    <script th:src="@{/jantent/assets/js/amazeui.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/jantent/assets/css/amazeui.min.css}"/>
+    <link rel="stylesheet" th:href="@{/jantent/assets/css/app.css}"/>
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        /*让每一个下拉按钮占据的宽度与居中*/
+        .am-dropdown{
+            width:25%;
+            text-align:center;
+        }
+    </style>
+</head>
+<body  gtools_scp_screen_capture_injected="true" th:class="${is_post}?'':'bg-
+'">
+<!--[if lt IE 8]>
+<div class="browsehappy" role="dialog">
+    当前网页 <strong>不支持</strong> 你正在使用的浏览器. 为了正常的访问, 请 <a href="http://browsehappy.com/" target="_blank">升级你的浏览器</a>。
+</div>
+<![endif]-->
+<header id="header" class="header bg-white">
+    <div class="navbar-container" >
+        <a th:href="${commons.site_url()}" class="navbar-logo">比特科技博客</a>
+
+
+        <div class="navbar-menu" >        
+
+            <a style="color: #fff" th:href="${commons.site_url('/archives')}">归档</a>
+            <a style="color: #fff" th:href="${commons.site_url('/links')}">友链</a> 
+            <!--<a style="color: #fff" th:href="${commons.site_url('/about')}">关于</a>-->
+            <a  style="color: #fff"  th:href="${#httpServletRequest.getScheme() + '://' + #httpServletRequest.getServerName() + ':' + #request.getServerPort()  + #request.getContextPath() + '/article/about-me'}">
+            	关于</a>
+            <!--
+            <div class="am-dropdown" data-am-dropdown style="color: #fff">
+                <button style="color: #fff"  class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle >Redis<span class="am-icon-caret-down"></span></button>
+                <ul class="am-dropdown-content ">
+                    <li><a href="#" >Redis主从模式</a></li>
+                    <li><a href="#" >Redis哨兵模式</a></li>
+                    <li class="am-divider"></li>
+                    <li><a href="#" >Redis集群模式</a></li>
+                </ul>
+		    </div>
+		    -->
+        </div>
+        <div class="navbar-search" onclick="">
+            <span class="icon-search"></span>
+            <form role="search" onsubmit="return false;">
+                <span class="search-box">
+                    <input type="text" id="search-inp" class="input" placeholder="搜索..." maxlength="30"
+                           autocomplete="off"/>
+                </span>
+            </form>
+        </div>
+        
+        <div class="navbar-mobile-menu" onclick="">
+            <span class="icon-menu cross"><span class="middle"></span></span>
+            <ul>
+                <li><a style="color: #fff" th:href="${commons.site_url('/archives')}">归档</a></li>
+                <li><a style="color: #fff" th:href="${commons.site_url('/links')}">友链</a></li>
+                <li>
+                <!--<a style="color: #fff" th:href="${commons.site_url('/about')}">关于</a>
+                -->
+	                <a  style="color: #fff"  th:href="${#httpServletRequest.getScheme() + '://' + #httpServletRequest.getServerName() + ':' + #request.getServerPort()  + #request.getContextPath() + '/article/about-me'}">
+	            	关于</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <div style="background:#87CEFA;color:#FFF;width:100%" class="container" >
+            
+        <div style="background:#87CEFA;color:#FFF" class="navbar-container" >
+        	<nav class="site-header-nav" role="navigation">
+        
+	        	<div class="navbar-menu" >      
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/"
+		                   target="_self"
+		                   title="首页">首页
+		                </a>
+		                
+		            </div>
+		            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/article/23"
+		                   target="_self"
+		                   title="新基建与数字化转型">新基建与数字化转型
+		                </a>
+		                
+		            </div>
+		            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/"
+		                   target="_self"
+		                   title="Spring Boot">
+		                    Spring Boot
+		                </a>
+		                
+		                <ul class="submenu">
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Spring Boot</a></li>
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Spring Cloud</a></li>
+		                    
+		                </ul>
+		                
+		            </div>
+	            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/"
+		                   target="_self"
+		                   title="Java">
+		                    Java
+		                </a>
+		                
+		                <ul class="submenu">
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Jvm 系列文章</a></li>
+		                    
+		                    <li><a href="" 
+		                           target="_blank"
+		                     >Java 极客技术</a></li>
+		                    
+		                </ul>
+		                
+		            </div>
+	            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/"
+		                   target=""
+		                   title="Redis">
+		                    Redis
+		                </a>
+		                
+		                <ul class="submenu">
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Python 教程</a></li>
+		                    
+		                    <li><a href="" 
+		                           target="_blank"
+		                     >Python 技术</a></li>
+		                    
+		                </ul>
+		                
+		            </div>
+	            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/archives.html"
+		                   target="_self"
+		                   title="Archives">
+		                    Archives
+		                </a>
+		                
+		            </div>
+		            
+		        </div>
+        	</nav>
+        	
+		</div>
+	</div>
+</header>
+</body>
+</html>
