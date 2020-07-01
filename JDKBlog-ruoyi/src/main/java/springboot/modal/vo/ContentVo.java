@@ -30,6 +30,8 @@ public class ContentVo {
     private Boolean allowPing;
 
     private Boolean allowFeed;
+    
+    private Boolean isTop;
 
     private String thumbimg;
 
@@ -155,7 +157,15 @@ public class ContentVo {
         this.allowFeed = allowFeed;
     }
 
-    public String getThumbimg() {
+    public Boolean getIsTop() {
+		return isTop;
+	}
+
+	public void setIsTop(Boolean isTop) {
+		this.isTop = isTop;
+	}
+
+	public String getThumbimg() {
         return thumbimg;
     }
 

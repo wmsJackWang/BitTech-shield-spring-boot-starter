@@ -5,7 +5,6 @@
 <link th:href="@{/admin/plugins/md/css/style.css}" rel="stylesheet"/>
 <body class="fixed-left">
 <div id="wrapper">
-    <div th:replace="admin/header::header-body"></div>
     <div class="content-page">
         <div class="content">
             <div class="container">
@@ -49,12 +48,10 @@
                     </div>
 
                 </div>
-                <div th:replace="admin/footer :: footer-content"></div>
             </div>
         </div>
     </div>
 </div>
-<div th:replace="admin/footer :: footer"></div>
 <script th:src="@{/admin/plugins/md/js/jquery.scrollto.js}"></script>
 <script th:src="@{/admin/plugins/md/js/pagedown.js}"></script>
 <script th:src="@{/admin/plugins/md/js/pagedown-extra.js}"></script>

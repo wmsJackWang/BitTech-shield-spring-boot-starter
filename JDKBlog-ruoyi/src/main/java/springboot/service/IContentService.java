@@ -39,7 +39,7 @@ public interface IContentService {
      *
      * @param contentVo contentVo
      */
-    void updateContentByCid(ContentVo contentVo);
+    void updateContentByCid(ContentVo contentVo);  
 
     /**
      * 查询分类/标签下的文章归档

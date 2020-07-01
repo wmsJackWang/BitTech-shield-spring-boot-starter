@@ -77,7 +77,6 @@
 </style>
 <body class="fixed-left">
 <div id="wrapper">
-    <div th:replace="admin/header::header-body"></div>
     <div class="content-page">
         <div class="content">
             <div class="container">
@@ -202,6 +201,10 @@
                                     保存文章
                                 </button>
                                 <button type="button" class="btn btn-warning waves-effect waves-light"
+                                        onclick="subArticle('review');">
+                                    复习模板
+                                </button>
+                                <button type="button" class="btn btn-warning waves-effect waves-light"
                                         onclick="subArticle('draft');">
                                     存为草稿
                                 </button>
@@ -209,7 +212,6 @@
                         </form>
                     </div>
                 </div>
-                <div th:replace="admin/footer :: footer-content"></div>
             </div>
         </div>
     </div>

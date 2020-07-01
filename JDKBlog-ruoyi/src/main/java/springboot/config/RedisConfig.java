@@ -15,7 +15,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
- * @author janti
+ * @author jackdking
  * reids 相关bean的配置
  */
 @Configuration
@@ -28,9 +28,9 @@ public class RedisConfig extends CachingConfigurerSupport {
      * @return
      */
     @Bean
-    public CacheManager cacheManager(RedisConnectionFactory factory) {
-        RedisCacheManager redisCacheManager =  RedisCacheManager.create(factory);
-        return redisCacheManager;
+    public CacheManager cacheManager(RedisConnectionFactory connectionFactory) {
+        RedisCacheManager rcm = RedisCacheManager.builder(connectionFactory).build();
+        return rcm;
     }
 
     /**

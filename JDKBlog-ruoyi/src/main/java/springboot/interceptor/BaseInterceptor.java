@@ -1,5 +1,9 @@
 package springboot.interceptor;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,15 +11,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+
 import springboot.constant.WebConst;
 import springboot.dto.Types;
 import springboot.modal.vo.UserVo;
 import springboot.service.IUserService;
-import springboot.util.*;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import springboot.util.AdminCommons;
+import springboot.util.Commons;
+import springboot.util.IpUtil;
+import springboot.util.MapCache;
+import springboot.util.MyUtils;
+import springboot.util.UUID;
 
 /**
  * @author tangj
@@ -53,8 +59,11 @@ public class BaseInterceptor implements HandlerInterceptor {
 
         //请求拦截处理,从session会话中获取用户信息
         UserVo user = MyUtils.getLoginUser(request);
+        
         if (null == user) {
-        	//从用户的cookie加密信息中获取  uuid
+        	//从用户的cookie加密信息中获取  uuid, 然后获取user 再放入到会话当中
+        	
+        	logger.info("user信息不存在");
             Integer uid = MyUtils.getCooKieUid(request);
             request.getSession().setAttribute(WebConst.LOGIN_SESSION_KEY, user);
         }
@@ -64,7 +73,7 @@ public class BaseInterceptor implements HandlerInterceptor {
 //            response.sendRedirect(request.getContextPath() + "/admin/login");
 //            return false;
 //        }
-        // 处理uri
+        // 处理uri , session为空 ，user为空 ， 所以跳转到登入界面。
         if (uri.startsWith("/admin") && !uri.startsWith("/admin/login") && null == user) {
             response.sendRedirect(contextPath+"/admin/login");
             return false;
@@ -78,6 +87,9 @@ public class BaseInterceptor implements HandlerInterceptor {
         
         // 设置get请求的token,缓存token，默认30分钟
         if (request.getMethod().equals("GET")) {
+        	
+
+        	logger.info("设置token");
             String csrf_token = UUID.UU64();
             // 默认存储30分钟
             cache.hset(Types.CSRF_TOKEN.getType(), csrf_token, uri, 30 * 60);

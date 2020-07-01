@@ -100,6 +100,7 @@ public class SysLoginService
         }
 
         passwordService.validate(user, password);
+        
 
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success")));
         recordLoginInfo(user);

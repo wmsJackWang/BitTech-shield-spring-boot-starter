@@ -6,7 +6,11 @@
 <div class="am-g am-g-fixed blog-fixed index-page">
     <div class="am-u-md-8 am-u-sm-12">
         <div th:each="article: ${articles.list}">
-
+        
+           	<th:block th:if="${article.isTop == true}">
+            <img class="settop" th:src="@{/jack/img/settop.png}" >
+            </th:block>
+            
             <article class="am-g blog-entry-article">
                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img">
                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/>
@@ -39,6 +43,14 @@
         <div class="blog-sidebar-widget blog-bor">
             <h2 class="blog-text-center blog-title"><span>About ME</span></h2>
             <img th:src="@{/jack/img/mywife.jpg}" alt="about me" class="blog-entry-img"/>
+            <img th:src="@{/jack/img/wechat.jpg}" alt="about me" class="blog-entry-img"/>
+            <p>
+                                         加我微信,发送“共图社” 
+            </p>
+            <p>
+            	<b> 加入共图社,一起做开源项目</b>
+            </p>
+            
             <p>
                 Java后台开发&&支付业务
             </p>

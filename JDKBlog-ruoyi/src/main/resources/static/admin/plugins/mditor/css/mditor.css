@@ -508,6 +508,9 @@
 .fa-list:before {
   content: "\F03A";
 }
+.fa-listreview:before {
+  content: "\F03A";
+}
 .fa-dedent:before,
 .fa-outdent:before {
   content: "\F03B";

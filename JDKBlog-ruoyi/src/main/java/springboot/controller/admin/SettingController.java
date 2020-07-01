@@ -58,8 +58,20 @@ public class SettingController extends AbstractController {
         volist.forEach((option) -> {
             options.put(option.getName(), option.getValue());
         });
+        if (options.get("site_title") == null) {
+            options.put("site_title", "");
+        }
+        if (options.get("site_description") == null) {
+            options.put("site_description", "");
+        }
         if (options.get("site_record") == null) {
             options.put("site_record", "");
+        }
+        if (options.get("site_block_ips") == null) {
+            options.put("site_block_ips", "");
+        }
+        if (options.get("site_theme") == null) {
+            options.put("site_theme", "");
         }
         request.setAttribute("options", options);
         return "admin/setting";

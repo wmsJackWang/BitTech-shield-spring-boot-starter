@@ -7,6 +7,7 @@ public enum Types {
     PUBLISH("publish"),
     PAGE("page"),
     DRAFT("draft"),
+    REVIEW("review"),//复习模板
     LINK("link"),
     IMAGE("image"),
     FILE("file"),

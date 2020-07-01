@@ -1,5 +1,6 @@
 package springboot.controller.admin;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -70,11 +71,38 @@ public class ArticleController extends AbstractController {
     	
     	logger.info("page:{}",page);
         ContentVoExample contentVoExample = new ContentVoExample();
-        contentVoExample.setOrderByClause("created desc");
-        contentVoExample.createCriteria().andTypeEqualTo(Types.ARTICLE.getType());
+        contentVoExample.setOrderByClause("isTop desc, created desc");
+        List<String> statuss = new ArrayList<>();
+        statuss.add(Types.PUBLISH.getType());
+        statuss.add(Types.DRAFT.getType());
+        contentVoExample.createCriteria().andTypeEqualTo(Types.ARTICLE.getType()).andStatusIn(statuss);
         PageInfo<ContentVo> contentsPaginator = contentService.getArticlesWithpage(contentVoExample, page, limit);
         request.setAttribute("articles", contentsPaginator);
         return "admin/article_list";
+        
+    }
+    
+    
+    /**
+     * 文章列表页面
+     *
+     * @param page
+     * @param limit
+     * @param request
+     * @return
+     */
+    @GetMapping(value = "/review")
+    public String review(@RequestParam(value = "page", defaultValue = "1") int page,
+                        @RequestParam(value = "limit", defaultValue = "15") int limit,
+                        HttpServletRequest request) {
+    	
+    	logger.info("page:{}",page);
+        ContentVoExample contentVoExample = new ContentVoExample();
+        contentVoExample.setOrderByClause("isTop desc , created desc");
+        contentVoExample.createCriteria().andTypeEqualTo(Types.ARTICLE.getType()).andStatusEqualTo(Types.REVIEW.getType());
+        PageInfo<ContentVo> contentsPaginator = contentService.getArticlesWithpage(contentVoExample, page, limit);
+        request.setAttribute("articles", contentsPaginator);
+        return "admin/articletemplate_list";
         
     }
 
@@ -179,4 +207,53 @@ public class ArticleController extends AbstractController {
         }
         return RestResponseBo.ok();
     }
+    
+    /**
+     * 置顶文章 post
+     *
+     * @param cid
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/setTop")
+    @ResponseBody
+    @Transactional(rollbackFor = TipException.class)
+    public RestResponseBo setTop(@RequestParam int cid, HttpServletRequest request) {
+        try {
+        	ContentVo contentVo = new ContentVo();
+        	contentVo.setCid(cid);
+        	contentVo.setIsTop(true);
+        	contentService.updateContentByCid(contentVo);
+            logService.insertLog(LogActions.SETTOP_ARTITLE.getAction(), cid + "", request.getRemoteAddr(), this.getUid(request));
+        } catch (Exception e) {
+            String msg = "文章置顶失败";
+            return ExceptionHelper.handlerException(logger, msg, e);
+        }
+        return RestResponseBo.ok();
+    }    
+    
+    
+    /**
+     * 取消置顶文章 post
+     *
+     * @param cid
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/cancelTop")
+    @ResponseBody
+    @Transactional(rollbackFor = TipException.class)
+    public RestResponseBo cancelTop(@RequestParam int cid, HttpServletRequest request) {
+        try {
+        	ContentVo contentVo = new ContentVo();
+        	contentVo.setCid(cid);
+        	contentVo.setIsTop(false);
+        	contentService.updateContentByCid(contentVo);
+            logService.insertLog(LogActions.CANCELTOP_ARTITLE.getAction(), cid + "", request.getRemoteAddr(), this.getUid(request));
+        } catch (Exception e) {
+            String msg = "文章取消置顶失败";
+            return ExceptionHelper.handlerException(logger, msg, e);
+        }
+        return RestResponseBo.ok();
+    }    
 }

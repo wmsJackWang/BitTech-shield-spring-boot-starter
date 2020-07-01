@@ -1,5 +1,11 @@
 package springboot.service.impl;
 
+import java.io.File;
+
+import javax.annotation.Resource;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -17,7 +23,7 @@ import javax.mail.internet.MimeMessage;
 import java.io.File;
 
 /**
- * @author janti
+ * @author jackdking
  * @date 2018/5/3 22:07
  */
 @Component

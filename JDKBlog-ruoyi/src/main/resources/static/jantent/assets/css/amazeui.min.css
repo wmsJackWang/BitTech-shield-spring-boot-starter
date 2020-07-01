@@ -2,6 +2,14 @@
 .ath-viewport, html {
     -webkit-tap-highlight-color: transparent
 }
+.settop{
+    width: 32px;
+    height: 32px;
+    position: absolute;
+    font-size: 40px;
+    right: 0;
+    top: 0
+}
 
 body, sub, sup {
     position: relative

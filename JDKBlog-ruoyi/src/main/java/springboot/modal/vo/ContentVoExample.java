@@ -898,6 +898,11 @@ public class ContentVoExample {
             addCriterion("allow_comment =", value, "allowComment");
             return (Criteria) this;
         }
+        
+        public Criteria andIsTopEqualTo(Boolean value) {
+            addCriterion("isTop =", value, "isTop");
+            return (Criteria) this;
+        }
 
         public Criteria andAllowCommentNotEqualTo(Boolean value) {
             addCriterion("allow_comment <>", value, "allowComment");
