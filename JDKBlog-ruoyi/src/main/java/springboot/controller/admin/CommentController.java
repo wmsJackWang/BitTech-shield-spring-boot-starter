@@ -1,13 +1,24 @@
 package springboot.controller.admin;
 
-import com.github.pagehelper.PageInfo;
-import com.vdurmont.emoji.EmojiParser;
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.pagehelper.PageInfo;
+import com.ruoyi.framework.util.ShiroUtils;
+import com.ruoyi.system.domain.SysUser;
+import com.vdurmont.emoji.EmojiParser;
+
 import springboot.controller.AbstractController;
 import springboot.controller.helper.ExceptionHelper;
 import springboot.exception.TipException;
@@ -17,9 +28,6 @@ import springboot.modal.vo.CommentVoExample;
 import springboot.modal.vo.UserVo;
 import springboot.service.ICommentService;
 import springboot.util.MyUtils;
-
-import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -39,10 +47,11 @@ public class CommentController extends AbstractController {
     @GetMapping(value = "")
     public String index(@RequestParam(value = "page", defaultValue = "1") int page,
                         @RequestParam(value = "limit", defaultValue = "15") int limit, HttpServletRequest request) {
-        UserVo users = this.user(request);
+//        UserVo users = this.user(request);
+        SysUser user = ShiroUtils.getSysUser();
         CommentVoExample commentVoExample = new CommentVoExample();
         commentVoExample.setOrderByClause("coid desc");
-        commentVoExample.createCriteria().andAuthorIdNotEqualTo(users.getUid());
+        commentVoExample.createCriteria().andAuthorIdNotEqualTo(user.getUserId().intValue());
         PageInfo<CommentVo> commentPaginator = commentServcie.getCommentsWithPage(commentVoExample, page, limit);
         request.setAttribute("comments", commentPaginator);
         return "admin/comment_list";

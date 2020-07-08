@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:with="title='模板管理',active='review'">
 <header th:replace="admin/header::headerFragment(${title},${active})"></header>
-<body class="fixed-left">
-<div id="wrapper">
-    <div class="content-page">
-        <div class="content">
+<body>
+        <div class="content" style="margin-top:30px">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-12">
-                        <h4 class="page-title">文章模板管理</h4>
-                    </div>
+
                     <div class="col-md-12">
                         <table class="table table-striped table-bordered">
                             <thead>
@@ -58,12 +54,22 @@
                                         <th:block th:if="${post.isTop == false}">
 	                                        <a href="javascript:void(0)" th:onclick="'setTopPost('+${post.cid}+');'"
 	                                           class="btn btn-danger btn-sm waves-effect waves-light m-b-5"><i
-	                                                class="fa fa-heart"></i> <span>置顶</span></a>                                        
+	                                                class="fa fa-arrow-up"></i> <span>置顶</span></a>                                        
                                         </th:block>
                                         <th:block th:if="${post.isTop == true}">
 	                                        <a href="javascript:void(0)" th:onclick="'cancelTopPost('+${post.cid}+');'"
 	                                           class="btn btn-danger btn-sm waves-effect waves-light m-b-5"><i
-	                                                class="fa fa-heart"></i> <span>取消置顶</span></a>
+	                                                class="fa fa-circle-thin"></i> <span>取消置顶</span></a>
+	                                    </th:block>
+                                        <th:block th:if="${post.isBottom == false}">
+	                                        <a href="javascript:void(0)" th:onclick="'setBottomPost('+${post.cid}+');'"
+	                                           class="btn btn-danger btn-sm waves-effect waves-light m-b-5"><i
+	                                                class="fa fa-arrow-down"></i> <span>置底</span></a>                                        
+                                        </th:block>
+                                        <th:block th:if="${post.isBottom == true}">
+	                                        <a href="javascript:void(0)" th:onclick="'cancelBottomPost('+${post.cid}+');'"
+	                                           class="btn btn-danger btn-sm waves-effect waves-light m-b-5"><i
+	                                                class="fa fa-circle-thin"></i> <span>取消置底</span></a>
 	                                    </th:block>
                                     </td>
                                 </tr>
@@ -76,8 +82,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+<div th:replace="admin/footer :: footer"></div>
 <script type="text/javascript">
     /*<![CDATA[*/
     var tale = new $.tale();
@@ -138,6 +143,47 @@
             }
         });
     }
+    
+       
+    function setBottomPost(cid) {
+        tale.alertConfirm({
+            title:'确定置底该文章吗?',
+            then: function () {
+                tale.post({
+                    url : '/admin/article/setBottom',
+                    data: {cid: cid},
+                    success: function (result) {
+                        if(result && result.success){
+                            tale.alertOkAndReload('文章置底成功');
+                        } else {
+                            tale.alertError(result.msg || '文章置底失败');
+                        }
+                    }
+                });
+            }
+        });
+    }
+    
+    
+    function cancelBottomPost(cid) {
+        tale.alertConfirm({
+            title:'确定取消置底该文章吗?',
+            then: function () {
+                tale.post({
+                    url : '/admin/article/cancelBottom',
+                    data: {cid: cid},
+                    success: function (result) {
+                        if(result && result.success){
+                            tale.alertOkAndReload('文章取消置底成功');
+                        } else {
+                            tale.alertError(result.msg || '文章取消置底失败');
+                        }
+                    }
+                });
+            }
+        });
+    }
+    
     
     /*]]>*/
 </script>

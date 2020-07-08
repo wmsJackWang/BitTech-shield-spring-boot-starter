@@ -2,15 +2,11 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:with="title='系统设置',active='settings'">
 <header th:replace="admin/header::headerFragment(${title},${active})"></header>
 <link th:href="@{/admin/plugins/toggles/toggles.css}" rel="stylesheet"/>
-<body class="fixed-left">
-<div id="wrapper">
-    <div class="content-page">
-        <div class="content">
+<body>
+        <div class="content" style="margin-top:30px">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-12">
-                        <h4 class="page-title">系统设置</h4>
-                    </div>
+
                     <div class="col-md-6">
                         <div class="panel panel-color panel-primary">
                             <div class="panel-heading">
@@ -95,8 +91,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+<div th:replace="admin/footer :: footer"></div>
 <script src="//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js"></script>
 <script type="text/javascript">
     /*<![CDATA[*/

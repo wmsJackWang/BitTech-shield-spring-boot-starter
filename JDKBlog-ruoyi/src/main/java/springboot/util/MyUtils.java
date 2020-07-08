@@ -119,6 +119,7 @@ public class MyUtils {
     public static UserVo getLoginUser(HttpServletRequest request) {
         HttpSession session = request.getSession();
         if (null == session) {
+        	logger.info("。。。。。。。。。。。。。session为空");
             return null;
         }
         return (UserVo) session.getAttribute(WebConst.LOGIN_SESSION_KEY);

@@ -98,7 +98,7 @@ public class ArticleController extends AbstractController {
     	
     	logger.info("page:{}",page);
         ContentVoExample contentVoExample = new ContentVoExample();
-        contentVoExample.setOrderByClause("isTop desc , created desc");
+        contentVoExample.setOrderByClause("isTop desc , isBottom  asc , created desc");
         contentVoExample.createCriteria().andTypeEqualTo(Types.ARTICLE.getType()).andStatusEqualTo(Types.REVIEW.getType());
         PageInfo<ContentVo> contentsPaginator = contentService.getArticlesWithpage(contentVoExample, page, limit);
         request.setAttribute("articles", contentsPaginator);
@@ -256,4 +256,55 @@ public class ArticleController extends AbstractController {
         }
         return RestResponseBo.ok();
     }    
+    
+    
+    
+    /**
+     * 置顶文章 post
+     *
+     * @param cid
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/setBottom")
+    @ResponseBody
+    @Transactional(rollbackFor = TipException.class)
+    public RestResponseBo setBottom(@RequestParam int cid, HttpServletRequest request) {
+        try {
+        	ContentVo contentVo = new ContentVo();
+        	contentVo.setCid(cid);
+        	contentVo.setIsBottom(true);
+        	contentService.updateContentByCid(contentVo);
+            logService.insertLog(LogActions.SETTOP_ARTITLE.getAction(), cid + "", request.getRemoteAddr(), this.getUid(request));
+        } catch (Exception e) {
+            String msg = "文章置顶失败";
+            return ExceptionHelper.handlerException(logger, msg, e);
+        }
+        return RestResponseBo.ok();
+    }    
+    
+    
+    /**
+     * 取消置顶文章 post
+     *
+     * @param cid
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/cancelBottom")
+    @ResponseBody
+    @Transactional(rollbackFor = TipException.class)
+    public RestResponseBo cancelBottom(@RequestParam int cid, HttpServletRequest request) {
+        try {
+        	ContentVo contentVo = new ContentVo();
+        	contentVo.setCid(cid);
+        	contentVo.setIsBottom(false);
+        	contentService.updateContentByCid(contentVo);
+            logService.insertLog(LogActions.CANCELTOP_ARTITLE.getAction(), cid + "", request.getRemoteAddr(), this.getUid(request));
+        } catch (Exception e) {
+            String msg = "文章取消置顶失败";
+            return ExceptionHelper.handlerException(logger, msg, e);
+        }
+        return RestResponseBo.ok();
+    } 
 }

@@ -40,15 +40,11 @@
         background-color: #f9f9f9;
     }
 </style>
-<body class="fixed-left">
-<div id="wrapper">
-    <div class="content-page">
-        <div class="content">
+<body>
+        <div class="content" style="margin-top:30px">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-12">
-                        <h4 class="page-title">文件管理</h4>
-                    </div>
+
                     <div class="row">
                         <div class="col-md-12 portlets">
                             <!-- Your awesome content goes here -->
@@ -106,8 +102,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+<div th:replace="admin/footer :: footer"></div>
 <script src="//cdn.bootcss.com/dropzone/4.3.0/min/dropzone.min.js"></script>
 <script src="//cdn.bootcss.com/clipboard.js/1.6.0/clipboard.min.js"></script>
 <script type="text/javascript" th:inline="javascript">

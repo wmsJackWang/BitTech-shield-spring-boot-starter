@@ -38,6 +38,17 @@
 
 
     <dependencies>
+    
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-framework</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-system</artifactId>
+        </dependency>
+    
     <!-- thyleaf 框架时间处理  -->
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>

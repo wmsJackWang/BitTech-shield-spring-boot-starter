@@ -3,22 +3,11 @@
 <header th:replace="admin/header::headerFragment(${title},${active})"></header>
 <link th:href="@{/admin/plugins/toggles/toggles.css}" rel="stylesheet"/>
 <link th:href="@{/admin/plugins/md/css/style.css}" rel="stylesheet"/>
-<body class="fixed-left">
-<div id="wrapper">
-    <div class="content-page">
-        <div class="content">
+<body>
+        <div class="content" style="margin-top:30px">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-12">
-                        <h4 class="page-title">
-                            <th:block th:if="${null != contents}">
-                                编辑页面
-                            </th:block>
-                            <th:block th:unless="${null != contents}">
-                                发布新页面
-                            </th:block>
-                        </h4>
-                    </div>
+
                     <div class="col-md-12">
                         <form id="articleForm" role="form" novalidate="novalidate">
                             <input type="hidden" name="categories" id="categories"/>
@@ -50,8 +39,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+<div th:replace="admin/footer :: footer"></div>
 <script th:src="@{/admin/plugins/md/js/jquery.scrollto.js}"></script>
 <script th:src="@{/admin/plugins/md/js/pagedown.js}"></script>
 <script th:src="@{/admin/plugins/md/js/pagedown-extra.js}"></script>

@@ -391,7 +391,7 @@ public class SysUserServiceImpl implements ISysUserService
     {
         if (StringUtils.isNotNull(user.getUserId()) && user.isAdmin())
         {
-            throw new BusinessException("不允许操作超级管理员用户");
+//            throw new BusinessException("不允许操作超级管理员用户");
         }
     }
 

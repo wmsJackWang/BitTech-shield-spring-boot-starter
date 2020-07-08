@@ -22,6 +22,7 @@
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="springboot.modal.vo.ContentVo">
     <result column="content" jdbcType="LONGVARCHAR" property="content" />
     <result column="isTop" jdbcType="BIT" property="isTop" />
+    <result column="isBottom" jdbcType="BIT" property="isBottom" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -83,7 +84,7 @@
   </sql>
   <sql id="Base_Column_List">
     cid, title, slug, created, modified, author_id, type, status, tags, categories, hits,
-    comments_num, allow_comment, allow_ping, allow_feed, thumbImg,isTop
+    comments_num, allow_comment, allow_ping, allow_feed, thumbImg,isTop,isBottom
   </sql>
   <sql id="Blob_Column_List">
     content
@@ -416,6 +417,9 @@
       </if>
       <if test="isTop != null">
         isTop = #{isTop,jdbcType=BIT},
+      </if>
+      <if test="isBottom != null">
+        isBottom = #{isBottom,jdbcType=BIT},
       </if>
       <if test="thumbimg != null">
         thumbImg = #{thumbimg,jdbcType=VARCHAR},

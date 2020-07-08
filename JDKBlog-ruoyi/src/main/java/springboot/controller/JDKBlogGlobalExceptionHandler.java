@@ -14,12 +14,14 @@ public class JDKBlogGlobalExceptionHandler {
     @ExceptionHandler(value = TipException.class)
     public String tipException(Exception e){
         logger.error("find exception:e+{}",e.getMessage());
+        e.printStackTrace();
         return "comm/error_500";
     }
 
     @ExceptionHandler(value = Exception.class)
     public String exceptionHandler(Exception e){
         logger.error("find exception:e+{}",e.getMessage());
+        e.printStackTrace();
         return "comm/error_404";
     }
 

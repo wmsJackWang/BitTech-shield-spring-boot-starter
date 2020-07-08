@@ -303,8 +303,9 @@ public class IndexController extends AbstractController {
 
     /**
      * 自定义页面,如关于的页面
+     * 添加selfdefine路径是要跟其他的controller 做出区分，不然就会重合。
      */
-    @GetMapping(value = "/{pagename}")
+    @GetMapping(value = "selfdefine/{pagename}")
     public String page(@PathVariable String pagename, HttpServletRequest request) {
         ContentVo contents = contentService.getContents(pagename);
         if (null == contents) {

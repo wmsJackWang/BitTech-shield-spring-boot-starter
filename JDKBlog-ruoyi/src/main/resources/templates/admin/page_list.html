@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org" th:with="title='页面管理',active='page'">
 <header th:replace="admin/header::headerFragment(${title},${active})"></header>
-<body class="fixed-left">
-<div id="wrapper">
-    <div class="content-page">
-        <div class="content">
+<body>
+        <div class="content" style="margin-top:30px">
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-12">
-                        <h4 class="page-title">文章管理</h4>
-                    </div>
+
                     <div class="col-md-12">
                         <div class="pull-right">
                             <a th:href="@{/admin/page/new}" class="btn btn-success waves-effect waves-light m-b-5">添加新页面</a>
@@ -52,8 +48,7 @@
                 </div>
             </div>
         </div>
-    </div>
-</div>
+<div th:replace="admin/footer :: footer"></div>
 <script type="text/javascript">
     /*<![CDATA[*/
     var tale = new $.tale();

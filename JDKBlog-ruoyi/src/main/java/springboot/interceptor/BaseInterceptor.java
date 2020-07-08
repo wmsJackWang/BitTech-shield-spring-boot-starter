@@ -48,7 +48,9 @@ public class BaseInterceptor implements HandlerInterceptor {
     @Value("${contextPath}")
     private String contextPath ;
 
-
+    
+    
+    //jdkblog融入到ruoyi的后台权限管理系统，不在使用自身的权限验证。
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String uri = request.getRequestURI();
@@ -58,43 +60,43 @@ public class BaseInterceptor implements HandlerInterceptor {
         logger.info("禁止访问的IP: {}", WebConst.BLOCK_IPS.toString());
 
         //请求拦截处理,从session会话中获取用户信息
-        UserVo user = MyUtils.getLoginUser(request);
-        
-        if (null == user) {
-        	//从用户的cookie加密信息中获取  uuid, 然后获取user 再放入到会话当中
-        	
-        	logger.info("user信息不存在");
-            Integer uid = MyUtils.getCooKieUid(request);
-            request.getSession().setAttribute(WebConst.LOGIN_SESSION_KEY, user);
-        }
-        
-//        // 处理uri
+//        UserVo user = MyUtils.getLoginUser(request);
+//        
+//        if (null == user) {
+//        	//从用户的cookie加密信息中获取  uuid, 然后获取user 再放入到会话当中
+//        	
+//        	logger.info("user信息不存在");
+//            Integer uid = MyUtils.getCooKieUid(request);
+//            request.getSession().setAttribute(WebConst.LOGIN_SESSION_KEY, user);
+//        }
+//        
+////        // 处理uri
+////        if (uri.startsWith("/admin") && !uri.startsWith("/admin/login") && null == user) {
+////            response.sendRedirect(request.getContextPath() + "/admin/login");
+////            return false;
+////        }
+//        // 处理uri , session为空 ，user为空 ， 所以跳转到登入界面。
 //        if (uri.startsWith("/admin") && !uri.startsWith("/admin/login") && null == user) {
-//            response.sendRedirect(request.getContextPath() + "/admin/login");
+//            response.sendRedirect(contextPath+"/admin/login");
 //            return false;
 //        }
-        // 处理uri , session为空 ，user为空 ， 所以跳转到登入界面。
-        if (uri.startsWith("/admin") && !uri.startsWith("/admin/login") && null == user) {
-            response.sendRedirect(contextPath+"/admin/login");
-            return false;
-        }
-        
-//		// 处理uri
-//		if (uri.startsWith("/admin") && !uri.startsWith("/admin/login") && null == user) {
-//			response.sendRedirect(request.getRequestURI() + "/admin/login");
-//			return false;
-//		}
-        
-        // 设置get请求的token,缓存token，默认30分钟
-        if (request.getMethod().equals("GET")) {
-        	
-
-        	logger.info("设置token");
-            String csrf_token = UUID.UU64();
-            // 默认存储30分钟
-            cache.hset(Types.CSRF_TOKEN.getType(), csrf_token, uri, 30 * 60);
-            request.setAttribute("_csrf_token", csrf_token);
-        }
+//        
+////		// 处理uri
+////		if (uri.startsWith("/admin") && !uri.startsWith("/admin/login") && null == user) {
+////			response.sendRedirect(request.getRequestURI() + "/admin/login");
+////			return false;
+////		}
+//        
+//        // 设置get请求的token,缓存token，默认30分钟
+//        if (request.getMethod().equals("GET")) {
+//        	
+//
+//        	logger.info("设置token");
+//            String csrf_token = UUID.UU64();
+//            // 默认存储30分钟
+//            cache.hset(Types.CSRF_TOKEN.getType(), csrf_token, uri, 30 * 60);
+//            request.setAttribute("_csrf_token", csrf_token);
+//        }
         return true;
     }
 
