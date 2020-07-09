@@ -266,6 +266,7 @@ public class ShiroConfig
         filterChainDefinitionMap.put("/jantent/**", "anon");
         filterChainDefinitionMap.put("/user/**", "anon");
         filterChainDefinitionMap.put("/upload/**", "anon");
+        filterChainDefinitionMap.put("/themes/jantent/archives.html", "anon");
         
         
         
