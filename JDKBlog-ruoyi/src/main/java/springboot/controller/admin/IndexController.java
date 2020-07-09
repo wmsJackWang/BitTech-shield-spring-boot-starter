@@ -139,8 +139,8 @@ public class IndexController extends AbstractController {
         }
         try {
             UserVo temp = new UserVo();
-            temp.setUid(users.getUid());
-            String pwd = MyUtils.MD5encode(users.getUsername() + newPassword);
+            temp.setUid(user.getUserId().intValue());
+            String pwd = MyUtils.MD5encode(user.getUserName() + newPassword);
             temp.setPassword(pwd);
             userService.updateByUid(temp);
             logService.insertLog(LogActions.UP_PWD.getAction(), null, request.getRemoteAddr(), this.getUid(request));

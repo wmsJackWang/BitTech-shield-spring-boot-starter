@@ -119,7 +119,7 @@ public class CommentController extends AbstractController {
             return RestResponseBo.fail("不存在该评论");
         }
 
-        UserVo users = this.user(request);
+//        UserVo users = this.user(request);
         SysUser user = ShiroUtils.getSysUser();
         content = MyUtils.cleanXSS(content);
         content = EmojiParser.parseToAliases(content);
