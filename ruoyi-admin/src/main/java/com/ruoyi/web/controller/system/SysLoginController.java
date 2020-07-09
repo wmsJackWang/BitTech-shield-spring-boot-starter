@@ -7,8 +7,6 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,8 +33,6 @@ import springboot.util.MyUtils;
 public class SysLoginController extends BaseController
 {
 	
-	private static final Logger log = LoggerFactory.getLogger(SysLoginController.class);
-
 
     @Autowired
     private ISysUserService userService;
@@ -47,7 +43,7 @@ public class SysLoginController extends BaseController
         // 如果是Ajax请求，返回Json字符串。
         if (ServletUtils.isAjaxRequest(request))
         {
-//        	log.info("ceshi..............");
+        	 
             return ServletUtils.renderString(response, "{\"code\":\"1\",\"msg\":\"未登录或登录超时。请重新登录\"}");
         }
 
@@ -66,23 +62,21 @@ public class SysLoginController extends BaseController
         {
             subject.login(token);
             
+            //从这里开始  代码处理 适配 jdkblog
+            // 查询用户信息
+            SysUser user = userService.selectUserByLoginName(username);
             
-            //jdkblog 适配到ruoyi，不再使用自身的权限拦截
-//            //从这里开始  代码处理 适配 jdkblog
-//            // 查询用户信息
-//            SysUser user = userService.selectUserByLoginName(username);
-//            
-//            UserVo userVo = new UserVo();
-//            userVo.setUsername(user.getUserName());
-//            userVo.setUid(user.getUserId().intValue());
-//    
-//            
-//            //到这里用户登入成功了，这里适配jdkblog系统 ,默认会话过期时间是30分钟。所以30分钟就要重新登入。
-//            request.getSession().setAttribute(WebConst.LOGIN_SESSION_KEY, userVo);
-//            // 设置12小时的cookie
-//            MyUtils.setCookie(response, user.getUserId().intValue());
-//            
-//            //代码处理 适配 jdkblog  结束
+            UserVo userVo = new UserVo();
+            userVo.setUsername(user.getUserName());
+            userVo.setUid(user.getUserId().intValue());
+    
+            
+            //到这里用户登入成功了，这里适配jdkblog系统 ,默认会话过期时间是30分钟。所以30分钟就要重新登入。
+            request.getSession().setAttribute(WebConst.LOGIN_SESSION_KEY, userVo);
+            // 设置12小时的cookie
+            MyUtils.setCookie(response, user.getUserId().intValue());
+            
+            //代码处理 适配 jdkblog  结束
             
             return success();
         }

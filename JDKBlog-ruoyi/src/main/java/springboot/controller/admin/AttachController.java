@@ -1,6 +1,9 @@
 package springboot.controller.admin;
 
 import com.github.pagehelper.PageInfo;
+import com.ruoyi.framework.util.ShiroUtils;
+import com.ruoyi.system.domain.SysUser;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -80,8 +83,10 @@ public class AttachController extends AbstractController {
     @ResponseBody
     @Transactional(rollbackFor = TipException.class)
     public RestResponseBo upload(HttpServletRequest request, @RequestParam("file") MultipartFile[] multipartFiles) throws IOException {
-        UserVo users = this.user(request);
-        Integer uid = users.getUid();
+//        UserVo users = this.user(request);
+
+        SysUser user = ShiroUtils.getSysUser();
+        Integer uid = user.getUserId().intValue();
         // 记录上传成功的文件信息
         List<AttachVo> attachVoList = new ArrayList<>();
         try {

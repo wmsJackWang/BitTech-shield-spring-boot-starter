@@ -1,6 +1,9 @@
 package springboot.controller.admin;
 
 import com.github.pagehelper.PageInfo;
+import com.ruoyi.framework.util.ShiroUtils;
+import com.ruoyi.system.domain.SysUser;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -100,7 +103,9 @@ public class PageController extends AbstractController {
                                         @RequestParam String status, @RequestParam String slug,
                                         @RequestParam(required = false) Integer allowComment, @RequestParam(required = false) Integer allowPing, HttpServletRequest request) {
 
-        UserVo users = this.user(request);
+//        UserVo users = this.user(request);
+
+        SysUser user = ShiroUtils.getSysUser();
         ContentVo contents = new ContentVo();
         contents.setCid(cid);
         contents.setTitle(title);
@@ -114,7 +119,7 @@ public class PageController extends AbstractController {
         if (null != allowPing) {
             contents.setAllowPing(allowPing == 1);
         }
-        contents.setAuthorId(users.getUid());
+        contents.setAuthorId(user.getUserId().intValue());
         try {
             contentService.updateArticle(contents);
         } catch (Exception e) {

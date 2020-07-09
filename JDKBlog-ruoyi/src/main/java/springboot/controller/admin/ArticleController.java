@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageInfo;
+import com.ruoyi.framework.util.ShiroUtils;
+import com.ruoyi.system.domain.SysUser;
 
 import springboot.controller.AbstractController;
 import springboot.controller.helper.ExceptionHelper;
@@ -149,8 +151,10 @@ public class ArticleController extends AbstractController {
     @ResponseBody
     @Transactional(rollbackFor = TipException.class)
     public RestResponseBo publishArticle(ContentVo contents, HttpServletRequest request) {
-        UserVo users = this.user(request);
-        contents.setAuthorId(users.getUid());
+//        UserVo users = this.user(request);
+
+        SysUser user = ShiroUtils.getSysUser();
+        contents.setAuthorId(user.getUserId().intValue());
         contents.setType(Types.ARTICLE.getType());
         if (StringUtils.isBlank(contents.getCategories())) {
             contents.setCategories("默认分类");

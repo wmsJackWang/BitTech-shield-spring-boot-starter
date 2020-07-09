@@ -249,6 +249,27 @@ public class ShiroConfig
         filterChainDefinitionMap.put("/ajax/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/ruoyi/**", "anon");
+        
+        //jdkblog的主页url不需要验证
+        filterChainDefinitionMap.put("/", "anon");
+        filterChainDefinitionMap.put("/archives/**", "anon");
+        filterChainDefinitionMap.put("/page/**", "anon");
+        filterChainDefinitionMap.put("/article/**", "anon");
+        filterChainDefinitionMap.put("/comment/**", "anon");
+        filterChainDefinitionMap.put("/category/**", "anon");
+        filterChainDefinitionMap.put("/links/**", "anon");
+        filterChainDefinitionMap.put("/selfdefine/**", "anon");
+        filterChainDefinitionMap.put("/search/**", "anon");
+        filterChainDefinitionMap.put("/tag/**", "anon");
+        filterChainDefinitionMap.put("/comm/ipban", "anon");
+        //jdkblog的静态资源路径
+        filterChainDefinitionMap.put("/jantent/**", "anon");
+        filterChainDefinitionMap.put("/user/**", "anon");
+        filterChainDefinitionMap.put("/upload/**", "anon");
+        
+        
+        
+        
         filterChainDefinitionMap.put("/captcha/captchaImage**", "anon");
         // 退出 logout地址，shiro去清除session
         filterChainDefinitionMap.put("/logout", "logout");

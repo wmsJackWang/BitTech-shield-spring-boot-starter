@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.ruoyi.framework.util.ShiroUtils;
+import com.ruoyi.system.domain.SysUser;
+
 import springboot.constant.WebConst;
 import springboot.controller.AbstractController;
 import springboot.controller.helper.ExceptionHelper;
@@ -90,10 +93,12 @@ public class IndexController extends AbstractController {
     @ResponseBody
     @Transactional(rollbackFor = TipException.class)
     public RestResponseBo saveProfile(@RequestParam String screenName, @RequestParam String email, HttpServletRequest request, HttpSession session) {
-        UserVo users = this.user(request);
+//        UserVo users = this.user(request);
+
+        SysUser user = ShiroUtils.getSysUser();
         if (StringUtils.isNotBlank(screenName) && StringUtils.isNotBlank(email)) {
             UserVo temp = new UserVo();
-            temp.setUid(users.getUid());
+            temp.setUid(user.getUserId().intValue());
             temp.setScreenName(screenName);
             temp.setEmail(email);
             userService.updateByUid(temp);
