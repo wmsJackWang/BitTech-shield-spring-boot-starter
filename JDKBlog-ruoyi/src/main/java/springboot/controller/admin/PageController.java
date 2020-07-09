@@ -71,7 +71,8 @@ public class PageController extends AbstractController {
                                       @RequestParam String status, @RequestParam String slug,
                                       @RequestParam(required = false) Integer allowComment, @RequestParam(required = false) Integer allowPing, HttpServletRequest request) {
 
-        UserVo users = this.user(request);
+//        UserVo users = this.user(request);
+        SysUser user = ShiroUtils.getSysUser();
         ContentVo contents = new ContentVo();
         contents.setTitle(title);
         contents.setContent(content);
@@ -84,7 +85,7 @@ public class PageController extends AbstractController {
         if (null != allowPing) {
             contents.setAllowPing(allowPing == 1);
         }
-        contents.setAuthorId(users.getUid());
+        contents.setAuthorId(user.getUserId().intValue());
 
         try {
             contentService.publish(contents);

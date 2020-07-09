@@ -15,6 +15,8 @@ import java.util.Set;
 @Component
 public class WebConst {
     public static Map<String, String> initConfig = new HashMap<>();
+    
+    public static String ADMIN_KEY = "admin";
 
 
     public static String LOGIN_SESSION_KEY = "login_user";

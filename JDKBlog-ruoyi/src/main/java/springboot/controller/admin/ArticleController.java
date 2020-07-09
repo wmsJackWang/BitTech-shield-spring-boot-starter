@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageInfo;
 import com.ruoyi.framework.util.ShiroUtils;
+import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.system.domain.SysUser;
 
+import springboot.constant.WebConst;
 import springboot.controller.AbstractController;
 import springboot.controller.helper.ExceptionHelper;
 import springboot.dto.LogActions;
@@ -72,12 +74,28 @@ public class ArticleController extends AbstractController {
                         HttpServletRequest request) {
     	
     	logger.info("page:{}",page);
+    	
+
+        SysUser user = ShiroUtils.getSysUser();
+        Integer userId = user.getUserId().intValue();
+        for(SysRole role: user.getRoles())
+        	if(role.getRoleKey().equals(WebConst.ADMIN_KEY))
+        		userId = 0;
+        
+        	
+        
         ContentVoExample contentVoExample = new ContentVoExample();
         contentVoExample.setOrderByClause("isTop desc, created desc");
         List<String> statuss = new ArrayList<>();
         statuss.add(Types.PUBLISH.getType());
         statuss.add(Types.DRAFT.getType());
-        contentVoExample.createCriteria().andTypeEqualTo(Types.ARTICLE.getType()).andStatusIn(statuss);
+        
+        //管理员看到所有的文章,非管理员只能看到自己的文章
+        if(userId==0)
+        	contentVoExample.createCriteria().andTypeEqualTo(Types.ARTICLE.getType()).andStatusIn(statuss);
+        else
+        	contentVoExample.createCriteria().andTypeEqualTo(Types.ARTICLE.getType()).andStatusIn(statuss).andAuthorIdEqualTo(userId);
+        	
         PageInfo<ContentVo> contentsPaginator = contentService.getArticlesWithpage(contentVoExample, page, limit);
         request.setAttribute("articles", contentsPaginator);
         return "admin/article_list";
@@ -99,14 +117,101 @@ public class ArticleController extends AbstractController {
                         HttpServletRequest request) {
     	
     	logger.info("page:{}",page);
+    	
+
+        SysUser user = ShiroUtils.getSysUser();
+        Integer userId = user.getUserId().intValue();
+        for(SysRole role: user.getRoles())
+        	if(role.getRoleKey().equals(WebConst.ADMIN_KEY))
+        		userId = 0;
+        
+    	
         ContentVoExample contentVoExample = new ContentVoExample();
         contentVoExample.setOrderByClause("isTop desc , isBottom  asc , created desc");
-        contentVoExample.createCriteria().andTypeEqualTo(Types.ARTICLE.getType()).andStatusEqualTo(Types.REVIEW.getType());
+        
+        //管理员看到所有的文章,非管理员只能看到自己的文章
+        if(userId==0)
+        	contentVoExample.createCriteria().andTypeEqualTo(Types.ARTICLE.getType()).andStatusEqualTo(Types.REVIEW.getType());
+        else
+        	contentVoExample.createCriteria().andTypeEqualTo(Types.ARTICLE.getType()).andStatusEqualTo(Types.REVIEW.getType()).andAuthorIdEqualTo(userId);        	
+        
+        
         PageInfo<ContentVo> contentsPaginator = contentService.getArticlesWithpage(contentVoExample, page, limit);
         request.setAttribute("articles", contentsPaginator);
         return "admin/articletemplate_list";
         
     }
+    
+    
+    
+    /**
+     * 文章列表页面
+     *
+     * @param page
+     * @param limit
+     * @param request
+     * @return
+     */
+    @GetMapping(value = "/myArticle")
+    public String myIndex(@RequestParam(value = "page", defaultValue = "1") int page,
+                        @RequestParam(value = "limit", defaultValue = "15") int limit,
+                        HttpServletRequest request) {
+    	
+    	logger.info("page:{}",page);
+    	
+
+        SysUser user = ShiroUtils.getSysUser();
+        Integer userId = user.getUserId().intValue();
+
+        
+        ContentVoExample contentVoExample = new ContentVoExample();
+        contentVoExample.setOrderByClause("isTop desc, created desc");
+        List<String> statuss = new ArrayList<>();
+        statuss.add(Types.PUBLISH.getType());
+        statuss.add(Types.DRAFT.getType());
+        
+
+        contentVoExample.createCriteria().andTypeEqualTo(Types.ARTICLE.getType()).andStatusIn(statuss).andAuthorIdEqualTo(userId);
+        	
+        PageInfo<ContentVo> contentsPaginator = contentService.getArticlesWithpage(contentVoExample, page, limit);
+        request.setAttribute("articles", contentsPaginator);
+        return "admin/article_list";
+        
+    }
+    
+    
+    /**
+     * 文章列表页面
+     *
+     * @param page
+     * @param limit
+     * @param request
+     * @return
+     */
+    @GetMapping(value = "/myReview")
+    public String myReview(@RequestParam(value = "page", defaultValue = "1") int page,
+                        @RequestParam(value = "limit", defaultValue = "15") int limit,
+                        HttpServletRequest request) {
+    	
+    	logger.info("page:{}",page);
+    	
+
+        SysUser user = ShiroUtils.getSysUser();
+        Integer userId = user.getUserId().intValue();
+
+        ContentVoExample contentVoExample = new ContentVoExample();
+        contentVoExample.setOrderByClause("isTop desc , isBottom  asc , created desc");
+
+        contentVoExample.createCriteria().andTypeEqualTo(Types.ARTICLE.getType()).andStatusEqualTo(Types.REVIEW.getType()).andAuthorIdEqualTo(userId);        	
+        
+        
+        PageInfo<ContentVo> contentsPaginator = contentService.getArticlesWithpage(contentVoExample, page, limit);
+        request.setAttribute("articles", contentsPaginator);
+        return "admin/articletemplate_list";
+        
+    }
+    
+    
 
     /**
      * 文章发表页面
@@ -179,8 +284,10 @@ public class ArticleController extends AbstractController {
     @ResponseBody
     @Transactional(rollbackFor = TipException.class)
     public RestResponseBo modifyArticle(ContentVo contents, HttpServletRequest request) {
-        UserVo users = this.user(request);
-        contents.setAuthorId(users.getUid());
+//        UserVo users = this.user(request);
+
+        SysUser user = ShiroUtils.getSysUser();
+        contents.setAuthorId(user.getUserId().intValue());
         contents.setType(Types.ARTICLE.getType());
         try {
             contentService.updateArticle(contents);

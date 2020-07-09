@@ -126,11 +126,12 @@ public class IndexController extends AbstractController {
     @ResponseBody
     @Transactional(rollbackFor = TipException.class)
     public RestResponseBo updatePwd(@RequestParam String oldPassword, @RequestParam String newPassword, HttpServletRequest request, HttpSession session) {
-        UserVo users = this.user(request);
+//        UserVo users = this.user(request);
+        SysUser user = ShiroUtils.getSysUser();
         if (StringUtils.isBlank(oldPassword) || StringUtils.isBlank(newPassword)) {
             return RestResponseBo.fail("请确认信息输入完整");
         }
-        if (!users.getPassword().equals(MyUtils.MD5encode(users.getUsername() + oldPassword))) {
+        if (!user.getPassword().equals(MyUtils.MD5encode(user.getUserName() + oldPassword))) {
             return RestResponseBo.fail("原始密码不正确");
         }
         if (newPassword.length() < 6 || newPassword.length() > 14) {

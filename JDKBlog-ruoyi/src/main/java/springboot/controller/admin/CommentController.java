@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.github.pagehelper.PageInfo;
 import com.ruoyi.framework.util.ShiroUtils;
+import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.system.domain.SysUser;
 import com.vdurmont.emoji.EmojiParser;
 
+import springboot.constant.WebConst;
 import springboot.controller.AbstractController;
 import springboot.controller.helper.ExceptionHelper;
 import springboot.exception.TipException;
@@ -51,7 +53,16 @@ public class CommentController extends AbstractController {
         SysUser user = ShiroUtils.getSysUser();
         CommentVoExample commentVoExample = new CommentVoExample();
         commentVoExample.setOrderByClause("coid desc");
-        commentVoExample.createCriteria().andAuthorIdNotEqualTo(user.getUserId().intValue());
+        
+        Integer userId = user.getUserId().intValue();
+        for(SysRole role: user.getRoles())
+        	if(role.getRoleKey().equals(WebConst.ADMIN_KEY))
+        		userId = 0;
+        if(userId==0)
+        	;
+        else 
+        	commentVoExample.createCriteria().andOwnerIdEqualTo(user.getUserId().intValue());
+        
         PageInfo<CommentVo> commentPaginator = commentServcie.getCommentsWithPage(commentVoExample, page, limit);
         request.setAttribute("comments", commentPaginator);
         return "admin/comment_list";
@@ -109,17 +120,18 @@ public class CommentController extends AbstractController {
         }
 
         UserVo users = this.user(request);
+        SysUser user = ShiroUtils.getSysUser();
         content = MyUtils.cleanXSS(content);
         content = EmojiParser.parseToAliases(content);
 
         CommentVo comments = new CommentVo();
-        comments.setAuthor(users.getUsername());
-        comments.setAuthorId(users.getUid());
+        comments.setAuthor(user.getUserName());
+        comments.setAuthorId(user.getUserId().intValue());
         comments.setCid(temp.getCid());
         comments.setIp(request.getRemoteAddr());
-        comments.setUrl(users.getHomeUrl());
+//        comments.setUrl(user);
         comments.setContent(content);
-        comments.setMail(users.getEmail());
+        comments.setMail(user.getEmail());
         comments.setParent(coid);
         try {
             commentServcie.insertComment(comments);
