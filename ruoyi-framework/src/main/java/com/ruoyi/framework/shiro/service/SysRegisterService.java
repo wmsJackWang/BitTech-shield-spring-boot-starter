@@ -1,5 +1,7 @@
 package com.ruoyi.framework.shiro.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -22,6 +24,11 @@ import com.ruoyi.system.service.ISysUserService;
 @Component
 public class SysRegisterService
 {
+	
+	
+	private static final Logger log = LoggerFactory.getLogger(SysRegisterService.class);
+
+	
     @Autowired
     private ISysUserService userService;
 
@@ -66,6 +73,8 @@ public class SysRegisterService
             user.setSalt(ShiroUtils.randomSalt());
             user.setPassword(passwordService.encryptPassword(user.getLoginName(), user.getPassword(), user.getSalt()));
             boolean regFlag = userService.registerUser(user);
+            userService.setDefaultRole(user.getUserId());
+            log.info("user插入之后的 数据：{}",user.toString());
             if (!regFlag)
             {
                 msg = "注册失败,请联系系统管理人员";

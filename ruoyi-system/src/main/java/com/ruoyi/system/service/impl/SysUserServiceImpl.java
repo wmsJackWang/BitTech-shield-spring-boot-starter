@@ -517,4 +517,16 @@ public class SysUserServiceImpl implements ISysUserService
     {
         return userMapper.updateUser(user);
     }
+    
+
+    @Autowired
+    private ISysUserService userService;
+    
+    public void setDefaultRole(Long userId) {
+    	
+    	Long[] roleIds = {UserConstants.DEFAULT_ROLE};
+    	
+    	userService.insertUserAuth(userId, roleIds);
+    	
+    }
 }

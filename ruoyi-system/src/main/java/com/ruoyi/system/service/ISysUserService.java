@@ -204,4 +204,6 @@ public interface ISysUserService
      * @return 结果
      */
     public int changeStatus(SysUser user);
+
+	public void setDefaultRole(Long userId);
 }
