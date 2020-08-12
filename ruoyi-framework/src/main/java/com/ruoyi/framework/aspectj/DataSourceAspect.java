@@ -39,6 +39,12 @@ public class DataSourceAspect
     public void jdkBlogDsPointCut() {
     	
     }
+//    com.ruoyi.generator.service.impl.GenTableServiceImpl.selectDbTableColumnsByName(String tableName)
+//    @Pointcut("execution(* com.ruoyi.generator.service.impl.GenTableServiceImpl.selectDbTableColumnsByName(*) or "
+//    		+ "" )
+//    public void targetSourceDsPointCut() {
+//    	
+//    }
 
     @Around("jdkBlogDsPointCut()")
     public Object jdkBlogAround(ProceedingJoinPoint point) throws Throwable

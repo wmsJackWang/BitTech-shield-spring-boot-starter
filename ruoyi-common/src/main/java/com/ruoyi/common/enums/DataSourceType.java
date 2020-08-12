@@ -20,5 +20,9 @@ public enum DataSourceType
     /**
      * 比特科技博客数据源
      */
-    JDKBLOG
+    JDKBLOG,
+    /**
+     * 目标库
+     */
+    TARGETDATASOURCE
 }

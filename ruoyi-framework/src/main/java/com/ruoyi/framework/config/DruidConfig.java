@@ -57,6 +57,7 @@ public class DruidConfig
         targetDataSources.put(DataSourceType.MASTER.name(), masterDataSource);
         setDataSource(targetDataSources, DataSourceType.SLAVE.name(), "slaveDataSource");
         setDataSource(targetDataSources, DataSourceType.JDKBLOG.name(), "jdkBlogDataSource");
+        setDataSource(targetDataSources, DataSourceType.TARGETDATASOURCE.name(), "targetDataSource");
         return new DynamicDataSource(masterDataSource, targetDataSources);
     }
 

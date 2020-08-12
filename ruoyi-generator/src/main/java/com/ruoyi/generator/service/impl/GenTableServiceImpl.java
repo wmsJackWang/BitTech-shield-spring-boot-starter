@@ -155,7 +155,7 @@ public class GenTableServiceImpl implements IGenTableService
                 if (row > 0)
                 {
                     // 保存列信息
-                    List<GenTableColumn> genTableColumns = genTableColumnMapper.selectDbTableColumnsByName(tableName);
+                    List<GenTableColumn> genTableColumns = selectDbTableColumnsByName(tableName);
                     for (GenTableColumn column : genTableColumns)
                     {
                         GenUtils.initColumnField(column, table);
@@ -169,6 +169,18 @@ public class GenTableServiceImpl implements IGenTableService
             }
         }
     }
+    
+    /* 
+     * 查询目标库的表结构
+     * (non-Javadoc)
+     * @see com.ruoyi.generator.service.IGenTableService#selectDbTableColumnsByName()
+     */
+	@Override
+	public List<GenTableColumn> selectDbTableColumnsByName(String tableName) {
+		// TODO Auto-generated method stub
+		return genTableColumnMapper.selectDbTableColumnsByName(tableName);
+	}
+    
 
     /**
      * 预览代码
@@ -343,4 +355,6 @@ public class GenTableServiceImpl implements IGenTableService
             genTable.setTreeName(treeName);
         }
     }
+
+
 }

@@ -262,9 +262,11 @@ public class ShiroConfig
         filterChainDefinitionMap.put("/search/**", "anon");
         filterChainDefinitionMap.put("/tag/**", "anon");
         filterChainDefinitionMap.put("/comm/ipban", "anon");
+        
         //jdkblog的静态资源路径
         filterChainDefinitionMap.put("/jantent/**", "anon");
         filterChainDefinitionMap.put("/user/**", "anon");
+        filterChainDefinitionMap.put("/jack/**", "anon");
         filterChainDefinitionMap.put("/upload/**", "anon");
         filterChainDefinitionMap.put("/themes/jantent/archives.html", "anon");
         

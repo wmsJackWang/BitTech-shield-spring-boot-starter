@@ -2,7 +2,9 @@ package com.ruoyi.generator.service;
 
 import java.util.List;
 import java.util.Map;
+
 import com.ruoyi.generator.domain.GenTable;
+import com.ruoyi.generator.domain.GenTableColumn;
 
 /**
  * 业务 服务层
@@ -11,6 +13,9 @@ import com.ruoyi.generator.domain.GenTable;
  */
 public interface IGenTableService
 {
+	
+	public List<GenTableColumn>  selectDbTableColumnsByName(String tableName);
+	
     /**
      * 查询业务列表
      * 

@@ -20,4 +20,12 @@ public class JDKBlogDataSourceConfig {
         return new DruidDataSource();
     }
 	
+    // 目标数据源，代码构建需要去目标库查询数据表的结构。
+    // datasource配置，阿里的druid连接池
+    // 
+    @Bean
+    @ConfigurationProperties(prefix = "spring.target-data-source")//对容器中的对象 通过setter方法进行装载配置信息
+    public DataSource targetDataSource() {
+        return new DruidDataSource();
+    }
 }
