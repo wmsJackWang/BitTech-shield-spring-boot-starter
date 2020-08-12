@@ -792,7 +792,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 }
 
 .post-list-item-container .item-label .item-meta .item-meta-date {
-    font-size: 10px;
+    font-size: 20px;
     position: relative;
     padding-top: 9px;
     padding-left: 9px;
@@ -1114,7 +1114,7 @@ input:-ms-input-placeholder, textarea:-ms-input-placeholder {
 }
 
 .common-page .post-list-item {
-    width: 49.9999%
+    width: 99.9999%
 }
 
 .common-page .post-list-item-container .item-label {
