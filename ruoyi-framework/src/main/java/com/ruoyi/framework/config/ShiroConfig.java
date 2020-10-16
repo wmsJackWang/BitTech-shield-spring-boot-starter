@@ -271,7 +271,8 @@ public class ShiroConfig
         filterChainDefinitionMap.put("/themes/jantent/archives.html", "anon");
         
         
-        
+        //这个是外部api接口
+        filterChainDefinitionMap.put("/api/system/config/getSysConfig", "anon,captchaValidate");
         
         filterChainDefinitionMap.put("/captcha/captchaImage**", "anon");
         // 退出 logout地址，shiro去清除session

@@ -31,19 +31,17 @@
 
 <script type="text/javascript">
 //DOM 完全就绪时执行
-var $article;
-var article = $article[0], height = article.clientHeight;
-var halfHeight = height * 0.3;
+var $article = $("div.post-content");
+var article = $article[0], height = 0;
+var halfHeight = 0;
 var token = getToken();
 
 $(function() {
     // 找到文章所在的容器
-    alert(1);
     var top = 0;
     var $article = $("div.post-content");
     if ($article.length > 0) {
         // 文章的实际高度
-        alert(1);
         article = $article[0], height = article.clientHeight;
         console.log(article);
         // 文章隐藏后的高度
@@ -60,6 +58,9 @@ $(function() {
     token = getToken();
     $('span.token').html(token);
     
+    _detect();
+    
+
 });
 
 
@@ -79,26 +80,35 @@ function getToken() {
 }
 
 var _lock = function() {
+
+	var $article = $("div.post-content");
     $article.css('height', halfHeight  + 'px');
     $article.addClass('lock');
     $('.asb-post-01').css('display', 'block');
 }
 
 var _unlock = function() {
+
+	var $article = $("div.post-content");
     $article.css('height', 'initial');
     $article.removeClass('lock');
     $('.asb-post-01').css('display', 'none');
 }
 
+//循环三分钟，如果想要结果可查看
+var timesRun = 0;
+
 // 查询后端的结果
-var _detect = function() {
+function _detect(){
     console.log('Detecting Token', token);
     $.ajax({
-        url : 'http://qingmiaokeji.cn/jfinal/wx/',
-        method : 'GET',
+        url : 'http://bittechblog.com/roncopay/wx/check/isSubscribe',
+        method : 'POST',
         data : {
-            token : token
+            'token' : token
         },
+        dataType: 'json',
+        contentType: 'application/x-www-form-urlencoded', // application/json
         success : function(data) {
             console.log('locked', data.locked);
 
@@ -106,18 +116,27 @@ var _detect = function() {
                 _lock();
             } else {
                 _unlock();
+                timesRun = 59;//停止定时任务
             }
         },
         error : function(data) {
             _unlock();
+            timesRun = 59;//停止定时任务
         }
     })
 }
 
-// _detect();
-// setInterval(function() {
-//     _detect();
-// }, 5000);
+var interval = setInterval(function(){
+    timesRun += 1;
+    if(timesRun === 60){    
+        clearInterval(interval);    
+    }
+    _detect();
+    //do whatever here..
+}, 5000);
+  
+  
+    
 </script>
 
 <body>
@@ -128,7 +147,7 @@ var _detect = function() {
     <div id="guanzhu" class= "asb-post-01"  style="display:block">
     		<div class ="mask"></div>
     		<div class="info">
-			        <div>扫码或搜索：<span style="color: #E9405A; font-weight: bold;">前言科技</span></div>
+			        <div>扫码或搜索：<span style="color: #E9405A; font-weight: bold;">前沿科技</span></div>
 			        <div>
 			            <span>发送 </span><span class="token" style="color: #e9415a; font-weight: bold; font-size: 17px; margin-bottom: 45px;">290992</span>
 			        </div>
