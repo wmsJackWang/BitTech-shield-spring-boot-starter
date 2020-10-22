@@ -48,7 +48,11 @@ public class BaseInterceptor implements HandlerInterceptor {
     @Value("${contextPath}")
     private String contextPath ;
 
-    
+    /**
+     * 在处理方法之前执行，一般用来做一些准备工作：比如日志，权限检查
+     * 如果返回false 表示被拦截，将不会执行处理方法
+     * 返回true继续执行处理方法
+     */
     
     //jdkblog融入到ruoyi的后台权限管理系统，不在使用自身的权限验证。
     @Override
@@ -100,6 +104,10 @@ public class BaseInterceptor implements HandlerInterceptor {
         return true;
     }
 
+    
+    /**
+     * 在处理方法执行之后，在渲染视图执行之前执行，一般用来做一些清理工作
+     */
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         String ip = IpUtil.getIpAddrByRequest(request);
@@ -113,6 +121,8 @@ public class BaseInterceptor implements HandlerInterceptor {
         request.setAttribute("adminCommons",adminCommons);
     }
 
+    
+    
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
 
