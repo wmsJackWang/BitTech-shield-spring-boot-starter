@@ -77,6 +77,7 @@ public class ResourcesConfig implements WebMvcConfigurer
         thymeleafViewResolver.setTemplateEngine(templateEngine());
         thymeleafViewResolver.setViewClass(JdkThymeleafView.class);
         thymeleafViewResolver.setCharacterEncoding("UTF-8");//解决页面中文乱码 问题
+        thymeleafViewResolver.setContentType("text/html");
         return thymeleafViewResolver;
     }
     

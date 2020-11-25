@@ -159,7 +159,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 <!-- 		                </a> -->
 <!-- 		            </div> -->
 		            <div class=" site-header-nav-item hvr-underline-from-center">
-		                <a href="/category/Java架构方案"
+		                <a href="/blog/category/Java架构方案"
 		                   target="_self"
 		                   title="Java架构师方案宝典">Java架构师方案宝典
 		                </a>
@@ -267,10 +267,10 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 <body>
 <section class="jumbotron intro" data-pattern-id="本站 所有文章">
     <div class="container" >
-        <div id="jumbotron-meta-info" style="color: #AD60EE;">        
+        <div id="jumbotron-meta-info" style="color: #FFFFFF;">        
             <h1>Spring Security——模拟Spring Security，我徒手写了一个简单的安全框架</h1>
             <br/>
-            <span class="meta-info" >
+            <span class="meta-info" style="color: #FFFFFF;" >
                 <span class="octicon octicon-calendar"></span> 
             	作者：空白
             	
@@ -285,6 +285,31 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 </html>
 
 <style>
+
+.maskImg{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 300px;
+	height: 300px;
+	margin: -150px 0 0 -150px;
+	display: block;
+	z-index: 999999999;
+	cursor:pointer;
+}
+
+.qrcodeMask{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 300px;
+	height: 300px;
+	margin-left: -150px;
+	display: block;
+	z-index: 10000000;
+	margin-top: 325px;
+	background: rgba(0,0,0,.5);
+}
 
 .lock {
     position: relative;
@@ -307,15 +332,24 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
     width: 100%;
     background: -webkit-gradient(linear, 0 top, 0 bottom, from(rgba(255, 255, 255, 0)), to(#fff));
 }
+.asb-post-01 .info {
+	background: white;
+	height: 510px;
+	text-align: center;
+}
 </style>
 
 
 <script type="text/javascript">
 //DOM 完全就绪时执行
 var $article = $("div.post-content");
+var $qrcodeMask = $("div.qrcodeMask");
 var article = $article[0], height = 0;
 var halfHeight = 0;
 var token = getToken();
+
+//循环三分钟，如果想要结果可查看
+var timesRun = 0;
 
 $(function() {
     // 找到文章所在的容器
@@ -339,8 +373,7 @@ $(function() {
     token = getToken();
     $('span.token').html(token);
     
-    _detect();
-    
+    refresh();
 
 });
 
@@ -376,9 +409,6 @@ var _unlock = function() {
     $('.asb-post-01').css('display', 'none');
 }
 
-//循环三分钟，如果想要结果可查看
-var timesRun = 0;
-
 // 查询后端的结果
 function _detect(){
     console.log('Detecting Token', token);
@@ -397,26 +427,35 @@ function _detect(){
                 _lock();
             } else {
                 _unlock();
-                timesRun = 59;//停止定时任务
+                timesRun = 9;//停止定时任务
             }
         },
         error : function(data) {
             _unlock();
-            timesRun = 59;//停止定时任务
+            timesRun = 9;//停止定时任务
         }
     })
 }
 
-var interval = setInterval(function(){
-    timesRun += 1;
-    if(timesRun === 60){    
-        clearInterval(interval);    
-    }
-    _detect();
-    //do whatever here..
-}, 5000);
+function interval(){
+  var interval_ = setInterval(function(){
+	    timesRun += 1;
+	    if(timesRun === 10){    
+	        clearInterval(interval_);
+	        document.getElementById("qrcodeMask").style.visibility="visible";
+	    }
+	    _detect();
+	    //do whatever here..
+	}, 3000);
+}
   
-  
+//点击刷新
+function refresh(){
+	timesRun = 0;
+	document.getElementById("qrcodeMask").style.visibility="hidden"; 
+    interval();
+}
+    
     
 </script>
 
@@ -628,6 +667,9 @@ public class AuthorityAspect {
 			        </div>
 				    <div>
 				        <img class="code-img" style="width: 300px;display:unset" src="http://bittechblog.com/upload/2020/09/of9o9sfuumiego54aepd7dq05b.jpg">
+				        <div class="qrcodeMask" id="qrcodeMask">
+							<img src="http://bittechblog.com/upload/2020/11/v1er4cnlt2j5joun03bo53b5vk.png" class="maskImg" onclick="refresh()">
+						</div>
 				    </div>
 				    <div style="height:500px;"></div>
 			</div>

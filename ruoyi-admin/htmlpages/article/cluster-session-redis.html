@@ -14,7 +14,7 @@
     <meta name="description"/>
     <link rel="shortcut icon" href="/user/img/logo.png"/>
     <link rel="apple-touch-icon" href="/user/img/apple-touch-icon.png"/>
-    <title>大型网站架构师方案—屌爆了！这种优化方案让我网站响应速度提高了近80倍 - 微服务与架构师社区</title>
+    <title>Java架构师方案—分布式session基于redis的共享机制(附完整项目代码) - 微服务与架构师社区</title>
     <link href="//cdn.bootcss.com/highlight.js/9.9.0/styles/xcode.min.css" rel="stylesheet"/>
     <link href="/user/css/style.min.css" rel="stylesheet"/>
     
@@ -268,14 +268,14 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 <section class="jumbotron intro" data-pattern-id="本站 所有文章">
     <div class="container" >
         <div id="jumbotron-meta-info" style="color: #FFFFFF;">        
-            <h1>大型网站架构师方案—屌爆了！这种优化方案让我网站响应速度提高了近80倍</h1>
+            <h1>Java架构师方案—分布式session基于redis的共享机制(附完整项目代码)</h1>
             <br/>
             <span class="meta-info" style="color: #FFFFFF;" >
                 <span class="octicon octicon-calendar"></span> 
             	作者：空白
             	
  				
-                	<p><time datetime="2020-11-22" itemprop="datePublished">Time: 2020-11-22</time></p>
+                	<p><time datetime="2020-10-13" itemprop="datePublished">Time: 2020-10-13</time></p>
             	
             </span>
         </div>
@@ -464,204 +464,234 @@ function refresh(){
 <article class="main-content post-page">
     <div id="post-content"  class="post-content"><ul>
 <li>
-<p><font size=4><a href="#1"><strong>1. 网站性能的指标</strong></a></font></p>
+<p><font size=4><a href="#1"><strong>1. 读这篇文章你可以学到的东西</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#2"><strong>2. 网站性能检测方法</strong></a></font></p>
+<p><font size=4><a href="#2"><strong>2. 基于redis存储共享session方案</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#3"><strong>3. 优化方案</strong></a></font></p>
+<p><font size=4><a href="#3"><strong>3. 登入数据存放到session服务器</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#4"><strong>4. 方案落地开发</strong></a></font></p>
+<p><font size=4><a href="#4"><strong>4. 拦截器注册及配置</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#5"><strong>5. 优化成果</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#6"><strong>6. 网站性能还能提升吗？</strong></a></font></p>
+<p><font size=4><a href="#5"><strong>5. 简单谈谈我对redis共享session方案的看法</strong></a></font></p>
 </li>
 </ul>
-<p><a name="1"><font  size=4 face="黑体"><strong>1. 网站性能的指标</strong></font></a></p>
-<p>博客网站的页面打开时间一旦超过10s就会容易让用户关闭网站，从而增加跳出率。但实际情况是，大部分用户对于网页打开时间超过3s的可能都无法接受。</p>
-<p><strong>网站性能指标</strong></p>
-<p>对于网站的性能指标，最重要的是响应时间、吞吐量、并发数。
-<strong>响应时间</strong>是浏览器发出请求到收到响应并最终渲染到界面上的总时间，能很直观的反映系统的快慢。
-<strong>吞吐量</strong>是单位时间处理的请求数，也称为TPS，能体现系统容量。
-<strong>并发数</strong>是指系统同时能处理的请求数，例如双十一，上亿用户在线，而且短时间内都访问系统，这时候网站就需要极高的并发能力支持。</p>
-<p><strong>关联</strong>
-其实细细思考，这几个网站的性能指标，它们之间是有关联关系的。
-就拿高速公路收费站来类比，响应时间(RT)就是收费窗口处理收费事件的时间，吞吐量(TPS)是单位时间内收费站窗口总共经过了多少辆车，而并发量(P)就是总共有多少个收费通道。</p>
-<p>TPS = p*(1/RT）</p>
-<p><strong>但是这篇文章核心内容是谈谈如何优化网站的RT：响应时间。</strong> 通过降低网站RT时间来提高网站的吞吐量，提高用户的体验。</p>
-<p><a name="2"><font  size=4 face="黑体"><strong>2. 网站性能检测方法</strong></font></a></p>
-<p>从输入url，到页面渲染结束，全过程可大致分为以下几个阶段：</p>
-<ol>
-<li>从浏览器输入url，DNS域名解析，查找到域名绑定的id地址。</li>
-<li>建立TCP连接：客户端浏览器和web服务器建立TCP连接（传输控制协议），三次握手。</li>
-<li>发送HTTP request请求：客户端浏览器向对应的ip地址web服务器发送http请求。</li>
-<li>web服务器反向代理：Nginx反向代理，解析域名转发到对应的应用服务器上。</li>
-<li>服务器业务逻辑处理：业务接口逻辑，访问数据库或访问缓存，数据计算等过程。</li>
-<li>视图解析：拿第五步得到业务数据结合视图模板进行解析，得到html文件。</li>
-<li>客户端浏览器渲染：渲染响应页面，客户端浏览器下载数据，解析HTML，完成页面的排版。</li>
-<li>响应完成，断开tcp连接。</li>
-</ol>
-<p>在这8个阶段，其中对于网站响应优化最明显的地方就是<strong>第五、六阶段</strong>，对于绝大多数博客网站来说，网页都是相对静态的，很少有数据的变化。因此通过将博客网页静态化处理，可以省去响应过程最耗时的这两个阶段，能大大降低响应时间。</p>
-<p><strong>过滤器统计响应时间</strong></p>
-<p>SpringBoot的API过滤器:ApiAccessFilter。使用注解的开发方式，如下代码所示。@WebFilter修饰实现了Filter接口的类，参数filterName为拦截器名称，urlPatterns设置拦截的url模式。Api响应时间计算逻辑在doFilter方法中实现。</p>
-<pre><code class="language-js">@WebFilter(filterName = &quot;ApiAccessFilter&quot;, urlPatterns = &quot;/*&quot;)
-public class ApiAccessFilter implements Filter { 
-  
-  @Override
-  public void init(FilterConfig filterConfig) { 
-  }
-  
-  @Override
-  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
-    FilterChain filterChain) throws IOException, ServletException {
-  
-    HttpServletRequest request = (HttpServletRequest) servletRequest;
-  
-//    Long requestId = IdGenUtils.nextIdByMem(); // 请求ID，这个是我业务中的id，大家可自行决定是否需要
-    long start = System.currentTimeMillis(); // 请求进入时间
-  
-    log.info(&quot;[Api Access] start. uri: {}, method: {}, client: {}&quot;,
-    request.getRequestURI(), request.getMethod(), getIP(request));
-    filterChain.doFilter(servletRequest, servletResponse);
-    log.info(&quot;[Api Access]  end. uri: {}, method: {}, client: {}, duration: {}ms&quot;,
-    request.getRequestURI(), request.getMethod(), getIP(request),System.currentTimeMillis() - start); 
-  }
-  
-  @Override
-  public void destroy() {
-  
-  }
-  
-  /**
-   * 获取IP地址
-   *
-   * @param request 请求
-   * @return request发起客户端的IP地址
-   */
-  private String getIP(HttpServletRequest request) {
-    if (request == null) {
-      return &quot;0.0.0.0&quot;;
-    }
-  
-    String Xip = request.getHeader(&quot;X-Real-IP&quot;);
-    String XFor = request.getHeader(&quot;X-Forwarded-For&quot;);
-  
-    String UNKNOWN_IP = &quot;unknown&quot;;
-    if (!StringUtils.isEmpty(XFor) &amp;&amp; !UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      //多次反向代理后会有多个ip值，第一个ip才是真实ip
-      int index = XFor.indexOf(&quot;,&quot;);
-      if (index != -1) {
-        return XFor.substring(0, index);
-      } else {
-        return XFor;
-      }
-    }
-  
-    XFor = Xip;
-    if (!StringUtils.isEmpty(XFor) &amp;&amp; !UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      return XFor;
-    }
-  
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;Proxy-Client-IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;WL-Proxy-Client-IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;HTTP_CLIENT_IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;HTTP_X_FORWARDED_FOR&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getRemoteAddr();
-    }
-    return XFor;
-  }
-}
+<p><a name="1"><font  size=4 face="黑体"><strong>1. 读这篇文章你可以学到的东西</strong></font></a></p>
+<p><strong>认识问题</strong></p>
+<p>这篇文章介绍的是服务在集群部署的情况下，用户的请求会被负载均衡到不同的服务器，但是用户的登入数据、权限数据、操作数据等session数据只会存在一个服务器的内存中。若用户下一次请求被转发到其他没有session数据的服务器上，那用户就还需要再重新登入，重新在网站上进行业务操作后创建操作数据。</p>
+<p><img src="/upload/2020/10/033cd6qj5ggoeqoplge20a487r.png" alt="alt" /></p>
+<p><strong>用户体验极差</strong></p>
+<p>如果用户session数据只在一个服务器上，那用户访问另外服务器上服务时候，就会要求用户重新登入和业务操作。多次要求用户进行重新登入和业务操作，这样的体验是个灾难。</p>
+<p><strong>解决方案</strong></p>
+<p>将用户的session状态从服务中剥离出来，放到一个独立的session服务器上，这里选择redis来建session服务器。集群服务有关状态数据的操作都要和redis服务器交互。这种分布式session方案我们成为共享session服务器方案。</p>
+<p><img src="/upload/2020/10/6hu7rona36j82rg8gaq1l3jpbm.jpg" alt="alt" /></p>
+<p><a name="2"><font  size=4 face="黑体"><strong>2. 基于redis存储共享session方案</strong></font></a></p>
+<p>正如上面的架构图所示，所有的应用服务器关于session数据保存和获取操作都会与session服务器交互。用户每次请求的权限验证都与session服务器中的数据进行比对。如果用户已经登入了，那登入状态数据就会保存在session服务器，用户访问其他服务器时就<strong>不需要重新登入</strong></p>
+<p><strong>本文的方案，笔者提供了一个完整的demo项目，项目地址看末尾获取方式。</strong></p>
+<p><strong>SpringBoot项目引入redis依赖</strong></p>
+<pre><code class="language-js">&lt;!-- 引入 redis 依赖 --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;redis.clients&lt;/groupId&gt;
+    &lt;artifactId&gt;jedis&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.data&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-data-redis&lt;/artifactId&gt;
+&lt;/dependency&gt;
 </code></pre>
-<p>有了这个filter，我们就能在日志中查看所有url的响应时间，然后对比网站静态化前后的响应时间变化。</p>
-<p><a name="3"><font  size=4 face="黑体"><strong>3. 优化方案</strong></font></a></p>
-<p><strong>静态化处理</strong>
-每个页面请求到来，拦截在执行controller接口逻辑之前，判断该请求是否有存在的html文件，如果有直接重定向，跳过数据库访问、数据计算、模板解析等过程。</p>
-<p>如果不存在，则不拦截，正常走业务逻辑、视图解析等正常处理流程。</p>
-<p><strong>大型新闻网站的静态化方案</strong></p>
-<p><img src="/upload/2020/11/s051duoj5ehi1rc8kmb98afhsa.jpg" alt="alt" /></p>
-<p>可以看到，大型网站一般都是将访问的每个url都有直接关联到的静态html，而静态html的维护是由另外一套系统来做。这种方式比较繁琐，系统也很复杂，下面来一起看看我设计的轻量静态化方案。</p>
-<p><strong>轻量的网页静态HTML化方案</strong></p>
-<p>轻量的静态化方案，是基于注解开发的，对业务代码没有侵入性。拦截器在执行controller接口方法之前先执行注解切面逻辑，通过spring的切面编程方式，可以把这部分逻辑作为增强逻辑放到切面模块。</p>
-<p>那controller接口方法的代码不用做任何更改，做到了对业务代码<strong>零入侵</strong>。接下来就来谈谈具体实现方案。</p>
-<p><a name="4"><font  size=4 face="黑体"><strong>4. 方案落地开发</strong></font></a></p>
-<p>废话不多说，直接上代码，博客网站首页的controller接口业务代码，看看是如何启动页面静态化的。</p>
-<pre><code class="language-js"> /**
-     * 首页
-     *
-     * @param vo
-     * @param model
-     * @return
-     */
-    @RequestMapping(&quot;/&quot;)
-    @BussinessLog(value = &quot;进入首页&quot;, platform = PlatformEnum.WEB)
-    @StaticPage(enable=true)
-    public ModelAndView home(ArticleConditionVO vo, Model model) {
-        model.addAttribute(&quot;url&quot;, INDEX_URL);
-        loadIndexPage(vo, model);
+<p><strong>redis配置</strong></p>
+<p>springboot项目默认使用StringRedisTemplate，StringRedisTemplate和RedisTemplate不同，前者比较简单，只需要配置redis参数就行。</p>
+<p>第一种</p>
+<p>在application.yml文件中配置下面的参数。</p>
+<pre><code class="language-js">spring:
+    redis:
+        #redis数据库地址
+        host: localhost
+        port: 6379
+        password: 
+        timeout: 1000
+        #redis数据库索引，默认0
+        database: 1
+</code></pre>
+<p>第二种</p>
+<p>在application.properties文件中配置下面的参数。</p>
+<pre><code class="language-js"># REDIS (RedisProperties)
+# Redis数据库索引（默认为0）
+spring.redis.database=0
+# Redis服务器地址
+spring.redis.host=localhost
+# Redis服务器连接端口
+spring.redis.port=6379
+# Redis服务器连接密码（默认为空）
+spring.redis.password=
+# 连接池最大连接数（使用负值表示没有限制）
+spring.redis.jedis.pool.max-active=8
+# 连接池最大阻塞等待时间（使用负值表示没有限制）
+spring.redis.jedis.pool.max-wait=-1
+# 连接池中的最大空闲连接
+spring.redis.jedis.pool.max-idle=8
+# 连接池中的最小空闲连接
+spring.redis.jedis.pool.min-idle=0
+# 连接超时时间（毫秒）
+spring.redis.timeout=5000
+</code></pre>
+<p><strong>使用StringRedisTemplate</strong></p>
+<p>直接在service实现类中注入StringRedisTemplate。</p>
+<pre><code class="language-js">@Autowired
+private StringRedisTemplate redisTemplate;
+</code></pre>
+<p>到这里，我们项目就能正常使用redis服务了。</p>
+<p><strong>redis操作实现类RedisOperator</strong></p>
+<p>该类简单封装了String类型的redis命令：set、get, ttl等，业务逻辑可以直接调用。</p>
+<pre><code class="language-js">/**
+ * 使用redisTemplate的操作实现类
+ * @author YI
+ * @date 2018-6-12 10:54:28
+ */
+@Component
+public class RedisOperator {
 
-        return ResultUtil.view(INDEX_URL);
-    }
-</code></pre>
-<p>是的，一个自定义注解@StaticPage直接开启首页接口页面的静态html化，做到了业务代码的零入侵！</p>
-<p><strong>切面增强逻辑</strong></p>
-<ol>
-<li>切面逻辑这块的开发，是直接获取url请求的request对象，并获取html的path，计算得到html的相对路径。</li>
-<li>创建file对象，判断是否存在html文件，存在则重定向到html，结束接口后续响应。</li>
-<li>文件不存在，则不中断响应，响应线程走正常执行业务逻辑、解析模板等过程。</li>
-</ol>
-<p><strong>如何维护静态html文件</strong></p>
-<p>这里设计的方案是，系统根据url所带的秘钥参数来决定执行逻辑，静态化请求都由博客网站后台发出，这是更新html文件的管理方法。如果秘钥正确，则只生成html静态文件，如果秘钥不存在，则重定向到html或生成html后再重定向。</p>
-<p><strong>自定义ViewClass</strong></p>
-<p>SpringBoot项目的解析器ViewResolver可配置自定义ViewClass类，如下代码所示。</p>
-<pre><code class="language-js">@Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
-    
-    @Bean
-    public FreeMarkerViewResolver freeMarkerViewResolver() {
-        FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
-        resolver.setViewClass(MyFreeMarkerView.class);
-        resolver.setPrefix(&quot;&quot;);
-        resolver.setSuffix(&quot;.ftl&quot;);
-        resolver.setContentType(&quot;text/html; charset=UTF-8&quot;);
-        resolver.setRequestContextAttribute(&quot;rc&quot;);
-        return resolver;
-    }
-    
-}
-</code></pre>
-<p>在执行完controller接口后、解析视图模板之前执行ViewClass中的doRender方法逻辑，如下代码的位置，这块逻辑来判断是否继续执行模板解析逻辑。</p>
-<pre><code class="language-js">public class MyFreeMarkerView extends FreeMarkerView{  
+	@Autowired
+	private StringRedisTemplate redisTemplate;
 	
+	// Key（键），简单的key-value操作
 
-	private static final Logger log = LoggerFactory.getLogger(MyFreeMarkerView.class);
-
-   
-    @Override  
-    protected void doRender(Map model,  
-            HttpServletRequest request, HttpServletResponse response)  
-            throws Exception { 
-            ......在业务逻辑执行之后 、 模板解析之前的逻辑。
-            }
+	/**
+	 * 实现命令：TTL key，以秒为单位，返回给定 key的剩余生存时间(TTL, time to live)。
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public long ttl(String key) {
+		return redisTemplate.getExpire(key);
+	}
+......//因类代码比较多，这里就不全部展示了，读者可以查阅项目demo
 </code></pre>
-<p><a name="5"><font  size=4 face="黑体"><strong>5. 优化成果</strong></font></a>
-<a name="6"><font  size=4 face="黑体"><strong>6. 网站性能还能提升吗？</strong></font></a></p>
-<p>其实，在前面分析的响应过程里，html下载(html文件的网络传输)也是非常消耗时间的阶段，静态化html文件的存放位置还能进一步优化，在这个项目中我们存放在服务这一侧，其实还可以放在网站接入层nginx服务器。</p>
-<p>对于静态html文件，可以直接上传到与用户在同一个城市的网络运营商CDN服务器，这样文件的网络传输过程就大大缩减了，网页打开速度会更快。现在很多新闻网站、博客网站都是在使用运营商CDN服务的，甚至视频网站也会将最新视频上传到CDN，以加快用户响应速度。</p>
-<p>完整的demo项目，请关注公众号“前沿科技bot“并发送&quot;&quot;获取。</p>
+<p><a name="3"><font  size=4 face="黑体"><strong>3. 登入数据存放到session服务器</strong></font></a></p>
+<p><strong>用户登入</strong></p>
+<p>用户登入接口逻辑：</p>
+<ol>
+<li>获取username和password数据，与数据库保存的用户密码比对。</li>
+<li>用户名和密码比对正确后，生成唯一的uuid作为用户的登入状态session数据。</li>
+<li>通过redis操作类将session数据保存在redis中，key由username生成，并设置30分钟有效时间。</li>
+<li>将用户username保存到cookie中。</li>
+</ol>
+<pre><code class="language-js">@PostMapping(value = &quot;loginCheck&quot;)
+@ResponseBody
+public RestResponseBo loginCheck(@RequestParam String username,
+        		@RequestParam String password,
+        		HttpServletRequest request,
+        		HttpServletResponse response) {
+	  if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
+
+          return RestResponseBo.fail(&quot;用户名或者密码不能为空!&quot;);
+  }
+  if(!username.equals(&quot;admin&quot;) || !password.equals(&quot;admin&quot;))
+  {
+
+      return RestResponseBo.fail(&quot;用户名或者密码不正确!&quot;);
+  }
+  
+  String token = StrUtil.uuid();
+
+  //存放唯一的 token 并设置过期时间
+  operator.set(JdkApiInterceptor.USER_REDIS_SESSION + &quot;:&quot; + username, token, REDIS_TIMEOUT);
+  
+  //设置用户  密码  token等信息 
+  operator.set(username, username+&quot;:&quot;+password+&quot;:&quot;+token);
+
+  //用户浏览器会存放两种cookie: userToken,userId。
+  CookieUtil.addCookie(&quot;userName&quot;, username);
+
+  return RestResponseBo.ok();//
+}
+</code></pre>
+<p><strong>拦截器JdkApiInterceptor校验用户登入状态</strong></p>
+<p>拦截逻辑：</p>
+<ol>
+<li>先从请求cookie 中获取username。</li>
+<li>再查询redis中该用户的登入session数据。</li>
+<li>不为空则是已登入，为空则是未登入或登入状态过期。</li>
+<li>未登入或登入状态过期则重定向到登入页面。</li>
+</ol>
+<pre><code class="language-js">@Override
+public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
+    //获取用户cookies
+    String userName = CookieUtil.getCookie(&quot;userName&quot;);
+    
+    //放开登入接口
+//        String uri = request.getRequestURI();
+//        logger.info(&quot;请求uri:&quot; + uri);
+//        
+//        if(uri.equals(&quot;loginCheck&quot;))
+//        	return true;
+//        
+    logger.info(&quot; ======= 拦截UserId：&quot; + userName);
+    //用户id和token都不为空
+    if (!StringUtils.isEmpty(userName)) {
+    	
+    	//根据userid生成唯一key从redis中查出唯一token
+        String uniqueToken = redis.get(USER_REDIS_SESSION + &quot;:&quot; + userName);
+        logger.info(&quot;拦截uniqueToken：&quot; + uniqueToken);
+        
+        //如果唯一token为空 ，则拦截url重定向到登入页面
+        if (StringUtils.isEmpty(uniqueToken)) {
+            response.sendRedirect(&quot;/login&quot;);
+            returnErrorResponse(response, &quot;请登录...&quot;);
+
+            return false;
+        }
+    //用户id和token有一个为空，则重定向登入页面
+    } else {
+        response.sendRedirect(&quot;/login&quot;);
+        returnErrorResponse(response,&quot;请登录...&quot;);
+        return false;
+    }
+
+    return true;
+}
+</code></pre>
+<p>到此，就能实现不同服务器的session共享了。</p>
+<p><a name="4"><font  size=4 face="黑体"><strong>4. 拦截器注册及配置</strong></font></a></p>
+<p><strong>注册</strong></p>
+<p>使用@Configuration修饰创建配置类WebSecurityConfig</p>
+<pre><code class="language-js">@Configuration
+public class WebSecurityConfig implements WebMvcConfigurer {
+...
+</code></pre>
+<p>创建拦截器bean对象，放入ioc容器。</p>
+<pre><code class="language-js">@Bean
+public JdkApiInterceptor JdkApiInterceptor(){
+    return new JdkApiInterceptor();
+}
+</code></pre>
+<p><strong>配置</strong></p>
+<p>配置拦截器要拦截的url和不拦截的url</p>
+<pre><code class="language-js">/**
+ * 拦截器注册 设置拦截接口
+ * @param registry
+ */
+@Override
+public void addInterceptors(InterceptorRegistry registry) {
+	
+    registry.addInterceptor(JdkApiInterceptor()).addPathPatterns(&quot;/**&quot;)//设置拦截所有的路径
+    		//排除的路径：静态资源路径。防止被JdkApiInterceptor拦截
+            .excludePathPatterns(&quot;/loginCheck&quot;,&quot;/login&quot;,&quot;/error&quot;,
+                    &quot;/js/**&quot;, &quot;/css/**&quot;, &quot;/imag/**&quot;);
+}
+</code></pre>
+<p><strong>这里排除拦截的url中，除了静态资源路径和登入接口，为什么还有/error路径呢？具体原因请查看我这篇文章：<a tartget="_blank" href="http://bittechblog.com/blog/article/18">WebMvcConfigurer的excludePathPatterns配置 &quot;失效&quot; 问题</a></strong></p>
+<p><a name="5"><font  size=4 face="黑体"><strong>5. 简单谈谈我对redis共享session方案的看法</strong></font></a></p>
+<p>基于redis的共享session方案能解决用户重复登入的问题，带来更好的用户体验，是分布式架构经典的解决方案，但同时也带了问题，redis服务器的高可用问题以及远处通信的性能问题。当然集群下session问题解决方案有很多种，这只是其中之一，日后我还会进一步以文章形式与大家探讨</p>
+<p>如果大家觉得这篇文章对你学习架构有帮助的话，还请点赞，在看支持一下。github项目也记得点个星哦！</p>
+<p>完整的demo项目，请关注公众号“前沿科技bot“并发送&quot;redis共享session&quot;获取。</p>
 <p><img src="/upload/2020/05/6s8d58g77ehftpcen62h4v4bss.png" alt="alt" /></p>
 </div>
     <div id="guanzhu" class= "asb-post-01"  style="display:block">
@@ -688,7 +718,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 <html lang="en">
 <body>
 <div>
-    <div id="127" class="comment-container">
+    <div id="104" class="comment-container">
         <div id="comments" class="clearfix">
             <div>
                 <span class="response">
@@ -697,7 +727,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 <form method="post" id="comment-form" class="comment-form" role="form"
                       onsubmit="return TaleComment.subComment();">
                     <input type="hidden" name="coid" id="coid"/>
-                    <input type="hidden" name="cid" id="cid" value="127"/>
+                    <input type="hidden" name="cid" id="cid" value="104"/>
                     <input type="hidden" name="_csrf_token" value=""/>
                     <input type="text" name="author" maxlength="12" id="author"
                            class="form-control input-control clearfix"

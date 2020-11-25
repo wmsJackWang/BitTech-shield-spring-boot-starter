@@ -1,5 +1,7 @@
 package com.ruoyi.framework.aspectj;
 
+import java.net.URLDecoder;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -72,6 +74,7 @@ public class StaticPageAspects {
 	    	        //父目录存在且html文件存在则返回 静态文件，否则直接走正常模板流程
     	        	log.info("有静态html直接重定向到html，直接重定向到模板对应的html文件路径：{}",responsePath);
 //    	        	RequestHolder.getRequest().getRequestDispatcher(responsePath).forward(RequestHolder.getRequest(), RequestHolder.getResponse());
+    	        	responsePath = URLDecoder.decode(responsePath, "UTF-8");
     	        	request.getRequestDispatcher(responsePath).forward(request, RequestHolder.getResponse());  
 //    	        	System.out.println("return null");
     	    		return null;

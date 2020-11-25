@@ -98,6 +98,7 @@ public class JdkThymeleafView extends ThymeleafView{
         //父目录存在且html文件存在则返回 静态文件，否则直接走正常模板流程
         if (isExistHtmlFile()) { 
         	log.info("有静态html直接重定向到html，直接重定向到模板对应的html文件路径：{}",responsePath);
+        	responsePath = URLDecoder.decode(responsePath, "UTF-8");//转发前对含有中文的url进行解码
         	request.getRequestDispatcher(responsePath).forward(request, response);  
             return;
         }  
@@ -123,6 +124,7 @@ public class JdkThymeleafView extends ThymeleafView{
         String htmlPath = basePath + requestHTML;  
         // response路径  
         String responsePath = "/htmlpages" + requestHTML;  
+        System.out.println("htmlPath:"+htmlPath);
         File htmlFile = new File(htmlPath);  
         if (!htmlFile.getParentFile().exists()) {  
             htmlFile.getParentFile().mkdirs();  
@@ -148,6 +150,7 @@ public class JdkThymeleafView extends ThymeleafView{
         if(!createOnly)
         {
         	log.info("路径url模板对应的html静态文件创建成功，重定向到html路径：{}",responsePath); 
+        	responsePath = URLDecoder.decode(responsePath, "UTF-8");
         	request.getRequestDispatcher(responsePath).forward(request, response);  
         	return;
         }else{//只创建html，不重定向到html
@@ -223,8 +226,25 @@ public class JdkThymeleafView extends ThymeleafView{
         // 加上.html后缀  
         requestURI = requestURI + ".html";  
   
-        return requestURI;  
+        try {
+			return URLDecoder.decode(requestURI, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return requestURI;  
     }  
+    
+    
+//    public static void main(String[] args) {
+//
+//        try {
+//			System.out.println(URLDecoder.decode("Java%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88,", "UTF-8"));
+//		} catch (UnsupportedEncodingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
      
     public static String getStaticPageBasePath() {
         String path = JdkThymeleafView.class.getProtectionDomain().getCodeSource().getLocation().getPath();
