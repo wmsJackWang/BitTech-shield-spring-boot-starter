@@ -359,10 +359,13 @@ public class MyUtils {
     }
     public static void main(String[] args) {
 
-    	String username = "admin";
-    	String password = "jackdking@1234";
-        String pwd = MD5encode(username + password);//a66abb5684c45962d887564f08346e8d
-        System.out.println(pwd);//695196e0319a801fd99fb2c25f327bf3
+//    	String username = "admin";
+//    	String password = "jackdking@1234";
+//        String pwd = MD5encode(username + password);//a66abb5684c45962d887564f08346e8d
+//        System.out.println(pwd);//695196e0319a801fd99fb2c25f327bf3
+    	
+    	System.out.println(getUploadFilePath());
+    	
         
 	}
 }

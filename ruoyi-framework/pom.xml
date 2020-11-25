@@ -17,6 +17,16 @@
     
     <dependencies>
 
+        <dependency>
+		   <groupId>org.projectlombok</groupId>
+		   <artifactId>lombok</artifactId>
+		    <version>1.16.16</version><!--版本号自己选一个就行-->
+		</dependency>
+        <!-- SpringBoot集成thymeleaf模板 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
         <!-- SpringBoot Web容器 -->
 	     <dependency>
             <groupId>org.springframework.boot</groupId>

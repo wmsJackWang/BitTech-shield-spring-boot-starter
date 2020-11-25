@@ -1,14 +1,32 @@
 package springboot.controller.home;
 
-import com.github.pagehelper.PageInfo;
-import com.vdurmont.emoji.EmojiParser;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.pagehelper.PageInfo;
+import com.ruoyi.framework.anoation.StaticPage;
+import com.vdurmont.emoji.EmojiParser;
+
 import springboot.constant.WebConst;
 import springboot.controller.AbstractController;
 import springboot.controller.helper.ExceptionHelper;
@@ -21,21 +39,13 @@ import springboot.modal.bo.RestResponseBo;
 import springboot.modal.vo.CommentVo;
 import springboot.modal.vo.ContentVo;
 import springboot.modal.vo.MetaVo;
-import springboot.service.*;
+import springboot.service.ICommentService;
+import springboot.service.IContentService;
+import springboot.service.IMetaService;
+import springboot.service.ISiteService;
 import springboot.util.IpUtil;
 import springboot.util.MyUtils;
 import springboot.util.PatternKit;
-
-import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.List;
 
 /**
  * 首页控制
@@ -68,7 +78,8 @@ public class IndexController extends AbstractController {
      * @return
      */
     @GetMapping(value = "/")
-    private String index(HttpServletRequest request, @RequestParam(value = "limit", defaultValue = "10") int limit) {
+    @StaticPage(enable=true)
+    public String index(HttpServletRequest request, @RequestParam(value = "limit", defaultValue = "10") int limit) {
         return this.index(request, 1, limit);
     }
 
@@ -81,6 +92,7 @@ public class IndexController extends AbstractController {
      * @return
      */
     @GetMapping(value = "page/{p}")
+    @StaticPage(enable=true)
     public String index(HttpServletRequest request, @PathVariable int p, @RequestParam(value = "limit", defaultValue = "10") int limit) {
         // 开启thymeleaf缓存，加快访问速度
         p = p < 0 || p > WebConst.MAX_PAGE ? 1 : p;
@@ -105,6 +117,7 @@ public class IndexController extends AbstractController {
      * @return
      */
     @GetMapping(value = {"article/{cid}", "article/{cid}.html"})
+    @StaticPage(enable=true)
     public String getArticle(HttpServletRequest request, @PathVariable String cid) {
         ContentVo contents = contentService.getContents(cid);
         if (null == contents || "draft".equals(contents.getStatus())) {
@@ -244,11 +257,13 @@ public class IndexController extends AbstractController {
      * @return
      */
     @GetMapping(value = "category/{keyword}")
+    @StaticPage(enable=true)
     public String categories(HttpServletRequest request, @PathVariable String keyword, @RequestParam(value = "limit", defaultValue = "12") int limit) {
         return this.categories(request, keyword, 1, limit);
     }
 
     @GetMapping(value = "category/{keyword}/{page}")
+    @StaticPage(enable=true)
     public String categories(HttpServletRequest request, @PathVariable String keyword, @PathVariable int page, @RequestParam(value = "limit", defaultValue = "12") int limit) {
         
     	logger.info("转码前的keyword:{}",keyword);
@@ -283,6 +298,7 @@ public class IndexController extends AbstractController {
      * @return
      */
     @GetMapping(value = "archives")
+    @StaticPage(enable=true)
     public String archives(HttpServletRequest request) {
         List<ArchiveBo> archives = siteService.getArchives();
         request.setAttribute("archives", archives);
@@ -295,6 +311,7 @@ public class IndexController extends AbstractController {
      * @return
      */
     @GetMapping(value = "links")
+    @StaticPage(enable=true)
     public String links(HttpServletRequest request) {
         List<MetaVo> links = metaService.getMetas(Types.LINK.getType());
         request.setAttribute("links", links);
@@ -353,6 +370,7 @@ public class IndexController extends AbstractController {
      * @return
      */
     @GetMapping(value = "tag/{name}")
+    @StaticPage(enable=true)
     public String tags(HttpServletRequest request, @PathVariable String name, @RequestParam(value = "limit", defaultValue = "12") int limit) {
         return this.tags(request, name, 1, limit);
     }
@@ -367,6 +385,7 @@ public class IndexController extends AbstractController {
      * @return
      */
     @GetMapping(value = "tag/{name}/{page}")
+    @StaticPage(enable=true)
     public String tags(HttpServletRequest request, @PathVariable String name, @PathVariable int page, @RequestParam(value = "limit", defaultValue = "12") int limit) {
 
         page = page < 0 || page > WebConst.MAX_PAGE ? 1 : page;

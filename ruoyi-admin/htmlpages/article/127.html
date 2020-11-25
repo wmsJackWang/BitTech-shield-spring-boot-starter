@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="en">
+
+<head>
+    <meta name="baidu-site-verification" content="code-L413BKVJUv" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
+    <meta name="renderer" content="webkit"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-transform"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="keywords"/>
+    <meta name="description"/>
+    <link rel="shortcut icon" href="/user/img/logo.png"/>
+    <link rel="apple-touch-icon" href="/user/img/apple-touch-icon.png"/>
+    <title>大型网站架构师方案—屌爆了！这种优化方案让我网站响应速度提高了近80倍 - 微服务与架构师社区</title>
+    <link href="//cdn.bootcss.com/highlight.js/9.9.0/styles/xcode.min.css" rel="stylesheet"/>
+    <link href="/user/css/style.min.css" rel="stylesheet"/>
+    
+    <!-- Third-Party CSS -->
+    <link rel="stylesheet" href="http://favorites.ren/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" th:href="@{/jantent/assets/css/octicons/octicons.css}"> -->
+    <link rel="stylesheet" href="http://favorites.ren/bower_components/hover/css/hover-min.css">
+    <link rel="stylesheet" href="http://favorites.ren/bower_components/primer-markdown/dist/user-content.min.css">
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/syntax.css">
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/gitalk.css">
+       
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/common.css">
+
+    <!-- CSS set in page -->
+    
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/blog-page.css">
+    
+    
+    <!-- CSS set in layout -->
+    
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    
+    <script type="text/javascript" src="http://favorites.ren/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="http://favorites.ren/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/jantent/assets/js/lock.js"></script>
+    
+    
+    <script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+    <script src="/jantent/assets/js/amazeui.min.js"></script>
+    <script src="/jantent/assets/js/readmore.js"></script>
+    <script src="/jantent/assets/js/readmore.min.js"></script>
+    <link rel="stylesheet" href="/jantent/assets/css/amazeui.min.css"/>
+    <link rel="stylesheet" href="/jantent/assets/css/app.css"/>
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        /*让每一个下拉按钮占据的宽度与居中*/
+        .am-dropdown{
+            width:25%;
+            text-align:center;
+        }
+        .index-page>div>div{
+		  position: relative;
+		}
+		.settop{
+		  position: absolute;
+		  right: -16px !important;
+		  top: -30px !important;
+		}
+    </style>
+</head>
+
+<script type="text/javascript">
+
+document.write(unescape("%3Cspan id='cnzz_stat_icon_1279171775'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1279171775%26online%3D1' type='text/javascript'%3E%3C/script%3E"));
+document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐藏
+
+</script>
+
+<body  gtools_scp_screen_capture_injected="true">
+<!--[if lt IE 8]>
+<div class="browsehappy" role="dialog">
+    当前网页 <strong>不支持</strong> 你正在使用的浏览器. 为了正常的访问, 请 <a href="http://browsehappy.com/" target="_blank">升级你的浏览器</a>。
+</div>
+<![endif]-->
+<header id="header" style="background-color: rgba(0,0,0,0.1);" class="header bg-white">
+    <div class="navbar-container" >
+        <a href="/page/1" class="navbar-logo">微服务与架构师社区</a>
+
+
+        <div class="navbar-menu" >        
+
+            <a style="color: #fff" href="/archives">归档</a>
+            <a style="color: #fff" href="/links">友链</a> 
+            <!--<a style="color: #fff" th:href="${commons.site_url('/about')}">关于</a>-->
+            <!--<a  style="color: #fff"  th:href="${#httpServletRequest.getScheme() + '://' + #httpServletRequest.getServerName() + ':' + #request.getServerPort()  + #request.getContextPath() + '/article/about-me'}">
+            	关于</a>
+            -->
+            <a  style="color: #fff"  href="http://bittechblog.com/article/about-me">
+            	关于</a>
+            
+            <!--
+            <div class="am-dropdown" data-am-dropdown style="color: #fff">
+                <button style="color: #fff"  class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle >Redis<span class="am-icon-caret-down"></span></button>
+                <ul class="am-dropdown-content ">
+                    <li><a href="#" >Redis主从模式</a></li>
+                    <li><a href="#" >Redis哨兵模式</a></li>
+                    <li class="am-divider"></li>
+                    <li><a href="#" >Redis集群模式</a></li>
+                </ul>
+		    </div>
+		    -->
+        </div>
+        <div class="navbar-search" onclick="">
+            <span class="icon-search"></span>
+            <form role="search" onsubmit="return false;">
+                <span class="search-box">
+                    <input type="text" id="search-inp" class="input" placeholder="搜索..." maxlength="30"
+                           autocomplete="off"/>
+                </span>
+            </form>
+        </div>
+        
+        <div class="navbar-mobile-menu" onclick="">
+            <span class="icon-menu cross"><span class="middle"></span></span>
+            <ul>
+                <li><a style="color: #fff" href="/archives">归档</a></li>
+                <li><a style="color: #fff" href="/links">友链</a></li>
+                <li>
+                <!--<a style="color: #fff" th:href="${commons.site_url('/about')}">关于</a>
+                -->
+	                <a  style="color: #fff"  href="http://localhost:8081/article/about-me">
+	            	关于</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <div style="background:#87CEFA;color:#FFF;width:100%" class="container" >
+            
+        <div style="background:#87CEFA;color:#FFF" class="navbar-container" >
+        	<nav class="site-header-nav" role="navigation">
+        
+	        	<div class="navbar-menu" >      
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/"
+		                   target="_self"
+		                   title="首页">首页
+		                </a>
+		                
+		            </div>
+		            
+<!-- 		            <div class=" site-header-nav-item hvr-underline-from-center"> -->
+<!-- 		                <a href="/article/23" -->
+<!-- 		                   target="_self" -->
+<!-- 		                   title="新基建与数字化转型">新基建与数字化转型 -->
+<!-- 		                </a> -->
+<!-- 		            </div> -->
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/category/Java架构方案"
+		                   target="_self"
+		                   title="Java架构师方案宝典">Java架构师方案宝典
+		                </a>
+		                
+		            </div>
+		            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/category/SpringBoot"
+		                   target="_self"
+		                   title="Spring Boot">
+		                    Spring Boot
+		                </a>
+		                
+		                <ul class="submenu">
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Spring Boot</a></li>
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Spring Cloud</a></li>
+		                    
+		                </ul>
+		                
+		            </div>
+	            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/"
+		                   target="_self"
+		                   title="Java">
+		                    Java
+		                </a>
+		                
+		                <ul class="submenu">
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Jvm 系列文章</a></li>
+		                    
+		                    <li><a href="" 
+		                           target="_blank"
+		                     >Java 极客技术</a></li>
+		                    
+		                </ul>
+		                
+		            </div>
+	            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/category/Redis"
+		                   target=""
+		                   title="Redis">
+		                    Redis
+		                </a>
+		                
+		                <ul class="submenu">
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Python 教程</a></li>
+		                    
+		                    <li><a href="" 
+		                           target="_blank"
+		                     >Python 技术</a></li>
+		                    
+		                </ul>
+		                
+		            </div>
+	            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/archives"
+		                   target="_self"
+		                   title="Archives">
+		                    Archives
+		                </a>
+		                
+		            </div>
+		            	            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/index"
+		                   target="_self"
+		                   title="登录/注册">
+		                   	     登录/注册
+		                </a>
+		                
+		            </div>
+		           
+		        </div>
+        	</nav>
+        	
+		</div>
+	</div>
+</header>
+</body>
+</html>
+<html lang="en">
+<head>
+<style type="text/css">
+		.intro {
+				background: url(http://bittechblog.com/upload/2020/09/q8k9tdeo4eht1parhc0vgm4mlp.jpg) no-repeat center 0 ; 
+				background-size: 100% 100% ;
+				}
+</style>
+</head>
+<body>
+<section class="jumbotron intro" data-pattern-id="本站 所有文章">
+    <div class="container" >
+        <div id="jumbotron-meta-info" style="color: #AD60EE;">        
+            <h1>大型网站架构师方案—屌爆了！这种优化方案让我网站响应速度提高了近80倍</h1>
+            <br/>
+            <span class="meta-info" >
+                <span class="octicon octicon-calendar"></span> 
+            	作者：空白
+            	
+ 				
+                	<p><time datetime="2020-11-22" itemprop="datePublished">Time: 2020-11-22</time></p>
+            	
+            </span>
+        </div>
+    </div>
+</section>
+</body>
+</html>
+
+<style>
+
+.lock {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 30px;
+}
+
+.asb-post-01 {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    display: block;
+    z-index: 10000;
+    margin-bottom: 0;
+}
+
+.asb-post-01 .mask {
+    height: 240px;
+    width: 100%;
+    background: -webkit-gradient(linear, 0 top, 0 bottom, from(rgba(255, 255, 255, 0)), to(#fff));
+}
+</style>
+
+
+<script type="text/javascript">
+//DOM 完全就绪时执行
+var $article = $("div.post-content");
+var article = $article[0], height = 0;
+var halfHeight = 0;
+var token = getToken();
+
+$(function() {
+    // 找到文章所在的容器
+    var top = 0;
+    var $article = $("div.post-content");
+    if ($article.length > 0) {
+        // 文章的实际高度
+        article = $article[0], height = article.clientHeight;
+        console.log(article);
+        // 文章隐藏后的高度
+        halfHeight = height * 0.3;
+        top = halfHeight;
+        $article.css('height', halfHeight  + 'px');
+        $article.addClass('lock');
+    }
+    
+
+    var $guanzhu = $("div.asb-post-01");
+    $guanzhu.css('top', top + 25 + 'px');//二维码在文章页面的绝对位置 计算值
+    
+    token = getToken();
+    $('span.token').html(token);
+    
+    _detect();
+    
+
+});
+
+
+function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2)
+        return parts.pop().split(";").shift();
+}
+
+function getToken() {
+    let value = getCookie('UM_distinctid');
+    if (!value) {
+        return defaultToken;
+    }
+    return value.substring(value.length - 6).toUpperCase();
+}
+
+var _lock = function() {
+
+	var $article = $("div.post-content");
+    $article.css('height', halfHeight  + 'px');
+    $article.addClass('lock');
+    $('.asb-post-01').css('display', 'block');
+}
+
+var _unlock = function() {
+
+	var $article = $("div.post-content");
+    $article.css('height', 'initial');
+    $article.removeClass('lock');
+    $('.asb-post-01').css('display', 'none');
+}
+
+//循环三分钟，如果想要结果可查看
+var timesRun = 0;
+
+// 查询后端的结果
+function _detect(){
+    console.log('Detecting Token', token);
+    $.ajax({
+        url : 'http://bittechblog.com/roncopay/wx/check/isSubscribe',
+        method : 'POST',
+        data : {
+            'token' : token
+        },
+        dataType: 'json',
+        contentType: 'application/x-www-form-urlencoded', // application/json
+        success : function(data) {
+            console.log('locked', data.locked);
+
+            if (data.locked === true) {
+                _lock();
+            } else {
+                _unlock();
+                timesRun = 59;//停止定时任务
+            }
+        },
+        error : function(data) {
+            _unlock();
+            timesRun = 59;//停止定时任务
+        }
+    })
+}
+
+var interval = setInterval(function(){
+    timesRun += 1;
+    if(timesRun === 60){    
+        clearInterval(interval);    
+    }
+    _detect();
+    //do whatever here..
+}, 5000);
+  
+  
+    
+</script>
+
+<body>
+<div>
+<article class="main-content post-page">
+    <div id="post-content"  class="post-content"><ul>
+<li>
+<p><font size=4><a href="#1"><strong>1. 网站性能的指标</strong></a></font></p>
+</li>
+<li>
+<p><font size=4><a href="#2"><strong>2. 网站性能检测方法</strong></a></font></p>
+</li>
+<li>
+<p><font size=4><a href="#3"><strong>3. 优化方案</strong></a></font></p>
+</li>
+<li>
+<p><font size=4><a href="#4"><strong>4. 方案落地开发</strong></a></font></p>
+</li>
+<li>
+<p><font size=4><a href="#5"><strong>5. 优化成果</strong></a></font></p>
+</li>
+<li>
+<p><font size=4><a href="#6"><strong>6. 网站性能还能提升吗？</strong></a></font></p>
+</li>
+</ul>
+<p><a name="1"><font  size=4 face="黑体"><strong>1. 网站性能的指标</strong></font></a></p>
+<p>博客网站的页面打开时间一旦超过10s就会容易让用户关闭网站，从而增加跳出率。但实际情况是，大部分用户对于网页打开时间超过3s的可能都无法接受。</p>
+<p><strong>网站性能指标</strong></p>
+<p>对于网站的性能指标，最重要的是响应时间、吞吐量、并发数。
+<strong>响应时间</strong>是浏览器发出请求到收到响应并最终渲染到界面上的总时间，能很直观的反映系统的快慢。
+<strong>吞吐量</strong>是单位时间处理的请求数，也称为TPS，能体现系统容量。
+<strong>并发数</strong>是指系统同时能处理的请求数，例如双十一，上亿用户在线，而且短时间内都访问系统，这时候网站就需要极高的并发能力支持。</p>
+<p><strong>关联</strong>
+其实细细思考，这几个网站的性能指标，它们之间是有关联关系的。
+就拿高速公路收费站来类比，响应时间(RT)就是收费窗口处理收费事件的时间，吞吐量(TPS)是单位时间内收费站窗口总共经过了多少辆车，而并发量(P)就是总共有多少个收费通道。</p>
+<p>TPS = p*(1/RT）</p>
+<p><strong>但是这篇文章核心内容是谈谈如何优化网站的RT：响应时间。</strong> 通过降低网站RT时间来提高网站的吞吐量，提高用户的体验。</p>
+<p><a name="2"><font  size=4 face="黑体"><strong>2. 网站性能检测方法</strong></font></a></p>
+<p>从输入url，到页面渲染结束，全过程可大致分为以下几个阶段：</p>
+<ol>
+<li>从浏览器输入url，DNS域名解析，查找到域名绑定的id地址。</li>
+<li>建立TCP连接：客户端浏览器和web服务器建立TCP连接（传输控制协议），三次握手。</li>
+<li>发送HTTP request请求：客户端浏览器向对应的ip地址web服务器发送http请求。</li>
+<li>web服务器反向代理：Nginx反向代理，解析域名转发到对应的应用服务器上。</li>
+<li>服务器业务逻辑处理：业务接口逻辑，访问数据库或访问缓存，数据计算等过程。</li>
+<li>视图解析：拿第五步得到业务数据结合视图模板进行解析，得到html文件。</li>
+<li>客户端浏览器渲染：渲染响应页面，客户端浏览器下载数据，解析HTML，完成页面的排版。</li>
+<li>响应完成，断开tcp连接。</li>
+</ol>
+<p>在这8个阶段，其中对于网站响应优化最明显的地方就是<strong>第五、六阶段</strong>，对于绝大多数博客网站来说，网页都是相对静态的，很少有数据的变化。因此通过将博客网页静态化处理，可以省去响应过程最耗时的这两个阶段，能大大降低响应时间。</p>
+<p><strong>过滤器统计响应时间</strong></p>
+<p>SpringBoot的API过滤器:ApiAccessFilter。使用注解的开发方式，如下代码所示。@WebFilter修饰实现了Filter接口的类，参数filterName为拦截器名称，urlPatterns设置拦截的url模式。Api响应时间计算逻辑在doFilter方法中实现。</p>
+<pre><code class="language-js">@WebFilter(filterName = &quot;ApiAccessFilter&quot;, urlPatterns = &quot;/*&quot;)
+public class ApiAccessFilter implements Filter { 
+  
+  @Override
+  public void init(FilterConfig filterConfig) { 
+  }
+  
+  @Override
+  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
+    FilterChain filterChain) throws IOException, ServletException {
+  
+    HttpServletRequest request = (HttpServletRequest) servletRequest;
+  
+//    Long requestId = IdGenUtils.nextIdByMem(); // 请求ID，这个是我业务中的id，大家可自行决定是否需要
+    long start = System.currentTimeMillis(); // 请求进入时间
+  
+    log.info(&quot;[Api Access] start. uri: {}, method: {}, client: {}&quot;,
+    request.getRequestURI(), request.getMethod(), getIP(request));
+    filterChain.doFilter(servletRequest, servletResponse);
+    log.info(&quot;[Api Access]  end. uri: {}, method: {}, client: {}, duration: {}ms&quot;,
+    request.getRequestURI(), request.getMethod(), getIP(request),System.currentTimeMillis() - start); 
+  }
+  
+  @Override
+  public void destroy() {
+  
+  }
+  
+  /**
+   * 获取IP地址
+   *
+   * @param request 请求
+   * @return request发起客户端的IP地址
+   */
+  private String getIP(HttpServletRequest request) {
+    if (request == null) {
+      return &quot;0.0.0.0&quot;;
+    }
+  
+    String Xip = request.getHeader(&quot;X-Real-IP&quot;);
+    String XFor = request.getHeader(&quot;X-Forwarded-For&quot;);
+  
+    String UNKNOWN_IP = &quot;unknown&quot;;
+    if (!StringUtils.isEmpty(XFor) &amp;&amp; !UNKNOWN_IP.equalsIgnoreCase(XFor)) {
+      //多次反向代理后会有多个ip值，第一个ip才是真实ip
+      int index = XFor.indexOf(&quot;,&quot;);
+      if (index != -1) {
+        return XFor.substring(0, index);
+      } else {
+        return XFor;
+      }
+    }
+  
+    XFor = Xip;
+    if (!StringUtils.isEmpty(XFor) &amp;&amp; !UNKNOWN_IP.equalsIgnoreCase(XFor)) {
+      return XFor;
+    }
+  
+    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
+      XFor = request.getHeader(&quot;Proxy-Client-IP&quot;);
+    }
+    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
+      XFor = request.getHeader(&quot;WL-Proxy-Client-IP&quot;);
+    }
+    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
+      XFor = request.getHeader(&quot;HTTP_CLIENT_IP&quot;);
+    }
+    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
+      XFor = request.getHeader(&quot;HTTP_X_FORWARDED_FOR&quot;);
+    }
+    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
+      XFor = request.getRemoteAddr();
+    }
+    return XFor;
+  }
+}
+</code></pre>
+<p>有了这个filter，我们就能在日志中查看所有url的响应时间，然后对比网站静态化前后的响应时间变化。</p>
+<p><a name="3"><font  size=4 face="黑体"><strong>3. 优化方案</strong></font></a></p>
+<p><strong>静态化处理</strong>
+每个页面请求到来，拦截在执行controller接口逻辑之前，判断该请求是否有存在的html文件，如果有直接重定向，跳过数据库访问、数据计算、模板解析等过程。</p>
+<p>如果不存在，则不拦截，正常走业务逻辑、视图解析等正常处理流程。</p>
+<p><strong>大型新闻网站的静态化方案</strong></p>
+<p><img src="/upload/2020/11/s051duoj5ehi1rc8kmb98afhsa.jpg" alt="alt" /></p>
+<p>可以看到，大型网站一般都是将访问的每个url都有直接关联到的静态html，而静态html的维护是由另外一套系统来做。这种方式比较繁琐，系统也很复杂，下面来一起看看我设计的轻量静态化方案。</p>
+<p><strong>轻量的网页静态HTML化方案</strong></p>
+<p>轻量的静态化方案，是基于注解开发的，对业务代码没有侵入性。拦截器在执行controller接口方法之前先执行注解切面逻辑，通过spring的切面编程方式，可以把这部分逻辑作为增强逻辑放到切面模块。</p>
+<p>那controller接口方法的代码不用做任何更改，做到了对业务代码<strong>零入侵</strong>。接下来就来谈谈具体实现方案。</p>
+<p><a name="4"><font  size=4 face="黑体"><strong>4. 方案落地开发</strong></font></a></p>
+<p>废话不多说，直接上代码，博客网站首页的controller接口业务代码，看看是如何启动页面静态化的。</p>
+<pre><code class="language-js"> /**
+     * 首页
+     *
+     * @param vo
+     * @param model
+     * @return
+     */
+    @RequestMapping(&quot;/&quot;)
+    @BussinessLog(value = &quot;进入首页&quot;, platform = PlatformEnum.WEB)
+    @StaticPage(enable=true)
+    public ModelAndView home(ArticleConditionVO vo, Model model) {
+        model.addAttribute(&quot;url&quot;, INDEX_URL);
+        loadIndexPage(vo, model);
+
+        return ResultUtil.view(INDEX_URL);
+    }
+</code></pre>
+<p>是的，一个自定义注解@StaticPage直接开启首页接口页面的静态html化，做到了业务代码的零入侵！</p>
+<p><strong>切面增强逻辑</strong></p>
+<ol>
+<li>切面逻辑这块的开发，是直接获取url请求的request对象，并获取html的path，计算得到html的相对路径。</li>
+<li>创建file对象，判断是否存在html文件，存在则重定向到html，结束接口后续响应。</li>
+<li>文件不存在，则不中断响应，响应线程走正常执行业务逻辑、解析模板等过程。</li>
+</ol>
+<p><strong>如何维护静态html文件</strong></p>
+<p>这里设计的方案是，系统根据url所带的秘钥参数来决定执行逻辑，静态化请求都由博客网站后台发出，这是更新html文件的管理方法。如果秘钥正确，则只生成html静态文件，如果秘钥不存在，则重定向到html或生成html后再重定向。</p>
+<p><strong>自定义ViewClass</strong></p>
+<p>SpringBoot项目的解析器ViewResolver可配置自定义ViewClass类，如下代码所示。</p>
+<pre><code class="language-js">@Configuration
+public class WebMvcConfig implements WebMvcConfigurer {
+    
+    @Bean
+    public FreeMarkerViewResolver freeMarkerViewResolver() {
+        FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
+        resolver.setViewClass(MyFreeMarkerView.class);
+        resolver.setPrefix(&quot;&quot;);
+        resolver.setSuffix(&quot;.ftl&quot;);
+        resolver.setContentType(&quot;text/html; charset=UTF-8&quot;);
+        resolver.setRequestContextAttribute(&quot;rc&quot;);
+        return resolver;
+    }
+    
+}
+</code></pre>
+<p>在执行完controller接口后、解析视图模板之前执行ViewClass中的doRender方法逻辑，如下代码的位置，这块逻辑来判断是否继续执行模板解析逻辑。</p>
+<pre><code class="language-js">public class MyFreeMarkerView extends FreeMarkerView{  
+	
+
+	private static final Logger log = LoggerFactory.getLogger(MyFreeMarkerView.class);
+
+   
+    @Override  
+    protected void doRender(Map model,  
+            HttpServletRequest request, HttpServletResponse response)  
+            throws Exception { 
+            ......在业务逻辑执行之后 、 模板解析之前的逻辑。
+            }
+</code></pre>
+<p><a name="5"><font  size=4 face="黑体"><strong>5. 优化成果</strong></font></a>
+<a name="6"><font  size=4 face="黑体"><strong>6. 网站性能还能提升吗？</strong></font></a></p>
+<p>其实，在前面分析的响应过程里，html下载(html文件的网络传输)也是非常消耗时间的阶段，静态化html文件的存放位置还能进一步优化，在这个项目中我们存放在服务这一侧，其实还可以放在网站接入层nginx服务器。</p>
+<p>对于静态html文件，可以直接上传到与用户在同一个城市的网络运营商CDN服务器，这样文件的网络传输过程就大大缩减了，网页打开速度会更快。现在很多新闻网站、博客网站都是在使用运营商CDN服务的，甚至视频网站也会将最新视频上传到CDN，以加快用户响应速度。</p>
+<p>完整的demo项目，请关注公众号“前沿科技bot“并发送&quot;&quot;获取。</p>
+<p><img src="/upload/2020/05/6s8d58g77ehftpcen62h4v4bss.png" alt="alt" /></p>
+</div>
+    <div id="guanzhu" class= "asb-post-01"  style="display:block">
+    		<div class ="mask"></div>
+    		<div class="info">
+			        <div>扫码或搜索：<span style="color: #E9405A; font-weight: bold;">前沿科技</span></div>
+			        <div>
+			            <span>发送 </span><span class="token" style="color: #e9415a; font-weight: bold; font-size: 17px; margin-bottom: 45px;">290992</span>
+			        </div>
+			        <div>
+			           	 即可<span style="color: #e9415a; font-weight: bold;">立即永久</span>解锁本站全部文章
+			        </div>
+				    <div>
+				        <img class="code-img" style="width: 300px;display:unset" src="http://bittechblog.com/upload/2020/09/of9o9sfuumiego54aepd7dq05b.jpg">
+				    </div>
+				    <div style="height:500px;"></div>
+			</div>
+    </div>
+</article>
+</div>
+<html lang="en">
+<body>
+<div>
+    <div id="127" class="comment-container">
+        <div id="comments" class="clearfix">
+            <div>
+                <span class="response">
+                
+            </span>
+                <form method="post" id="comment-form" class="comment-form" role="form"
+                      onsubmit="return TaleComment.subComment();">
+                    <input type="hidden" name="coid" id="coid"/>
+                    <input type="hidden" name="cid" id="cid" value="127"/>
+                    <input type="hidden" name="_csrf_token" value=""/>
+                    <input type="text" name="author" maxlength="12" id="author"
+                           class="form-control input-control clearfix"
+                           placeholder="姓名 (*)"
+                    />
+                    <input type="email" name="mail" id="mail" class="form-control input-control clearfix"
+                           placeholder="邮箱 (*)"
+                    />
+                    <input type="url" name="url" id="url" class="form-control input-control clearfix"
+                           placeholder="网址 (http://)"
+                    />
+                    <textarea name="text" id="textarea" class="form-control" placeholder="以上信息可以为空,评论不能为空哦!"
+                              required="required" minlength="5"
+                              maxlength="2000"></textarea>
+                    <button type="submit" class="submit" id="misubmit">提交</button>
+                </form>
+            </div>
+            
+
+            <div>
+                <ol class="comment-list">
+                    
+                </ol>
+                <div class="lists-navigator clearfix">
+                    <ol class="page-navigator">
+                        
+                        
+                        
+                    </ol>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<html lang="en">
+<body>
+<script type="text/javascript">
+    /*<![CDATA[*/
+    (function () {
+        window.TaleComment = {
+            dom: function (id) {
+                return document.getElementById(id);
+            },
+            create: function (tag, attr) {
+                var el = document.createElement(tag);
+                for (var key in attr) {
+                    el.setAttribute(key, attr[key]);
+                }
+                return el;
+            },
+            reply: function (coid) {
+                $('#comment-form input[name=coid]').val(coid);
+                $("html,body").animate({scrollTop: $('div.comment-container').offset().top}, 500);
+                $('#comment-form #textarea').focus();
+            },
+            subComment: function () {
+                $.ajax({
+                    type: 'post',
+                    url: '/comment',
+                    data: $('#comment-form').serialize(),
+                    async: false,
+                    dataType: 'json',
+                    success: function (result) {
+                        $('#comment-form input[name=coid]').val('');
+                        if (result && result.success) {
+                            alert("评论已提交至后台审核!");
+                            window.location.reload();
+                        } else {
+                            if (result.msg) {
+                                alert(result.msg);
+                            }
+                        }
+                    }
+                });
+                return false;
+            }
+        };
+    })();
+    function getCommentCookie(name) {
+        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg))
+            return unescape(decodeURI(arr[2]));
+        else
+            return null;
+    }
+    function addCommentInputValue() {
+        document.getElementById('author').value = getCommentCookie('tale_remember_author');
+        document.getElementById('mail').value = getCommentCookie('tale_remember_mail');
+        document.getElementById('url').value = getCommentCookie('tale_remember_url');
+    }
+    addCommentInputValue();
+    /*]]>*/
+</script>
+</body>
+</html>
+</html>
+<html lang="en">
+<body>
+<footer class="footer bg-white">
+    <div class="footer-social">
+        <div class="footer-container clearfix">
+            <div class="social-list">
+            </div>
+        </div>
+    </div>
+    <div class="footer-meta">
+        <div class="footer-container">
+            <div class="meta-item meta-copyright">
+                <div class="meta-copyright-info">
+                    <div class="info-text">
+                        <a href="/page/1"  style="display: block;margin: 0 auto;" class="info-logo">
+                            <img style="display: block;margin: 0 auto;" src="/user/img/logo.png"/>
+                        </a>
+                        <br/>
+                        <p >&copy; Powered by <a style="color: #0e90d2" href="https://github.com/wmsJackWang/JDKBlog" target="_blank"
+                                          rel="nofollow">JDKBlog</a>
+                        </p>
+                        <p> 喜欢就去github上点个star吧 </p>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</footer>
+
+
+    <div id="directory-content" class="directory-content">
+        <div id="directory"></div>
+    </div>
+    <script>
+        /*<![CDATA[*/
+        var postDirectoryBuild = function () {
+            var postChildren = function children(childNodes, reg) {
+                        var result = [],
+                                isReg = typeof reg === 'object',
+                                isStr = typeof reg === 'string',
+                                node, i, len;
+                        for (i = 0, len = childNodes.length; i < len; i++) {
+                            node = childNodes[i];
+                            if ((node.nodeType === 1 || node.nodeType === 9) &&
+                                    (!reg ||
+                                    isReg && reg.test(node.tagName.toLowerCase()) ||
+                                    isStr && node.tagName.toLowerCase() === reg)) {
+                                result.push(node);
+                            }
+                        }
+                        return result;
+                    },
+                    createPostDirectory = function (article, directory, isDirNum) {
+                        var contentArr = [],
+                                titleId = [],
+                                levelArr, root, level,
+                                currentList, list, li, link, i, len;
+                        levelArr = (function (article, contentArr, titleId) {
+                            var titleElem = postChildren(article.childNodes, /^h\d$/),
+                                    levelArr = [],
+                                    lastNum = 1,
+                                    lastRevNum = 1,
+                                    count = 0,
+                                    guid = 1,
+                                    id = 'directory' + (Math.random() + '').replace(/\D/, ''),
+                                    lastRevNum, num, elem;
+                            while (titleElem.length) {
+                                elem = titleElem.shift();
+                                contentArr.push(elem.innerHTML);
+                                num = +elem.tagName.match(/\d/)[0];
+                                if (num > lastNum) {
+                                    levelArr.push(1);
+                                    lastRevNum += 1;
+                                } else if (num === lastRevNum ||
+                                        num > lastRevNum && num <= lastNum) {
+                                    levelArr.push(0);
+                                    lastRevNum = lastRevNum;
+                                } else if (num < lastRevNum) {
+                                    levelArr.push(num - lastRevNum);
+                                    lastRevNum = num;
+                                }
+                                count += levelArr[levelArr.length - 1];
+                                lastNum = num;
+                                elem.id = elem.id || (id + guid++);
+                                titleId.push(elem.id);
+                            }
+                            if (count !== 0 && levelArr[0] === 1) levelArr[0] = 0;
+
+                            return levelArr;
+                        })(article, contentArr, titleId);
+                        currentList = root = document.createElement('ul');
+                        dirNum = [0];
+                        for (i = 0, len = levelArr.length; i < len; i++) {
+                            level = levelArr[i];
+                            if (level === 1) {
+                                list = document.createElement('ul');
+                                if (!currentList.lastElementChild) {
+                                    currentList.appendChild(document.createElement('li'));
+                                }
+                                currentList.lastElementChild.appendChild(list);
+                                currentList = list;
+                                dirNum.push(0);
+                            } else if (level < 0) {
+                                level *= 2;
+                                while (level++) {
+                                    if (level % 2) dirNum.pop();
+                                    currentList = currentList.parentNode;
+                                }
+                            }
+                            dirNum[dirNum.length - 1]++;
+                            li = document.createElement('li');
+                            link = document.createElement('a');
+                            link.href = '#' + titleId[i];
+                            link.innerHTML = !isDirNum ? contentArr[i] :
+                            dirNum.join('.') + ' ' + contentArr[i];
+                            li.appendChild(link);
+                            currentList.appendChild(li);
+                        }
+                        directory.appendChild(root);
+                    };
+            createPostDirectory(document.getElementById('post-content'), document.getElementById('directory'), true);
+        };
+        postDirectoryBuild();
+        /*]]>*/
+    </script>
+
+
+<script src="//cdn.bootcss.com/headroom/0.9.1/headroom.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.9.0/highlight.min.js"></script>
+<script src="//cdn.bootcss.com/instantclick/3.0.1/instantclick.min.js"></script>
+<script>
+    /*<![CDATA[*/
+    var isOk = true;
+    if (isOk) {
+        var postDirectory = new Headroom(document.getElementById("directory-content"), {
+            tolerance: 0,
+            offset: 100,
+            classes: {
+                initial: "initial",
+                pinned: "pinned",
+                unpinned: "unpinned"
+            }
+        });
+    }
+
+
+    var header = new Headroom(document.getElementById("header"), {
+        tolerance: 10,
+        offset: 80,
+        classes: {
+            initial: "animated",
+            pinned: "slideDown",
+            unpinned: "slideUp"
+        }
+    });
+    header.init();
+    $('#search-inp').keypress(function (e) {
+        var key = e.which; //e.which是按键的值
+        if (key == 13) {
+            var q = $(this).val();
+            if (q && q != '') {
+                window.location.href = '/search/' + q;
+            }
+        }
+    });
+    /*]]>*/
+</script>
+<script data-no-instant="">
+    /*<![CDATA[*/
+    InstantClick.on('change', function (isInitialLoad) {
+        var blocks = document.querySelectorAll('pre code');
+        for (var i = 0; i < blocks.length; i++) {
+            hljs.highlightBlock(blocks[i]);
+        }
+        if (isInitialLoad === false) {
+            if (typeof ga !== 'undefined') ga('send', 'pageview', location.pathname + location.search);
+        }
+    });
+    InstantClick.init('mousedown');
+    /*]]>*/
+</script>
+</body>
+</html>
+</body>
+</html>

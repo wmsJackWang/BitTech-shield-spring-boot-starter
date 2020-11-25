@@ -92,6 +92,7 @@ public class AttachController extends AbstractController {
         try {
             for (MultipartFile multipartFile : multipartFiles) {
                 String name = multipartFile.getOriginalFilename();
+                //这里控制　文件(图片，文本等)大小  不能超过1Ｍ
                 if (multipartFile.getSize() <= WebConst.MAX_FILE_SIZE) {
                     // 获取文件相对路径名，并文件目录
                     String fkey = MyUtils.getFileKey(name);
