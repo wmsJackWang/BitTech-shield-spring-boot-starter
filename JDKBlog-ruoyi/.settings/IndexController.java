@@ -120,7 +120,7 @@ public class IndexController extends AbstractController {
     @StaticPage(enable=true)
     public String getArticle(HttpServletRequest request, @PathVariable String cid) {
         ContentVo contents = contentService.getContents(cid);
-        if (null == contents || "draft".equals(contents.getStatus()) || "review".equals(contents.getStatus())) {
+        if (null == contents || "draft".equals(contents.getStatus())) {
             return this.render_404();
         }
         request.setAttribute("article", contents);

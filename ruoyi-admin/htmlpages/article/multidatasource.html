@@ -14,7 +14,7 @@
     <meta name="description"/>
     <link rel="shortcut icon" href="/user/img/logo.png"/>
     <link rel="apple-touch-icon" href="/user/img/apple-touch-icon.png"/>
-    <title>Java架构师方案—分布式session基于redis的共享机制(附完整项目代码) - 微服务与架构师社区</title>
+    <title>Java架构师方案—多数据源原理及应用(一)(附完整项目代码) - 微服务与架构师社区</title>
     <link href="//cdn.bootcss.com/highlight.js/9.9.0/styles/xcode.min.css" rel="stylesheet"/>
     <link href="/user/css/style.min.css" rel="stylesheet"/>
     
@@ -159,7 +159,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 <!-- 		                </a> -->
 <!-- 		            </div> -->
 		            <div class=" site-header-nav-item hvr-underline-from-center">
-		                <a href="/blog/category/Java架构方案"
+		                <a href="http://bittechblog.com/blog/type/1"
 		                   target="_self"
 		                   title="Java架构师方案宝典">Java架构师方案宝典
 		                </a>
@@ -167,7 +167,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 		            </div>
 		            
 		            <div class=" site-header-nav-item hvr-underline-from-center">
-		                <a href="/category/SpringBoot"
+		                <a href="http://bittechblog.com/blog/type/5"
 		                   target="_self"
 		                   title="Spring Boot">
 		                    Spring Boot
@@ -188,7 +188,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 		            </div>
 	            
 		            <div class=" site-header-nav-item hvr-underline-from-center">
-		                <a href="/"
+		                <a href="http://bittechblog.com/blog/tag/2"
 		                   target="_self"
 		                   title="Java">
 		                    Java
@@ -209,7 +209,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 		            </div>
 	            
 		            <div class=" site-header-nav-item hvr-underline-from-center">
-		                <a href="/category/Redis"
+		                <a href="http://bittechblog.com/blog/type/16"
 		                   target=""
 		                   title="Redis">
 		                    Redis
@@ -268,14 +268,14 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 <section class="jumbotron intro" data-pattern-id="本站 所有文章">
     <div class="container" >
         <div id="jumbotron-meta-info" style="color: #FFFFFF;">        
-            <h1>Java架构师方案—分布式session基于redis的共享机制(附完整项目代码)</h1>
+            <h1>Java架构师方案—多数据源原理及应用(一)(附完整项目代码)</h1>
             <br/>
             <span class="meta-info" style="color: #FFFFFF;" >
                 <span class="octicon octicon-calendar"></span> 
             	作者：空白
             	
  				
-                	<p><time datetime="2020-10-13" itemprop="datePublished">Time: 2020-10-13</time></p>
+                	<p><time datetime="2020-08-08" itemprop="datePublished">Time: 2020-08-08</time></p>
             	
             </span>
         </div>
@@ -360,7 +360,7 @@ $(function() {
         article = $article[0], height = article.clientHeight;
         console.log(article);
         // 文章隐藏后的高度
-        halfHeight = height * 0.3;
+        halfHeight = height * 0.5;
         top = halfHeight;
         $article.css('height', halfHeight  + 'px');
         $article.addClass('lock');
@@ -464,234 +464,186 @@ function refresh(){
 <article class="main-content post-page">
     <div id="post-content"  class="post-content"><ul>
 <li>
-<p><font size=4><a href="#1"><strong>1. 读这篇文章你可以学到的东西</strong></a></font></p>
+<p><font size=4><a href="#1"><strong>1. 原生jdbc数据库开发</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#2"><strong>2. 基于redis存储共享session方案</strong></a></font></p>
+<p><font size=4><a href="#2"><strong>2. 数据源领域模型</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#3"><strong>3. 登入数据存放到session服务器</strong></a></font></p>
+<p><font size=4><a href="#3"><strong>3. 多数据源组件AbstractRoutingDataSource</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#4"><strong>4. 拦截器注册及配置</strong></a></font></p>
+<p><font size=4><a href="#4"><strong>4. 多数据源下读写分离应用</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#5"><strong>5. 简单谈谈我对redis共享session方案的看法</strong></a></font></p>
+<p><font size=4><a href="#5"><strong>5. 聚合后台项目多数据源应用</strong></a></font></p>
+</li>
+<li>
+<p><font size=4><a href="#6"><strong>6. 读写分离和不同业务数据源切换测试</strong></a></font></p>
 </li>
 </ul>
-<p><a name="1"><font  size=4 face="黑体"><strong>1. 读这篇文章你可以学到的东西</strong></font></a></p>
-<p><strong>认识问题</strong></p>
-<p>这篇文章介绍的是服务在集群部署的情况下，用户的请求会被负载均衡到不同的服务器，但是用户的登入数据、权限数据、操作数据等session数据只会存在一个服务器的内存中。若用户下一次请求被转发到其他没有session数据的服务器上，那用户就还需要再重新登入，重新在网站上进行业务操作后创建操作数据。</p>
-<p><img src="/upload/2020/10/033cd6qj5ggoeqoplge20a487r.png" alt="alt" /></p>
-<p><strong>用户体验极差</strong></p>
-<p>如果用户session数据只在一个服务器上，那用户访问另外服务器上服务时候，就会要求用户重新登入和业务操作。多次要求用户进行重新登入和业务操作，这样的体验是个灾难。</p>
-<p><strong>解决方案</strong></p>
-<p>将用户的session状态从服务中剥离出来，放到一个独立的session服务器上，这里选择redis来建session服务器。集群服务有关状态数据的操作都要和redis服务器交互。这种分布式session方案我们成为共享session服务器方案。</p>
-<p><img src="/upload/2020/10/6hu7rona36j82rg8gaq1l3jpbm.jpg" alt="alt" /></p>
-<p><a name="2"><font  size=4 face="黑体"><strong>2. 基于redis存储共享session方案</strong></font></a></p>
-<p>正如上面的架构图所示，所有的应用服务器关于session数据保存和获取操作都会与session服务器交互。用户每次请求的权限验证都与session服务器中的数据进行比对。如果用户已经登入了，那登入状态数据就会保存在session服务器，用户访问其他服务器时就<strong>不需要重新登入</strong></p>
-<p><strong>本文的方案，笔者提供了一个完整的demo项目，项目地址看末尾获取方式。</strong></p>
-<p><strong>SpringBoot项目引入redis依赖</strong></p>
-<pre><code class="language-js">&lt;!-- 引入 redis 依赖 --&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;redis.clients&lt;/groupId&gt;
-    &lt;artifactId&gt;jedis&lt;/artifactId&gt;
-&lt;/dependency&gt;
-&lt;dependency&gt;
-    &lt;groupId&gt;org.springframework.data&lt;/groupId&gt;
-    &lt;artifactId&gt;spring-data-redis&lt;/artifactId&gt;
-&lt;/dependency&gt;
+<p><strong>读完本篇文章你将学到：原生jdbc开发流程，datasource数据源层，多数据源组件原理。以及它们三者之间的关系架构</strong></p>
+<p><a name="1"><font  size=4 face="黑体"><strong>1. 原生jdbc数据库开发</strong></font></a></p>
+<p>使用原生jdbc来访问数据库的流程为：</p>
+<pre><code class="language-js">Class.forName(“com.mysql.jdbc.Driver”);
+String url = “jdbc:mysql://hostip:3306/test?user=root&amp;password=123456″;
+Connection con = DriverManager.getConnection(url);
+Statement statement = con.createStatement();
 </code></pre>
-<p><strong>redis配置</strong></p>
-<p>springboot项目默认使用StringRedisTemplate，StringRedisTemplate和RedisTemplate不同，前者比较简单，只需要配置redis参数就行。</p>
-<p>第一种</p>
-<p>在application.yml文件中配置下面的参数。</p>
-<pre><code class="language-js">spring:
-    redis:
-        #redis数据库地址
-        host: localhost
-        port: 6379
-        password: 
-        timeout: 1000
-        #redis数据库索引，默认0
-        database: 1
-</code></pre>
-<p>第二种</p>
-<p>在application.properties文件中配置下面的参数。</p>
-<pre><code class="language-js"># REDIS (RedisProperties)
-# Redis数据库索引（默认为0）
-spring.redis.database=0
-# Redis服务器地址
-spring.redis.host=localhost
-# Redis服务器连接端口
-spring.redis.port=6379
-# Redis服务器连接密码（默认为空）
-spring.redis.password=
-# 连接池最大连接数（使用负值表示没有限制）
-spring.redis.jedis.pool.max-active=8
-# 连接池最大阻塞等待时间（使用负值表示没有限制）
-spring.redis.jedis.pool.max-wait=-1
-# 连接池中的最大空闲连接
-spring.redis.jedis.pool.max-idle=8
-# 连接池中的最小空闲连接
-spring.redis.jedis.pool.min-idle=0
-# 连接超时时间（毫秒）
-spring.redis.timeout=5000
-</code></pre>
-<p><strong>使用StringRedisTemplate</strong></p>
-<p>直接在service实现类中注入StringRedisTemplate。</p>
-<pre><code class="language-js">@Autowired
-private StringRedisTemplate redisTemplate;
-</code></pre>
-<p>到这里，我们项目就能正常使用redis服务了。</p>
-<p><strong>redis操作实现类RedisOperator</strong></p>
-<p>该类简单封装了String类型的redis命令：set、get, ttl等，业务逻辑可以直接调用。</p>
-<pre><code class="language-js">/**
- * 使用redisTemplate的操作实现类
- * @author YI
- * @date 2018-6-12 10:54:28
- */
-@Component
-public class RedisOperator {
-
-	@Autowired
-	private StringRedisTemplate redisTemplate;
-	
-	// Key（键），简单的key-value操作
-
-	/**
-	 * 实现命令：TTL key，以秒为单位，返回给定 key的剩余生存时间(TTL, time to live)。
-	 * 
-	 * @param key
-	 * @return
-	 */
-	public long ttl(String key) {
-		return redisTemplate.getExpire(key);
-	}
-......//因类代码比较多，这里就不全部展示了，读者可以查阅项目demo
-</code></pre>
-<p><a name="3"><font  size=4 face="黑体"><strong>3. 登入数据存放到session服务器</strong></font></a></p>
-<p><strong>用户登入</strong></p>
-<p>用户登入接口逻辑：</p>
-<ol>
-<li>获取username和password数据，与数据库保存的用户密码比对。</li>
-<li>用户名和密码比对正确后，生成唯一的uuid作为用户的登入状态session数据。</li>
-<li>通过redis操作类将session数据保存在redis中，key由username生成，并设置30分钟有效时间。</li>
-<li>将用户username保存到cookie中。</li>
-</ol>
-<pre><code class="language-js">@PostMapping(value = &quot;loginCheck&quot;)
-@ResponseBody
-public RestResponseBo loginCheck(@RequestParam String username,
-        		@RequestParam String password,
-        		HttpServletRequest request,
-        		HttpServletResponse response) {
-	  if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)){
-
-          return RestResponseBo.fail(&quot;用户名或者密码不能为空!&quot;);
-  }
-  if(!username.equals(&quot;admin&quot;) || !password.equals(&quot;admin&quot;))
-  {
-
-      return RestResponseBo.fail(&quot;用户名或者密码不正确!&quot;);
-  }
-  
-  String token = StrUtil.uuid();
-
-  //存放唯一的 token 并设置过期时间
-  operator.set(JdkApiInterceptor.USER_REDIS_SESSION + &quot;:&quot; + username, token, REDIS_TIMEOUT);
-  
-  //设置用户  密码  token等信息 
-  operator.set(username, username+&quot;:&quot;+password+&quot;:&quot;+token);
-
-  //用户浏览器会存放两种cookie: userToken,userId。
-  CookieUtil.addCookie(&quot;userName&quot;, username);
-
-  return RestResponseBo.ok();//
+<p>在原生的jdbc访问过程中，重要的领域对象包括：Driver ，DriverManager ，Connection ，Statement 等等。</p>
+<p>其实主要与数据库交互的是connection对象，连接的创建会向操作系统申请网络连接资源并占用，直到conneciton对象销毁才还给操作系统，因为每次都要申请并释放操作系统资源，所以原生开发在业务繁忙的项目中资源的释放和申请就会非常频繁。</p>
+<p>为了避免这种频繁资源申请和释放情况，DataSource层使用连接池方式解决了这个问题。</p>
+<p>DataSource领域模型也是建立在这些原生领域对象之上建立的代理层。</p>
+<p>原生jdbc访问过程包括：</p>
+<ul>
+<li>Class.forName加载驱动对象并注册到DriverManager，Driver初始化的静态代码如下</li>
+</ul>
+<pre><code class="language-js">static {
+try {
+java.sql.DriverManager.registerDriver(new Driver());
+} catch (SQLException E) {
+throw new RuntimeException(“Can’t register driver!”);
+}
 }
 </code></pre>
-<p><strong>拦截器JdkApiInterceptor校验用户登入状态</strong></p>
-<p>拦截逻辑：</p>
-<ol>
-<li>先从请求cookie 中获取username。</li>
-<li>再查询redis中该用户的登入session数据。</li>
-<li>不为空则是已登入，为空则是未登入或登入状态过期。</li>
-<li>未登入或登入状态过期则重定向到登入页面。</li>
-</ol>
-<pre><code class="language-js">@Override
-public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
-    //获取用户cookies
-    String userName = CookieUtil.getCookie(&quot;userName&quot;);
-    
-    //放开登入接口
-//        String uri = request.getRequestURI();
-//        logger.info(&quot;请求uri:&quot; + uri);
-//        
-//        if(uri.equals(&quot;loginCheck&quot;))
-//        	return true;
-//        
-    logger.info(&quot; ======= 拦截UserId：&quot; + userName);
-    //用户id和token都不为空
-    if (!StringUtils.isEmpty(userName)) {
-    	
-    	//根据userid生成唯一key从redis中查出唯一token
-        String uniqueToken = redis.get(USER_REDIS_SESSION + &quot;:&quot; + userName);
-        logger.info(&quot;拦截uniqueToken：&quot; + uniqueToken);
-        
-        //如果唯一token为空 ，则拦截url重定向到登入页面
-        if (StringUtils.isEmpty(uniqueToken)) {
-            response.sendRedirect(&quot;/login&quot;);
-            returnErrorResponse(response, &quot;请登录...&quot;);
+<ul>
+<li>DriverManager.getConnection：注册完驱动对象后，随后传入数据库IP地址和登入用户名密码，使用Driver对象创建Connection对象，几段代码如下：</li>
+</ul>
+<pre><code class="language-js">Connection con = aDriver.driver.connect(url, info);
+return (con);
+</code></pre>
+<ul>
+<li>使用connection对象结合statement和preparestatement等方式执行sql</li>
+</ul>
+<p>分析：我们每次执行sql我们都需要去初始化connection，执行完后又释放连接，这个过程中包括锁的金证以及与远程数据库的交互过程，因此每次connection的建立和释放所需要的成本。因此为了降低连接的建立和释放的消耗，这里就需要datasource领域模型来实现。</p>
+<p><a name="2"><font  size=4 face="黑体"><strong>2. 数据源领域模型</strong></font></a></p>
+<p>原生jdbc提到的连接重复建立和释放的成本问题，在datasource领域模型中使用了池技术思想，实现了连接的重复使用，避免了每次使用时都重新建立与数据库之间的连接，会产生较大的系统开销。以空间换时间的方式来提高效率。</p>
+<p>datasource的主要API如下</p>
+<pre><code class="language-js">DataSource只有两个方法（确切的说是一个方法的两个重载版本），用于建立与此 DataSource 对象所表示的数据源的连接。
 
-            return false;
-        }
-    //用户id和token有一个为空，则重定向登入页面
-    } else {
-        response.sendRedirect(&quot;/login&quot;);
-        returnErrorResponse(response,&quot;请登录...&quot;);
-        return false;
+Connection getConnection()
+Connection getConnection(String username, String password)
+</code></pre>
+<p>在阿里的DruidDataSource实现类中，我们能看到类的connections连接对象容器。</p>
+<pre><code class="language-js">// store
+private volatile DruidConnectionHolder[] connections;
+</code></pre>
+<p>connections连接数组结合datasource的池技术机制实现来管理数据源的连接对象。我们也可以把datasource看作业务程序和DriverManager之间的中间层，这个中间层有管理connection对象功能以及实现事务机制。</p>
+<p>看下图，清楚DataSource与原生jdbc的关系架构。</p>
+<p><img src="/upload/2020/08/s6vj7gbf6kh00q96ddtnqt5t93.jpg" alt="alt" /></p>
+<p>从关系图能看出：</p>
+<ul>
+<li>DataSource是基于jdbc的一层抽象，实现了两个主要功能：维护连接池，实现事务管理。</li>
+<li>jdbc才是真正去与数据库打交道的角色，而与用户程序交互的是DataSource代理层。</li>
+</ul>
+<p><a name="3"><font  size=4 face="黑体"><strong>3. 多数据源组件AbstractRoutingDataSource</strong></font></a>
+多数据源按字面理解就是 DataSource有多个，用户程序可以自动选择不同的DataSource来为自己的业务服务。因此。</p>
+<ul>
+<li>多数据源组件具有维护多个DataSource对象的功能。</li>
+<li>而且数据源的切换动作由用户程序触发。</li>
+<li>多数据源组件是更高的代理层，直接管理DataSource层。</li>
+<li>datasource的连接池维护这数据库连接，多数据源组件的datasource池维护所有datasource。</li>
+</ul>
+<p>根据Java面向对象的思想，用户程序会觉得多数据源组件AbstractRoutingDataSource就是数据源对象，因为多数据源组件实现了DataSource接口，有数据源接口的两个api方法，如下所示：</p>
+<pre><code class="language-js">Connection getConnection() throws SQLException;
+
+Connection getConnection(String username, String password)
+  throws SQLException;
+</code></pre>
+<p>因此，我们可以把多数据源组件看作维护多个数据源的代理层，它们之间的关系如下图所示：</p>
+<p><img src="/upload/2020/08/72itjslk7sjm0qc5at3itcpong.jpg" alt="alt" /></p>
+<p>从关系图可以看出：</p>
+<ul>
+<li>多数据源代理是数据源层中所有数据源对象的代理对象</li>
+<li>多数据源组件维护一个Map&lt;StringKey,Datasource&gt;数据结构</li>
+<li>用户线程通过ThreadLocal来传递变量StringKey信息,指定对应的数据源</li>
+<li>用户通过Object determineCurrentLookupKey()方法来指定StringKey</li>
+</ul>
+<p><a name="4"><font  size=4 face="黑体"><strong>4. 多数据源下读写分离应用</strong></font></a></p>
+<p>根据多数据源的关系结构图，可以分析出：只要用户程序根据自己的业务，在执行某项业务时候指定Stringkey,就能做到切换数据源的目的。</p>
+<p>因此在读写分离的应用场景中，客户端程序需要识别Mybatis的Dao层执行的方法是读还是写。</p>
+<p>Mybatis框架提供了获取方法执行的sql类型的Api</p>
+<pre><code class="language-js">SqlCommandType type = sqlSessionFactory.getConfiguration().getMappedStatement(key).getSqlCommandType();
+</code></pre>
+<p>key的值能通过切面的JoinPoint来获得，这里我不再赘述，大家可以结合项目的RwSeparateDataSourceAspect类代码来看。</p>
+<p>这里涉及到Spring容器中的@Aspect切面编程，这里就不对切面开发进行剖析。</p>
+<p><a name="5"><font  size=4 face="黑体"><strong>5. 聚合后台项目多数据源应用</strong></font></a></p>
+<p>有的公司产品的后台管理项目，如果只是给运营使用的话，一般项目都是一个体量比较大的maven聚合项目，在这样的一个项目中，我们就需要去访问不同的产品的数据库，这里我们就要主动的去动态切换数据源。</p>
+<p>这种聚合项目也是要进行切面开发的，不像读写分离场景需要在Dao层进行切面开发，这里是基于业务层面进行切面开发，因此我们切点会放在Controller层或者service层。</p>
+<p>总而言之，从多数据源的原理和应用来看，多数据源结合了ThreadLcoal传参+切面编程+池技术等多种技术方案。读写分离场景还结合了Mybatis框架的API技术，来判断sql的类型。</p>
+<p>因此多数据源分可以简单拆分成两个阶段：用户程序指定Datasource的key；用户程序根据Key来获取对应的connection对象。</p>
+<p><a name="6"><font  size=4 face="黑体"><strong>6. 读写分离和不同业务数据源切换项目测试</strong></font></a></p>
+<p><font  size=3> <strong>执行业务时动态切换数据源</strong> </font></p>
+<ul>
+<li>准备两个数据库myutilproject0和myutilproject1，并创建user表</li>
+</ul>
+<pre><code class="language-js">create database myutilproject0;
+create database myutilproject1;
+
+create table user(
+id int(11) not null primary key,
+name varchar(100),
+gender varchar(10));
+
+</code></pre>
+<ul>
+<li>分别往两个数据库插入数据，执行DynamicDatasourceMethodApplicationTests测试类</li>
+</ul>
+<p>测试类执行完成后，两张表中有了数据，分别往两个库插入了数据。</p>
+<p><img src="/upload/2020/08/tk59m1fk2ci1sooklpd7ujnv7b.jpg" alt="alt" /></p>
+<p>分别插入两个不同库中的表，由下面两个方法完成，不同的业务使用@DBType注解来动态切换数据源</p>
+<pre><code class="language-js">    @DBType(DataSourceType.MASTER)
+    public void insert2Master(User user){
+        userMapper.insertSelective(user);
     }
+    
+    @DBType(DataSourceType.SLAVE)
+    public void insert2Slave(User user){
+        userMapper.insertSelective(user);
+    }
+</code></pre>
+<ul>
+<li>我在这里埋一个坑</li>
+</ul>
+<p>看UserService类的几个方法</p>
+<ol>
+<li>select2查询slave库数据</li>
+<li>select1查询master数据并调用select2</li>
+<li>select3查询master数据并调用select2</li>
+</ol>
+<p>执行DynamicDatasourceAnnoApplicationTests测试类，分别运行select1和select3。这两个方法调用了select2，打印结果如下</p>
+<pre><code class="language-js">select1
+MASTER:11--jackdking-master==male
 
-    return true;
-}
+select2
+SLAVE:11--jackdking-master==male
+
+select3
+MASTER:11--jackdking-master==male
+
+select2
+SLAVE:11--jackdking-slave==male
+
 </code></pre>
-<p>到此，就能实现不同服务器的session共享了。</p>
-<p><a name="4"><font  size=4 face="黑体"><strong>4. 拦截器注册及配置</strong></font></a></p>
-<p><strong>注册</strong></p>
-<p>使用@Configuration修饰创建配置类WebSecurityConfig</p>
-<pre><code class="language-js">@Configuration
-public class WebSecurityConfig implements WebMvcConfigurer {
-...
+<p>你会发现： select1调用select2时候，select2切换数据源失败；但是select3调用select1时候，数据源切换生效了。 这个坑大家自己可以思考下，有疑问可来咨询我！</p>
+<p><font  size=3> <strong>读写分离切换数据源</strong> </font></p>
+<ul>
+<li>打开读写分离开关</li>
+</ul>
+<p>将RwSeparateDataSourceAspect类中的下的pointcut注释去掉。</p>
+<pre><code class="language-js">//    @Pointcut(&quot;execution(* org.jackdking.core.dao.*.*(..))&quot;)
+    public void declareJoinPoint(){
+    }
 </code></pre>
-<p>创建拦截器bean对象，放入ioc容器。</p>
-<pre><code class="language-js">@Bean
-public JdkApiInterceptor JdkApiInterceptor(){
-    return new JdkApiInterceptor();
-}
-</code></pre>
-<p><strong>配置</strong></p>
-<p>配置拦截器要拦截的url和不拦截的url</p>
-<pre><code class="language-js">/**
- * 拦截器注册 设置拦截接口
- * @param registry
- */
-@Override
-public void addInterceptors(InterceptorRegistry registry) {
-	
-    registry.addInterceptor(JdkApiInterceptor()).addPathPatterns(&quot;/**&quot;)//设置拦截所有的路径
-    		//排除的路径：静态资源路径。防止被JdkApiInterceptor拦截
-            .excludePathPatterns(&quot;/loginCheck&quot;,&quot;/login&quot;,&quot;/error&quot;,
-                    &quot;/js/**&quot;, &quot;/css/**&quot;, &quot;/imag/**&quot;);
-}
-</code></pre>
-<p><strong>这里排除拦截的url中，除了静态资源路径和登入接口，为什么还有/error路径呢？具体原因请查看我这篇文章：<a tartget="_blank" href="http://bittechblog.com/blog/article/18">WebMvcConfigurer的excludePathPatterns配置 &quot;失效&quot; 问题</a></strong></p>
-<p><a name="5"><font  size=4 face="黑体"><strong>5. 简单谈谈我对redis共享session方案的看法</strong></font></a></p>
-<p>基于redis的共享session方案能解决用户重复登入的问题，带来更好的用户体验，是分布式架构经典的解决方案，但同时也带了问题，redis服务器的高可用问题以及远处通信的性能问题。当然集群下session问题解决方案有很多种，这只是其中之一，日后我还会进一步以文章形式与大家探讨</p>
-<p>如果大家觉得这篇文章对你学习架构有帮助的话，还请点赞，在看支持一下。github项目也记得点个星哦！</p>
-<p>完整的demo项目，请关注公众号“前沿科技bot“并发送&quot;redis共享session&quot;获取。</p>
+<ul>
+<li>运行RwSeparateDataSourceAspect测试类</li>
+</ul>
+<p>读写方法执行后，你会发现select方法查出从库数据：11--jackdking-slave==male。而主库写入了一条数据。</p>
+<p><img src="/upload/2020/08/s282c2f4qcjvmra1g36njbntah.jpg" alt="alt" /></p>
+<p>至此，读写分离就实现了，注意在测试数据动态源切换的时候一定要把读写注掉，否则会影响动态切换测试。</p>
+<p>到这里，文章就学完了，识别下面小程序码，进入本文的技术知识点做题页面，来看看你能掌握多少，满分10分。</p>
+<p><img src="/upload/2020/08/59ksfe6o7ggdeo0mf3bao3rc7b.jpg" alt="alt" /></p>
+<p>还要配置状态转移信息以及事件处理器逻辑的开发。完整的demo项目，请关注公众号“前沿科技bot“并发送&quot;数据源切换&quot;获取。</p>
 <p><img src="/upload/2020/05/6s8d58g77ehftpcen62h4v4bss.png" alt="alt" /></p>
 </div>
     <div id="guanzhu" class= "asb-post-01"  style="display:block">
@@ -718,7 +670,7 @@ public void addInterceptors(InterceptorRegistry registry) {
 <html lang="en">
 <body>
 <div>
-    <div id="104" class="comment-container">
+    <div id="84" class="comment-container">
         <div id="comments" class="clearfix">
             <div>
                 <span class="response">
@@ -727,7 +679,7 @@ public void addInterceptors(InterceptorRegistry registry) {
                 <form method="post" id="comment-form" class="comment-form" role="form"
                       onsubmit="return TaleComment.subComment();">
                     <input type="hidden" name="coid" id="coid"/>
-                    <input type="hidden" name="cid" id="cid" value="104"/>
+                    <input type="hidden" name="cid" id="cid" value="84"/>
                     <input type="hidden" name="_csrf_token" value=""/>
                     <input type="text" name="author" maxlength="12" id="author"
                            class="form-control input-control clearfix"

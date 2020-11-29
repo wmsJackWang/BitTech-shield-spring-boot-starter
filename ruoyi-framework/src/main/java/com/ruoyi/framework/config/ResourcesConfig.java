@@ -9,6 +9,8 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.spring5.ISpringTemplateEngine;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
@@ -69,8 +71,21 @@ public class ResourcesConfig implements WebMvcConfigurer
     }
     
     /**
-     * 视图解析器
+     * 视图解析器 ， 使用系统默认的模板引擎
      */
+//    @Bean
+//    public ThymeleafViewResolver thymeleafViewResolver(ISpringTemplateEngine templateEngine) {
+//        ThymeleafViewResolver thymeleafViewResolver = new ThymeleafViewResolver();
+//        thymeleafViewResolver.setTemplateEngine(templateEngine);
+//        thymeleafViewResolver.setViewClass(JdkThymeleafView.class);
+//        thymeleafViewResolver.setCharacterEncoding("UTF-8");//解决页面中文乱码 问题
+//        thymeleafViewResolver.setContentType("text/html");
+//        return thymeleafViewResolver;
+//    }
+    
+    /**
+     * 视图解析器 ， 使用自定义的模板引擎
+     */    
     @Bean
     public ThymeleafViewResolver thymeleafViewResolver() {
         ThymeleafViewResolver thymeleafViewResolver = new ThymeleafViewResolver();

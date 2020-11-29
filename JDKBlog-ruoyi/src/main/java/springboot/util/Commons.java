@@ -231,6 +231,7 @@ public class Commons {
             StringBuffer sbuf = new StringBuffer();
             for (String c : arr) {
                 sbuf.append("<a class=\"blog-color\" href=\"/category/" + URLEncoder.encode(c, "UTF-8") + "\">" + c + "</a>");
+                sbuf.append("<span>&nbsp;&nbsp;</span>");
             }
             return sbuf.toString();
         }

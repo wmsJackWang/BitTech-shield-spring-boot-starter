@@ -14,7 +14,7 @@
     <meta name="description"/>
     <link rel="shortcut icon" href="/user/img/logo.png"/>
     <link rel="apple-touch-icon" href="/user/img/apple-touch-icon.png"/>
-    <title>大型网站架构师方案—屌爆了！这种优化方案让我网站响应速度提高了近80倍 - 微服务与架构师社区</title>
+    <title>SprinBoot——WebMvcConfigurer的excludePathPatterns配置 &quot;失效&quot; 问题 - 微服务与架构师社区</title>
     <link href="//cdn.bootcss.com/highlight.js/9.9.0/styles/xcode.min.css" rel="stylesheet"/>
     <link href="/user/css/style.min.css" rel="stylesheet"/>
     
@@ -268,14 +268,14 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 <section class="jumbotron intro" data-pattern-id="本站 所有文章">
     <div class="container" >
         <div id="jumbotron-meta-info" style="color: #FFFFFF;">        
-            <h1>大型网站架构师方案—屌爆了！这种优化方案让我网站响应速度提高了近80倍</h1>
+            <h1>SprinBoot——WebMvcConfigurer的excludePathPatterns配置 &quot;失效&quot; 问题</h1>
             <br/>
             <span class="meta-info" style="color: #FFFFFF;" >
                 <span class="octicon octicon-calendar"></span> 
             	作者：空白
             	
  				
-                	<p><time datetime="2020-11-22" itemprop="datePublished">Time: 2020-11-22</time></p>
+                	<p><time datetime="2020-09-30" itemprop="datePublished">Time: 2020-09-30</time></p>
             	
             </span>
         </div>
@@ -464,204 +464,187 @@ function refresh(){
 <article class="main-content post-page">
     <div id="post-content"  class="post-content"><ul>
 <li>
-<p><font size=4><a href="#1"><strong>1. 网站性能的指标</strong></a></font></p>
+<p><font size=4><a href="#1"><strong>1. 问题描述</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#2"><strong>2. 网站性能检测方法</strong></a></font></p>
+<p><font size=4><a href="#2"><strong>2. 发现问题</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#3"><strong>3. 优化方案</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#4"><strong>4. 方案落地开发</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#5"><strong>5. 优化成果</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#6"><strong>6. 网站性能还能提升吗？</strong></a></font></p>
+<p><font size=4><a href="#3"><strong>3. 解决问题</strong></a></font></p>
 </li>
 </ul>
-<p><a name="1"><font  size=4 face="黑体"><strong>1. 网站性能的指标</strong></font></a></p>
-<p>博客网站的页面打开时间一旦超过10s就会容易让用户关闭网站，从而增加跳出率。但实际情况是，大部分用户对于网页打开时间超过3s的可能都无法接受。</p>
-<p><strong>网站性能指标</strong></p>
-<p>对于网站的性能指标，最重要的是响应时间、吞吐量、并发数。
-<strong>响应时间</strong>是浏览器发出请求到收到响应并最终渲染到界面上的总时间，能很直观的反映系统的快慢。
-<strong>吞吐量</strong>是单位时间处理的请求数，也称为TPS，能体现系统容量。
-<strong>并发数</strong>是指系统同时能处理的请求数，例如双十一，上亿用户在线，而且短时间内都访问系统，这时候网站就需要极高的并发能力支持。</p>
-<p><strong>关联</strong>
-其实细细思考，这几个网站的性能指标，它们之间是有关联关系的。
-就拿高速公路收费站来类比，响应时间(RT)就是收费窗口处理收费事件的时间，吞吐量(TPS)是单位时间内收费站窗口总共经过了多少辆车，而并发量(P)就是总共有多少个收费通道。</p>
-<p>TPS = p*(1/RT）</p>
-<p><strong>但是这篇文章核心内容是谈谈如何优化网站的RT：响应时间。</strong> 通过降低网站RT时间来提高网站的吞吐量，提高用户的体验。</p>
-<p><a name="2"><font  size=4 face="黑体"><strong>2. 网站性能检测方法</strong></font></a></p>
-<p>从输入url，到页面渲染结束，全过程可大致分为以下几个阶段：</p>
-<ol>
-<li>从浏览器输入url，DNS域名解析，查找到域名绑定的id地址。</li>
-<li>建立TCP连接：客户端浏览器和web服务器建立TCP连接（传输控制协议），三次握手。</li>
-<li>发送HTTP request请求：客户端浏览器向对应的ip地址web服务器发送http请求。</li>
-<li>web服务器反向代理：Nginx反向代理，解析域名转发到对应的应用服务器上。</li>
-<li>服务器业务逻辑处理：业务接口逻辑，访问数据库或访问缓存，数据计算等过程。</li>
-<li>视图解析：拿第五步得到业务数据结合视图模板进行解析，得到html文件。</li>
-<li>客户端浏览器渲染：渲染响应页面，客户端浏览器下载数据，解析HTML，完成页面的排版。</li>
-<li>响应完成，断开tcp连接。</li>
-</ol>
-<p>在这8个阶段，其中对于网站响应优化最明显的地方就是<strong>第五、六阶段</strong>，对于绝大多数博客网站来说，网页都是相对静态的，很少有数据的变化。因此通过将博客网页静态化处理，可以省去响应过程最耗时的这两个阶段，能大大降低响应时间。</p>
-<p><strong>过滤器统计响应时间</strong></p>
-<p>SpringBoot的API过滤器:ApiAccessFilter。使用注解的开发方式，如下代码所示。@WebFilter修饰实现了Filter接口的类，参数filterName为拦截器名称，urlPatterns设置拦截的url模式。Api响应时间计算逻辑在doFilter方法中实现。</p>
-<pre><code class="language-js">@WebFilter(filterName = &quot;ApiAccessFilter&quot;, urlPatterns = &quot;/*&quot;)
-public class ApiAccessFilter implements Filter { 
-  
-  @Override
-  public void init(FilterConfig filterConfig) { 
-  }
-  
-  @Override
-  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
-    FilterChain filterChain) throws IOException, ServletException {
-  
-    HttpServletRequest request = (HttpServletRequest) servletRequest;
-  
-//    Long requestId = IdGenUtils.nextIdByMem(); // 请求ID，这个是我业务中的id，大家可自行决定是否需要
-    long start = System.currentTimeMillis(); // 请求进入时间
-  
-    log.info(&quot;[Api Access] start. uri: {}, method: {}, client: {}&quot;,
-    request.getRequestURI(), request.getMethod(), getIP(request));
-    filterChain.doFilter(servletRequest, servletResponse);
-    log.info(&quot;[Api Access]  end. uri: {}, method: {}, client: {}, duration: {}ms&quot;,
-    request.getRequestURI(), request.getMethod(), getIP(request),System.currentTimeMillis() - start); 
-  }
-  
-  @Override
-  public void destroy() {
-  
-  }
-  
-  /**
-   * 获取IP地址
-   *
-   * @param request 请求
-   * @return request发起客户端的IP地址
-   */
-  private String getIP(HttpServletRequest request) {
-    if (request == null) {
-      return &quot;0.0.0.0&quot;;
-    }
-  
-    String Xip = request.getHeader(&quot;X-Real-IP&quot;);
-    String XFor = request.getHeader(&quot;X-Forwarded-For&quot;);
-  
-    String UNKNOWN_IP = &quot;unknown&quot;;
-    if (!StringUtils.isEmpty(XFor) &amp;&amp; !UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      //多次反向代理后会有多个ip值，第一个ip才是真实ip
-      int index = XFor.indexOf(&quot;,&quot;);
-      if (index != -1) {
-        return XFor.substring(0, index);
-      } else {
-        return XFor;
-      }
-    }
-  
-    XFor = Xip;
-    if (!StringUtils.isEmpty(XFor) &amp;&amp; !UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      return XFor;
-    }
-  
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;Proxy-Client-IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;WL-Proxy-Client-IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;HTTP_CLIENT_IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;HTTP_X_FORWARDED_FOR&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getRemoteAddr();
-    }
-    return XFor;
-  }
-}
-</code></pre>
-<p>有了这个filter，我们就能在日志中查看所有url的响应时间，然后对比网站静态化前后的响应时间变化。</p>
-<p><a name="3"><font  size=4 face="黑体"><strong>3. 优化方案</strong></font></a></p>
-<p><strong>静态化处理</strong>
-每个页面请求到来，拦截在执行controller接口逻辑之前，判断该请求是否有存在的html文件，如果有直接重定向，跳过数据库访问、数据计算、模板解析等过程。</p>
-<p>如果不存在，则不拦截，正常走业务逻辑、视图解析等正常处理流程。</p>
-<p><strong>大型新闻网站的静态化方案</strong></p>
-<p><img src="/upload/2020/11/s051duoj5ehi1rc8kmb98afhsa.jpg" alt="alt" /></p>
-<p>可以看到，大型网站一般都是将访问的每个url都有直接关联到的静态html，而静态html的维护是由另外一套系统来做。这种方式比较繁琐，系统也很复杂，下面来一起看看我设计的轻量静态化方案。</p>
-<p><strong>轻量的网页静态HTML化方案</strong></p>
-<p>轻量的静态化方案，是基于注解开发的，对业务代码没有侵入性。拦截器在执行controller接口方法之前先执行注解切面逻辑，通过spring的切面编程方式，可以把这部分逻辑作为增强逻辑放到切面模块。</p>
-<p>那controller接口方法的代码不用做任何更改，做到了对业务代码<strong>零入侵</strong>。接下来就来谈谈具体实现方案。</p>
-<p><a name="4"><font  size=4 face="黑体"><strong>4. 方案落地开发</strong></font></a></p>
-<p>废话不多说，直接上代码，博客网站首页的controller接口业务代码，看看是如何启动页面静态化的。</p>
-<pre><code class="language-js"> /**
-     * 首页
-     *
-     * @param vo
-     * @param model
-     * @return
-     */
-    @RequestMapping(&quot;/&quot;)
-    @BussinessLog(value = &quot;进入首页&quot;, platform = PlatformEnum.WEB)
-    @StaticPage(enable=true)
-    public ModelAndView home(ArticleConditionVO vo, Model model) {
-        model.addAttribute(&quot;url&quot;, INDEX_URL);
-        loadIndexPage(vo, model);
+<p><a name="1"><font  size=4 face="黑体"><strong>1. 问题描述</strong></font></a></p>
+<p>SpringMvc的<strong>WebMvcConfigurer</strong>中<strong>excludePathPatterns</strong>配置的路径不拦截“失效“</p>
+<p><strong>设置路径不被拦截</strong></p>
+<pre><code class="language-js">/**
+ * 登录检验拦截
+ * @author YI
+ * @date 2018-7-19 14:55:13
+ */
+@Configuration
+public class WebSecurityConfig implements WebMvcConfigurer {
 
-        return ResultUtil.view(INDEX_URL);
-    }
-</code></pre>
-<p>是的，一个自定义注解@StaticPage直接开启首页接口页面的静态html化，做到了业务代码的零入侵！</p>
-<p><strong>切面增强逻辑</strong></p>
-<ol>
-<li>切面逻辑这块的开发，是直接获取url请求的request对象，并获取html的path，计算得到html的相对路径。</li>
-<li>创建file对象，判断是否存在html文件，存在则重定向到html，结束接口后续响应。</li>
-<li>文件不存在，则不中断响应，响应线程走正常执行业务逻辑、解析模板等过程。</li>
-</ol>
-<p><strong>如何维护静态html文件</strong></p>
-<p>这里设计的方案是，系统根据url所带的秘钥参数来决定执行逻辑，静态化请求都由博客网站后台发出，这是更新html文件的管理方法。如果秘钥正确，则只生成html静态文件，如果秘钥不存在，则重定向到html或生成html后再重定向。</p>
-<p><strong>自定义ViewClass</strong></p>
-<p>SpringBoot项目的解析器ViewResolver可配置自定义ViewClass类，如下代码所示。</p>
-<pre><code class="language-js">@Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
-    
     @Bean
-    public FreeMarkerViewResolver freeMarkerViewResolver() {
-        FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
-        resolver.setViewClass(MyFreeMarkerView.class);
-        resolver.setPrefix(&quot;&quot;);
-        resolver.setSuffix(&quot;.ftl&quot;);
-        resolver.setContentType(&quot;text/html; charset=UTF-8&quot;);
-        resolver.setRequestContextAttribute(&quot;rc&quot;);
-        return resolver;
+    public JdkApiInterceptor JdkApiInterceptor(){
+        return new JdkApiInterceptor();
     }
+
+    /**
+     * 拦截器注册 设置拦截接口
+     * @param registry
+     */
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+    	
+        registry.addInterceptor(JdkApiInterceptor()).addPathPatterns(&quot;/**&quot;)//设置拦截所有的路径
+        		//排除的路径：静态资源路径。防止被JdkApiInterceptor拦截
+                .excludePathPatterns(&quot;/loginCheck&quot;,&quot;/login&quot;,
+                        &quot;/js/**&quot;, &quot;/css/**&quot;, &quot;/imag/**&quot;);
+    }
+</code></pre>
+<p><strong>拦截器</strong>
+所有未配置不拦截的路径  都会被这个拦截器拦截，不满足条件就会重定向到login页面。</p>
+<pre><code class="language-js">package org.jackdking.login.jwt.inteceptor;
+
+import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.jackdking.login.jwt.utils.CookieUtil;
+import org.jackdking.login.jwt.utils.RedisOperator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+public class JdkApiInterceptor implements HandlerInterceptor {
+	
+	
+    private static final Logger logger = LoggerFactory.getLogger(JdkApiInterceptor.class);
     
+    
+    public static final String USER_REDIS_SESSION = &quot;user_redis_session&quot;;
+
+    @Autowired
+    public RedisOperator redis;
+
+    /**
+     * 拦截请求，在controller调用之前
+     * 返回 false：请求被拦截，返回
+     * 返回 true ：请求OK，可以继续执行，放行
+     */
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
+        String userToken = CookieUtil.getCookie(&quot;userToken&quot;);//获取用户cookies
+        String userName = CookieUtil.getCookie(&quot;userName&quot;);
+        
+//        //放开登入接口
+//        String uri = request.getRequestURI();
+//        logger.info(&quot;请求uri:&quot; + uri);
+//        
+//        if(uri.equals(&quot;loginCheck&quot;))
+//        	return true;
+//        
+        logger.info(&quot;拦截UserToken：&quot; + userToken + &quot; ======= 拦截UserId：&quot; + userName);
+        //用户id和token都不为空
+        if (!StringUtils.isEmpty(userName) &amp;&amp; !StringUtils.isEmpty(userToken)) {
+        	
+        	//根据userid生成唯一key从redis中查出唯一token
+            String uniqueToken = redis.get(USER_REDIS_SESSION + &quot;:&quot; + userName);
+            logger.info(&quot;拦截uniqueToken：&quot; + uniqueToken);
+            
+            //如果唯一token为空 ，则拦截url重定向到登入页面
+            if (!StringUtils.isEmpty(uniqueToken) &amp;&amp; !StringUtils.isEmpty(uniqueToken)) {
+                response.sendRedirect(&quot;/login&quot;);
+                returnErrorResponse(response, &quot;请登录...&quot;);
+
+                return false;
+            }
+        //用户id和token有一个为空，则重定向登入页面
+        } else {
+            response.sendRedirect(&quot;/login&quot;);
+            returnErrorResponse(response,&quot;请登录...&quot;);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * 把拦截数据返回给前端
+     * @param response
+     * @param result
+     * @throws IOException
+     */
+    private void returnErrorResponse(HttpServletResponse response, String result) throws IOException {
+        response.setContentType(&quot;text/json&quot;);
+        response.setCharacterEncoding(&quot;utf-8&quot;);
+        OutputStream out = null;
+        try {
+            out = response.getOutputStream();
+            out.write(result.getBytes(&quot;utf-8&quot;));
+            out.flush();
+        } finally {
+            if(out!=null){
+                out.close();
+            }
+        }
+    }
+
+    /**
+     * 请求controller之后，渲染视图之前
+     */
+    @Override
+    public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, ModelAndView arg3) throws Exception {
+
+    }
+
+    /**
+     * 请求controller之后，视图渲染之后
+     */
+    @Override
+    public void afterCompletion(HttpServletRequest arg0, HttpServletResponse arg1, Object arg2, Exception arg3) throws Exception {
+
+    }
+}
+
+</code></pre>
+<p><strong>测试loginCheck接口：http://localhost:8080/loginCheck</strong>
+发现  访问该接口后 返回的是登入页面 因此“<strong>认定</strong>“（其实是错误的）被拦截了</p>
+<p><img src="/upload/2020/09/5n045vko3eihfoahh68v1cnd2m.jpg" alt="alt" /></p>
+<p><a name="2"><font  size=4 face="黑体"><strong>2. 发现问题</strong></font></a></p>
+<p>在拦截器中打印 每次拦截的url路径</p>
+<pre><code class="language-js">        //放开登入接口
+        String uri = request.getRequestURI();
+        logger.info(&quot;请求uri:&quot; + uri);
+        
+        if(uri.equals(&quot;loginCheck&quot;))
+        	return true;
+</code></pre>
+<p>然后再次访问loginCheck接口，日志结果如下</p>
+<pre><code class="language-js">2020-09-30 11:25:20.933  INFO 5808 --- [nio-8080-exec-2] o.j.l.jwt.inteceptor.JdkApiInterceptor   : 请求uri:/error
+</code></pre>
+<p>loginCheck接口确实没有被拦截，但是多了个 /error接口。查阅资料发线，springboot接口中默认的拦截器 会拦截接口错误并重定向到/error接口。</p>
+<p>因此 我们配置的 /loginCheck接口确实是成功放行了。</p>
+<p><a name="3"><font  size=4 face="黑体"><strong>3. 解决问题</strong></font></a></p>
+<p>这里就不要再拦截 /error借口了，因此要将/error放入到不拦截配置中，重新访问后返回结果如下：
+postman返回结果</p>
+<pre><code class="language-js">{
+    &quot;timestamp&quot;: 1601436537651,
+    &quot;status&quot;: 400,
+    &quot;error&quot;: &quot;Bad Request&quot;,
+    &quot;exception&quot;: &quot;org.springframework.web.bind.MissingServletRequestParameterException&quot;,
+    &quot;message&quot;: &quot;Required String parameter 'username' is not present&quot;,
+    &quot;path&quot;: &quot;/loginCheck&quot;
 }
 </code></pre>
-<p>在执行完controller接口后、解析视图模板之前执行ViewClass中的doRender方法逻辑，如下代码的位置，这块逻辑来判断是否继续执行模板解析逻辑。</p>
-<pre><code class="language-js">public class MyFreeMarkerView extends FreeMarkerView{  
-	
-
-	private static final Logger log = LoggerFactory.getLogger(MyFreeMarkerView.class);
-
-   
-    @Override  
-    protected void doRender(Map model,  
-            HttpServletRequest request, HttpServletResponse response)  
-            throws Exception { 
-            ......在业务逻辑执行之后 、 模板解析之前的逻辑。
-            }
-</code></pre>
-<p><a name="5"><font  size=4 face="黑体"><strong>5. 优化成果</strong></font></a>
-<a name="6"><font  size=4 face="黑体"><strong>6. 网站性能还能提升吗？</strong></font></a></p>
-<p>其实，在前面分析的响应过程里，html下载(html文件的网络传输)也是非常消耗时间的阶段，静态化html文件的存放位置还能进一步优化，在这个项目中我们存放在服务这一侧，其实还可以放在网站接入层nginx服务器。</p>
-<p>对于静态html文件，可以直接上传到与用户在同一个城市的网络运营商CDN服务器，这样文件的网络传输过程就大大缩减了，网页打开速度会更快。现在很多新闻网站、博客网站都是在使用运营商CDN服务的，甚至视频网站也会将最新视频上传到CDN，以加快用户响应速度。</p>
-<p>完整的demo项目，请关注公众号“前沿科技bot“并发送&quot;&quot;获取。</p>
+<p><font size=5><strong>关注共图社，有更多惊喜。</strong></font></p>
+<hr />
+<center><font  size=2><font color=red>转载这篇文章需要标注作者和出处：</font><font color=purple >空白-bittechblog</font></font></center>
 <p><img src="/upload/2020/05/6s8d58g77ehftpcen62h4v4bss.png" alt="alt" /></p>
 </div>
     <div id="guanzhu" class= "asb-post-01"  style="display:block">
@@ -688,7 +671,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 <html lang="en">
 <body>
 <div>
-    <div id="127" class="comment-container">
+    <div id="102" class="comment-container">
         <div id="comments" class="clearfix">
             <div>
                 <span class="response">
@@ -697,7 +680,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 <form method="post" id="comment-form" class="comment-form" role="form"
                       onsubmit="return TaleComment.subComment();">
                     <input type="hidden" name="coid" id="coid"/>
-                    <input type="hidden" name="cid" id="cid" value="127"/>
+                    <input type="hidden" name="cid" id="cid" value="102"/>
                     <input type="hidden" name="_csrf_token" value=""/>
                     <input type="text" name="author" maxlength="12" id="author"
                            class="form-control input-control clearfix"

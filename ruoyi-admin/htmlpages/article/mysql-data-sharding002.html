@@ -14,7 +14,7 @@
     <meta name="description"/>
     <link rel="shortcut icon" href="/user/img/logo.png"/>
     <link rel="apple-touch-icon" href="/user/img/apple-touch-icon.png"/>
-    <title>大型网站架构师方案—屌爆了！这种优化方案让我网站响应速度提高了近80倍 - 微服务与架构师社区</title>
+    <title>Mysql数据分片技术(二)——轻量分库分表框架Sharding-jdbc实例 - 微服务与架构师社区</title>
     <link href="//cdn.bootcss.com/highlight.js/9.9.0/styles/xcode.min.css" rel="stylesheet"/>
     <link href="/user/css/style.min.css" rel="stylesheet"/>
     
@@ -268,14 +268,14 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 <section class="jumbotron intro" data-pattern-id="本站 所有文章">
     <div class="container" >
         <div id="jumbotron-meta-info" style="color: #FFFFFF;">        
-            <h1>大型网站架构师方案—屌爆了！这种优化方案让我网站响应速度提高了近80倍</h1>
+            <h1>Mysql数据分片技术(二)——轻量分库分表框架Sharding-jdbc实例</h1>
             <br/>
             <span class="meta-info" style="color: #FFFFFF;" >
                 <span class="octicon octicon-calendar"></span> 
             	作者：空白
             	
  				
-                	<p><time datetime="2020-11-22" itemprop="datePublished">Time: 2020-11-22</time></p>
+                	<p><time datetime="2020-04-27" itemprop="datePublished">Time: 2020-04-27</time></p>
             	
             </span>
         </div>
@@ -464,204 +464,124 @@ function refresh(){
 <article class="main-content post-page">
     <div id="post-content"  class="post-content"><ul>
 <li>
-<p><font size=4><a href="#1"><strong>1. 网站性能的指标</strong></a></font></p>
+<p><font size=4><a href="#1"><strong>1. 初识shardingJdbc</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#2"><strong>2. 网站性能检测方法</strong></a></font></p>
+<p><font size=4><a href="#2"><strong>2. sharding-jdbc四种配置方式</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#3"><strong>3. 优化方案</strong></a></font></p>
+<p><font size=4><a href="#3"><strong>3. YAML配置方式及mysql环境准备</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#4"><strong>4. 方案落地开发</strong></a></font></p>
+<p><font size=4><a href="#4"><strong>4. sharding-jdbc分库分表实例测试</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#5"><strong>5. 优化成果</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#6"><strong>6. 网站性能还能提升吗？</strong></a></font></p>
+<p><font size=4><a href="#5"><strong>5. 轻量的sharding-jdbc在我目前工作项目的集成方案</strong></a></font></p>
 </li>
 </ul>
-<p><a name="1"><font  size=4 face="黑体"><strong>1. 网站性能的指标</strong></font></a></p>
-<p>博客网站的页面打开时间一旦超过10s就会容易让用户关闭网站，从而增加跳出率。但实际情况是，大部分用户对于网页打开时间超过3s的可能都无法接受。</p>
-<p><strong>网站性能指标</strong></p>
-<p>对于网站的性能指标，最重要的是响应时间、吞吐量、并发数。
-<strong>响应时间</strong>是浏览器发出请求到收到响应并最终渲染到界面上的总时间，能很直观的反映系统的快慢。
-<strong>吞吐量</strong>是单位时间处理的请求数，也称为TPS，能体现系统容量。
-<strong>并发数</strong>是指系统同时能处理的请求数，例如双十一，上亿用户在线，而且短时间内都访问系统，这时候网站就需要极高的并发能力支持。</p>
-<p><strong>关联</strong>
-其实细细思考，这几个网站的性能指标，它们之间是有关联关系的。
-就拿高速公路收费站来类比，响应时间(RT)就是收费窗口处理收费事件的时间，吞吐量(TPS)是单位时间内收费站窗口总共经过了多少辆车，而并发量(P)就是总共有多少个收费通道。</p>
-<p>TPS = p*(1/RT）</p>
-<p><strong>但是这篇文章核心内容是谈谈如何优化网站的RT：响应时间。</strong> 通过降低网站RT时间来提高网站的吞吐量，提高用户的体验。</p>
-<p><a name="2"><font  size=4 face="黑体"><strong>2. 网站性能检测方法</strong></font></a></p>
-<p>从输入url，到页面渲染结束，全过程可大致分为以下几个阶段：</p>
-<ol>
-<li>从浏览器输入url，DNS域名解析，查找到域名绑定的id地址。</li>
-<li>建立TCP连接：客户端浏览器和web服务器建立TCP连接（传输控制协议），三次握手。</li>
-<li>发送HTTP request请求：客户端浏览器向对应的ip地址web服务器发送http请求。</li>
-<li>web服务器反向代理：Nginx反向代理，解析域名转发到对应的应用服务器上。</li>
-<li>服务器业务逻辑处理：业务接口逻辑，访问数据库或访问缓存，数据计算等过程。</li>
-<li>视图解析：拿第五步得到业务数据结合视图模板进行解析，得到html文件。</li>
-<li>客户端浏览器渲染：渲染响应页面，客户端浏览器下载数据，解析HTML，完成页面的排版。</li>
-<li>响应完成，断开tcp连接。</li>
-</ol>
-<p>在这8个阶段，其中对于网站响应优化最明显的地方就是<strong>第五、六阶段</strong>，对于绝大多数博客网站来说，网页都是相对静态的，很少有数据的变化。因此通过将博客网页静态化处理，可以省去响应过程最耗时的这两个阶段，能大大降低响应时间。</p>
-<p><strong>过滤器统计响应时间</strong></p>
-<p>SpringBoot的API过滤器:ApiAccessFilter。使用注解的开发方式，如下代码所示。@WebFilter修饰实现了Filter接口的类，参数filterName为拦截器名称，urlPatterns设置拦截的url模式。Api响应时间计算逻辑在doFilter方法中实现。</p>
-<pre><code class="language-js">@WebFilter(filterName = &quot;ApiAccessFilter&quot;, urlPatterns = &quot;/*&quot;)
-public class ApiAccessFilter implements Filter { 
-  
-  @Override
-  public void init(FilterConfig filterConfig) { 
-  }
-  
-  @Override
-  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
-    FilterChain filterChain) throws IOException, ServletException {
-  
-    HttpServletRequest request = (HttpServletRequest) servletRequest;
-  
-//    Long requestId = IdGenUtils.nextIdByMem(); // 请求ID，这个是我业务中的id，大家可自行决定是否需要
-    long start = System.currentTimeMillis(); // 请求进入时间
-  
-    log.info(&quot;[Api Access] start. uri: {}, method: {}, client: {}&quot;,
-    request.getRequestURI(), request.getMethod(), getIP(request));
-    filterChain.doFilter(servletRequest, servletResponse);
-    log.info(&quot;[Api Access]  end. uri: {}, method: {}, client: {}, duration: {}ms&quot;,
-    request.getRequestURI(), request.getMethod(), getIP(request),System.currentTimeMillis() - start); 
-  }
-  
-  @Override
-  public void destroy() {
-  
-  }
-  
-  /**
-   * 获取IP地址
-   *
-   * @param request 请求
-   * @return request发起客户端的IP地址
-   */
-  private String getIP(HttpServletRequest request) {
-    if (request == null) {
-      return &quot;0.0.0.0&quot;;
-    }
-  
-    String Xip = request.getHeader(&quot;X-Real-IP&quot;);
-    String XFor = request.getHeader(&quot;X-Forwarded-For&quot;);
-  
-    String UNKNOWN_IP = &quot;unknown&quot;;
-    if (!StringUtils.isEmpty(XFor) &amp;&amp; !UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      //多次反向代理后会有多个ip值，第一个ip才是真实ip
-      int index = XFor.indexOf(&quot;,&quot;);
-      if (index != -1) {
-        return XFor.substring(0, index);
-      } else {
-        return XFor;
-      }
-    }
-  
-    XFor = Xip;
-    if (!StringUtils.isEmpty(XFor) &amp;&amp; !UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      return XFor;
-    }
-  
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;Proxy-Client-IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;WL-Proxy-Client-IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;HTTP_CLIENT_IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;HTTP_X_FORWARDED_FOR&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getRemoteAddr();
-    }
-    return XFor;
-  }
-}
+<p><a name="1"><font  size=4 face="黑体"><strong>1. 初识shardingJdbc</strong></font></a></p>
+<p>定位为轻量级Java框架，在Java的JDBC层提供的额外服务。 它使用客户端直连数据库，以jar包形式提供服务，无需额外部署和依赖，可理解为增强版的JDBC驱动，完全兼容JDBC和各种ORM框架。</p>
+<p>sharding-jdbc兼容的ORM框架有JPA, Hibernate, Mybatis, Spring JDBC Template，本文的实例项目就是基于mybatis框架的springboot项目。</p>
+<p>sharding-jdbc是个轻量的数据库分片框架，分片模块是嵌入在每个应用程序中，属于应用程序的一部分。这种模式适合服务数量小的场景，如果服务数量是万级的集群，那么这种客户端模式的数据分片技术就不适用，而数据库分片代理模式就有明显的优势了。客户端模式如下图：</p>
+<p><img src="/upload/2020/04/59lt8pa0vkgucpgve9v6klfgjq.jpg" alt="alt" /></p>
+<p><a name="2"><font  size=4 face="黑体"><strong>2. sharding-jdbc四种配置方式</strong></font></a></p>
+<p>官方介绍了sharding-jdbc的四种配置方式：Java，YAML，Spring命名空间和Spring Boot Starter等。</p>
+<p>我们一般把Java配置方式成为动态配置的方式，这种方式<a href="/article/about-me" target="_blank">空白</a>会在mysql分片技术系列的sharding-jdbc的java方式中详细讲解。</p>
+<p>其实springboot的静态配置方式有3种，分别是yaml，springboot  starter以及spring命名空间。本文介绍的是我的一个yaml方式创建的分库分表springboot实例。</p>
+<p><font size=3><strong>静态配置方式的缺点。</strong></font><br/>
+静态配置的方式最大的不足就是不能动态的修改数据源的配置信息。当我们需要对数据库进行扩容和缩容的时候，我们必须把服务节点宕机停服来修改配置文件信息。即无法支持动态扩容。</p>
+<p><a name="3"><font  size=4 face="黑体"><strong>3. YAML配置方式及mysql环境准备</strong></font></a></p>
+<p>我的实例项目准备了两个mysql的数据库，每个数据库中有两个订单表TransInfo(TransInfo0和TransInfo1)，两个数据库是myutilproject0和myutilproject1。</p>
+<p>数据库创建脚本</p>
+<pre><code class="language-js">create database myutilproject0
+create database myutilproject1
+use myutilproject0
+create table TransInfo0( id bigint primary key auto_increment, userid varchar(20) not null, orderid bigint(20)   unsigned NOT NULL );
+create table TransInfo1( id bigint primary key auto_increment, userid varchar(20) not null, orderid bigint(20)   unsigned NOT NULL );
+use myutilproject1
+create table TransInfo0( id bigint primary key auto_increment, userid varchar(20) not null, orderid bigint(20)   unsigned NOT NULL );
+create table TransInfo1( id bigint primary key auto_increment, userid varchar(20) not null, orderid bigint(20)   unsigned NOT NULL );
 </code></pre>
-<p>有了这个filter，我们就能在日志中查看所有url的响应时间，然后对比网站静态化前后的响应时间变化。</p>
-<p><a name="3"><font  size=4 face="黑体"><strong>3. 优化方案</strong></font></a></p>
-<p><strong>静态化处理</strong>
-每个页面请求到来，拦截在执行controller接口逻辑之前，判断该请求是否有存在的html文件，如果有直接重定向，跳过数据库访问、数据计算、模板解析等过程。</p>
-<p>如果不存在，则不拦截，正常走业务逻辑、视图解析等正常处理流程。</p>
-<p><strong>大型新闻网站的静态化方案</strong></p>
-<p><img src="/upload/2020/11/s051duoj5ehi1rc8kmb98afhsa.jpg" alt="alt" /></p>
-<p>可以看到，大型网站一般都是将访问的每个url都有直接关联到的静态html，而静态html的维护是由另外一套系统来做。这种方式比较繁琐，系统也很复杂，下面来一起看看我设计的轻量静态化方案。</p>
-<p><strong>轻量的网页静态HTML化方案</strong></p>
-<p>轻量的静态化方案，是基于注解开发的，对业务代码没有侵入性。拦截器在执行controller接口方法之前先执行注解切面逻辑，通过spring的切面编程方式，可以把这部分逻辑作为增强逻辑放到切面模块。</p>
-<p>那controller接口方法的代码不用做任何更改，做到了对业务代码<strong>零入侵</strong>。接下来就来谈谈具体实现方案。</p>
-<p><a name="4"><font  size=4 face="黑体"><strong>4. 方案落地开发</strong></font></a></p>
-<p>废话不多说，直接上代码，博客网站首页的controller接口业务代码，看看是如何启动页面静态化的。</p>
-<pre><code class="language-js"> /**
-     * 首页
-     *
-     * @param vo
-     * @param model
-     * @return
-     */
-    @RequestMapping(&quot;/&quot;)
-    @BussinessLog(value = &quot;进入首页&quot;, platform = PlatformEnum.WEB)
-    @StaticPage(enable=true)
-    public ModelAndView home(ArticleConditionVO vo, Model model) {
-        model.addAttribute(&quot;url&quot;, INDEX_URL);
-        loadIndexPage(vo, model);
+<p>yaml配置方式</p>
+<pre><code class="language-js">#设置内置tomcat的启动端口号
+server:
+  port: 8080
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.kingspringboot.springboot.myProject.com.bean
+#分库分表配置信息
+spring:
+  profiles:
+    active: test-ev,jackdking,testbeanone
+  main:
+# sharding-jdbc定义了重复的dataSource数据源bean，启动时必须添加以下值
+    allow-bean-definition-overriding: true
+# sharding-jdbc 分库、分表配置
+  shardingsphere:
+    datasource:
+      names: ds0,ds1
+      ds0:
+        type: com.alibaba.druid.pool.DruidDataSource
 
-        return ResultUtil.view(INDEX_URL);
-    }
+        url: jdbc:mysql://192.168.3.9:3306/myutilproject0?characterEncoding=GBK&amp;useSSL=false
+        username: jackdking
+        password: ncl@1234
+        driver-class-name: com.mysql.jdbc.Driver
+      ds1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://192.168.3.9:3306/myutilproject1?characterEncoding=GBK&amp;useSSL=false
+        username: jackdking
+        password: ncl@1234
+        driver-class-name: com.mysql.jdbc.Driver
+    sharding:
+      tables:
+        TransInfo:
+          actual-data-nodes: ds$-&gt;{0..1}.TransInfo$-&gt;{0..1}
+          table-strategy:
+            inline:
+              #分片规则对应列，即以user_id值作为分片规则的列
+              sharding-column: orderid
+              #分片按user_id列和10取模运算，路由到对应的order0...9的表
+              algorithm-expression: TransInfo$-&gt;{orderid % 2}
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+      default-database-strategy:
+        inline:
+          sharding-column: id
+          algorithm-expression: ds$-&gt;{id % 2}
+    props:
+      sql.show: true      
 </code></pre>
-<p>是的，一个自定义注解@StaticPage直接开启首页接口页面的静态html化，做到了业务代码的零入侵！</p>
-<p><strong>切面增强逻辑</strong></p>
-<ol>
-<li>切面逻辑这块的开发，是直接获取url请求的request对象，并获取html的path，计算得到html的相对路径。</li>
-<li>创建file对象，判断是否存在html文件，存在则重定向到html，结束接口后续响应。</li>
-<li>文件不存在，则不中断响应，响应线程走正常执行业务逻辑、解析模板等过程。</li>
-</ol>
-<p><strong>如何维护静态html文件</strong></p>
-<p>这里设计的方案是，系统根据url所带的秘钥参数来决定执行逻辑，静态化请求都由博客网站后台发出，这是更新html文件的管理方法。如果秘钥正确，则只生成html静态文件，如果秘钥不存在，则重定向到html或生成html后再重定向。</p>
-<p><strong>自定义ViewClass</strong></p>
-<p>SpringBoot项目的解析器ViewResolver可配置自定义ViewClass类，如下代码所示。</p>
-<pre><code class="language-js">@Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
-    
-    @Bean
-    public FreeMarkerViewResolver freeMarkerViewResolver() {
-        FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
-        resolver.setViewClass(MyFreeMarkerView.class);
-        resolver.setPrefix(&quot;&quot;);
-        resolver.setSuffix(&quot;.ftl&quot;);
-        resolver.setContentType(&quot;text/html; charset=UTF-8&quot;);
-        resolver.setRequestContextAttribute(&quot;rc&quot;);
-        return resolver;
-    }
-    
-}
-</code></pre>
-<p>在执行完controller接口后、解析视图模板之前执行ViewClass中的doRender方法逻辑，如下代码的位置，这块逻辑来判断是否继续执行模板解析逻辑。</p>
-<pre><code class="language-js">public class MyFreeMarkerView extends FreeMarkerView{  
-	
-
-	private static final Logger log = LoggerFactory.getLogger(MyFreeMarkerView.class);
-
-   
-    @Override  
-    protected void doRender(Map model,  
-            HttpServletRequest request, HttpServletResponse response)  
-            throws Exception { 
-            ......在业务逻辑执行之后 、 模板解析之前的逻辑。
-            }
-</code></pre>
-<p><a name="5"><font  size=4 face="黑体"><strong>5. 优化成果</strong></font></a>
-<a name="6"><font  size=4 face="黑体"><strong>6. 网站性能还能提升吗？</strong></font></a></p>
-<p>其实，在前面分析的响应过程里，html下载(html文件的网络传输)也是非常消耗时间的阶段，静态化html文件的存放位置还能进一步优化，在这个项目中我们存放在服务这一侧，其实还可以放在网站接入层nginx服务器。</p>
-<p>对于静态html文件，可以直接上传到与用户在同一个城市的网络运营商CDN服务器，这样文件的网络传输过程就大大缩减了，网页打开速度会更快。现在很多新闻网站、博客网站都是在使用运营商CDN服务的，甚至视频网站也会将最新视频上传到CDN，以加快用户响应速度。</p>
-<p>完整的demo项目，请关注公众号“前沿科技bot“并发送&quot;&quot;获取。</p>
+<p>1.首先设置mysql数据源，本项目有两个数据源，分别是ds0和ds1<br/>
+2.设置分库策略，sharding-column: id 根据id来进行分库，algorithm-expression: ds$-&gt;{id % 2} 每条数据额id字段对2取模，取模后的数字与ds拼接在一起得到最终的数据源名称。<br/>
+3.分表策略：
+1） actual-data-nodes: ds$-&gt;{0..1}.TransInfo$-&gt;{0..1} 最终计算得到的最终物理表是 ds[0,1].TransInfo[0,1]<br/>
+2） sharding-column: orderid 根据记录的orderid字段来进行分表<br/>
+3）  algorithm-expression: TransInfo$-&gt;{orderid % 2} 分表规则是orderid字段对2取模计算得到的余数拼接到TransInfo的后面即为最终的表名。<br/></p>
+<p><a name="4"><font  size=4 face="黑体"><strong>4. sharding-jdbc分库分表实例测试</strong></font></a></p>
+<p>除了mysql两个数据库和表的准备以及yaml的方式配置sharding-jdbc模块外，我的实例项目还提供了完整的测试代码，包括controller层，service层以及dao层。</p>
+<p>controller层代码</p>
+<p><img src="/upload/2020/04/490tgdt2o8gkppn8q9lpauaaor.jpg" alt="alt" /></p>
+<p>service层代码</p>
+<p><img src="/upload/2020/04/6femcmt18cjj6ps2jvc9gnhcld.jpg" alt="alt" /></p>
+<p><strong>最重要的是DAO层的配置</strong></p>
+<p><img src="/upload/2020/04/0b6fmgn334hunpaj9v8gl8j2nl.jpg" alt="alt" /></p>
+<p>1.表名称不是物理表名称TransInfo0和TransInfo1，而是TransInfo。物理名称都会经过分库分表逻辑计算到。</p>
+<p>2.插入语句的字段必须要有分库分表逻辑字段，一般这种分段逻辑字段都是不能为空的。</p>
+<p><a name="5"><font  size=4 face="黑体"><strong>5. 轻量的sharding-jdbc在我目前工作项目的集成方案</strong></font></a></p>
+<p>支付中台系统用户表是一张oracle的单表，使用唯一索引的情况下，查询和更新性能是满足要求的，但是如果是高并发的情况，性能是完全不符合要求的，这时候大表性能就非常差了。</p>
+<p>因此账户表这张大表就需要进行分库分表，而且每笔支付请求都要去查询校验账户的信息，因此账户表的访问量跟交易量是正相关的。一张大的单表在高并发场景下首先考虑的就是要分库分表，把访问压力拆分到不同的磁盘和数据库服务器。</p>
+<p>目前订单交易表是经过了分表处理的，总共8张表，每张表也做了分区处理，按订单创建时间月份分区，但是交易表使用的还是oracle数据库。目前互联网公司分库分表的解决方案都倾向于使用mysql数据库。</p>
+<p>8张表存放的是交易数据，这8张表只用于支付订单业务。对账，财务业务是不使用这8张交易表的，因为对账，财务业务等一些其他的支付交易之外的业务使用的是一张独立的订单数据表，这张表是一张进行分区的大表，主要用来给对账，财务等业务提供复杂的数据库操作，这些是分表的交易表无法提供的。对于订单数据的BI业务，我们还有另外一张查询表，同样这张表也存放一份交易数据，用于数据的操作。</p>
+<p>用于业务处理的订单表和BI数据分析的订单表的数据都是和8张交易表中的数据是一样的。数据同步是以消息队列方式来处理的：交易表数据入库后，会发送数据的插入消息放到消息队列，消费端会将数据入库两张单表中。</p>
+<p>通过冗余订单数据，创建多分订单表数据，将非核心业务与核心交易隔离开来。
+<img src="/upload/2020/04/tnjc58dlqugvgrl9pcdib58cgp.jpg" alt="alt" /></p>
+<p><strong>对于这样的数据库设计架构，我这把可以很方便的将交易表数据迁移到mysql数据库。</strong></p>
+<p><strong>除了对交易表的数据迁移之外，现在消息队列目前还只是使用redis的list数据结构，不能保证消息的高可用和数据的表之间的数据一致性以及消息的不丢失。</strong></p>
+<p><font size=5><strong>关注共图社，有更多惊喜。</strong></font></p>
+<hr />
+<p>还要配置状态转移信息以及事件处理器逻辑的开发。完整的demo项目，请关注公众号“前沿科技bot“并发送&quot;分库分表&quot;获取。</p>
 <p><img src="/upload/2020/05/6s8d58g77ehftpcen62h4v4bss.png" alt="alt" /></p>
 </div>
     <div id="guanzhu" class= "asb-post-01"  style="display:block">
@@ -688,7 +608,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 <html lang="en">
 <body>
 <div>
-    <div id="127" class="comment-container">
+    <div id="21" class="comment-container">
         <div id="comments" class="clearfix">
             <div>
                 <span class="response">
@@ -697,7 +617,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 <form method="post" id="comment-form" class="comment-form" role="form"
                       onsubmit="return TaleComment.subComment();">
                     <input type="hidden" name="coid" id="coid"/>
-                    <input type="hidden" name="cid" id="cid" value="127"/>
+                    <input type="hidden" name="cid" id="cid" value="21"/>
                     <input type="hidden" name="_csrf_token" value=""/>
                     <input type="text" name="author" maxlength="12" id="author"
                            class="form-control input-control clearfix"

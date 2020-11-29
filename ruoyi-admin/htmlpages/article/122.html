@@ -14,7 +14,7 @@
     <meta name="description"/>
     <link rel="shortcut icon" href="/user/img/logo.png"/>
     <link rel="apple-touch-icon" href="/user/img/apple-touch-icon.png"/>
-    <title>大型网站架构师方案—屌爆了！这种优化方案让我网站响应速度提高了近80倍 - 微服务与架构师社区</title>
+    <title>Java架构师方案——Spring Security（一）快速入门 - 微服务与架构师社区</title>
     <link href="//cdn.bootcss.com/highlight.js/9.9.0/styles/xcode.min.css" rel="stylesheet"/>
     <link href="/user/css/style.min.css" rel="stylesheet"/>
     
@@ -268,14 +268,14 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 <section class="jumbotron intro" data-pattern-id="本站 所有文章">
     <div class="container" >
         <div id="jumbotron-meta-info" style="color: #FFFFFF;">        
-            <h1>大型网站架构师方案—屌爆了！这种优化方案让我网站响应速度提高了近80倍</h1>
+            <h1>Java架构师方案——Spring Security（一）快速入门</h1>
             <br/>
             <span class="meta-info" style="color: #FFFFFF;" >
                 <span class="octicon octicon-calendar"></span> 
             	作者：空白
             	
  				
-                	<p><time datetime="2020-11-22" itemprop="datePublished">Time: 2020-11-22</time></p>
+                	<p><time datetime="2020-11-09" itemprop="datePublished">Time: 2020-11-09</time></p>
             	
             </span>
         </div>
@@ -464,204 +464,199 @@ function refresh(){
 <article class="main-content post-page">
     <div id="post-content"  class="post-content"><ul>
 <li>
-<p><font size=4><a href="#1"><strong>1. 网站性能的指标</strong></a></font></p>
+<p><font size=4><a href="#1"><strong>1. 导读</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#2"><strong>2. 网站性能检测方法</strong></a></font></p>
+<p><font size=4><a href="#2"><strong>2. 快速认识Spring Security</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#3"><strong>3. 优化方案</strong></a></font></p>
+<p><font size=4><a href="#3"><strong>3. 运行Spring Security项目</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#4"><strong>4. 方案落地开发</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#5"><strong>5. 优化成果</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#6"><strong>6. 网站性能还能提升吗？</strong></a></font></p>
+<p><font size=4><a href="#4"><strong>4. 架构师角色对web安全服务的理解</strong></a></font></p>
 </li>
 </ul>
-<p><a name="1"><font  size=4 face="黑体"><strong>1. 网站性能的指标</strong></font></a></p>
-<p>博客网站的页面打开时间一旦超过10s就会容易让用户关闭网站，从而增加跳出率。但实际情况是，大部分用户对于网页打开时间超过3s的可能都无法接受。</p>
-<p><strong>网站性能指标</strong></p>
-<p>对于网站的性能指标，最重要的是响应时间、吞吐量、并发数。
-<strong>响应时间</strong>是浏览器发出请求到收到响应并最终渲染到界面上的总时间，能很直观的反映系统的快慢。
-<strong>吞吐量</strong>是单位时间处理的请求数，也称为TPS，能体现系统容量。
-<strong>并发数</strong>是指系统同时能处理的请求数，例如双十一，上亿用户在线，而且短时间内都访问系统，这时候网站就需要极高的并发能力支持。</p>
-<p><strong>关联</strong>
-其实细细思考，这几个网站的性能指标，它们之间是有关联关系的。
-就拿高速公路收费站来类比，响应时间(RT)就是收费窗口处理收费事件的时间，吞吐量(TPS)是单位时间内收费站窗口总共经过了多少辆车，而并发量(P)就是总共有多少个收费通道。</p>
-<p>TPS = p*(1/RT）</p>
-<p><strong>但是这篇文章核心内容是谈谈如何优化网站的RT：响应时间。</strong> 通过降低网站RT时间来提高网站的吞吐量，提高用户的体验。</p>
-<p><a name="2"><font  size=4 face="黑体"><strong>2. 网站性能检测方法</strong></font></a></p>
-<p>从输入url，到页面渲染结束，全过程可大致分为以下几个阶段：</p>
-<ol>
-<li>从浏览器输入url，DNS域名解析，查找到域名绑定的id地址。</li>
-<li>建立TCP连接：客户端浏览器和web服务器建立TCP连接（传输控制协议），三次握手。</li>
-<li>发送HTTP request请求：客户端浏览器向对应的ip地址web服务器发送http请求。</li>
-<li>web服务器反向代理：Nginx反向代理，解析域名转发到对应的应用服务器上。</li>
-<li>服务器业务逻辑处理：业务接口逻辑，访问数据库或访问缓存，数据计算等过程。</li>
-<li>视图解析：拿第五步得到业务数据结合视图模板进行解析，得到html文件。</li>
-<li>客户端浏览器渲染：渲染响应页面，客户端浏览器下载数据，解析HTML，完成页面的排版。</li>
-<li>响应完成，断开tcp连接。</li>
-</ol>
-<p>在这8个阶段，其中对于网站响应优化最明显的地方就是<strong>第五、六阶段</strong>，对于绝大多数博客网站来说，网页都是相对静态的，很少有数据的变化。因此通过将博客网页静态化处理，可以省去响应过程最耗时的这两个阶段，能大大降低响应时间。</p>
-<p><strong>过滤器统计响应时间</strong></p>
-<p>SpringBoot的API过滤器:ApiAccessFilter。使用注解的开发方式，如下代码所示。@WebFilter修饰实现了Filter接口的类，参数filterName为拦截器名称，urlPatterns设置拦截的url模式。Api响应时间计算逻辑在doFilter方法中实现。</p>
-<pre><code class="language-js">@WebFilter(filterName = &quot;ApiAccessFilter&quot;, urlPatterns = &quot;/*&quot;)
-public class ApiAccessFilter implements Filter { 
-  
-  @Override
-  public void init(FilterConfig filterConfig) { 
-  }
-  
-  @Override
-  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
-    FilterChain filterChain) throws IOException, ServletException {
-  
-    HttpServletRequest request = (HttpServletRequest) servletRequest;
-  
-//    Long requestId = IdGenUtils.nextIdByMem(); // 请求ID，这个是我业务中的id，大家可自行决定是否需要
-    long start = System.currentTimeMillis(); // 请求进入时间
-  
-    log.info(&quot;[Api Access] start. uri: {}, method: {}, client: {}&quot;,
-    request.getRequestURI(), request.getMethod(), getIP(request));
-    filterChain.doFilter(servletRequest, servletResponse);
-    log.info(&quot;[Api Access]  end. uri: {}, method: {}, client: {}, duration: {}ms&quot;,
-    request.getRequestURI(), request.getMethod(), getIP(request),System.currentTimeMillis() - start); 
-  }
-  
-  @Override
-  public void destroy() {
-  
-  }
-  
-  /**
-   * 获取IP地址
-   *
-   * @param request 请求
-   * @return request发起客户端的IP地址
-   */
-  private String getIP(HttpServletRequest request) {
-    if (request == null) {
-      return &quot;0.0.0.0&quot;;
+<p><a name="1"><font  size=5 face="黑体"><strong>1. 导读</strong></font></a></p>
+<blockquote>
+<p>1.读完这篇文章你将免费获得一个SpringSecurity测试demo项目源码（可直接运行）。
+2.你将学到如何快速创建一个SpringSecurity项目，实现简单的登入功能，很方便的集成到Springboot项目。
+3.查看demo项目的运行测试效果，更具体地了解SpringSecurity功能。。</p>
+</blockquote>
+<p><a name="2"><font  size=5 face="黑体"><strong>2. 快速认识Spring Security</strong></font></a></p>
+<p><font size=4 color=green ><strong>什么是Spring Security</strong></font><hr/></p>
+<p>Spring Security 的前身是 Acegi Security ，是 Spring 项目组中用来提供安全认证服务的框架。它支持众多的认证技术，如LDAP、基于IEFT  RFC 的标准、Form-based authentication(简单用户接口)等等。概括就是：控制系统的登入拦截、用户登入认证、用户登入token的鉴权、系统api接口等资源的简单用户接口的权限控制。</p>
+<p>简单地说，就是系统的登入逻辑和代码实现不用自己开发，使用Spring Security进行配置化开发就可以。</p>
+<p><font size=4 color=green ><strong>比较Spring Security登入业务与原生登入业务</strong></font><hr/>
+<strong>原生登入逻辑开发流程有：</strong></p>
+<p>1）编写登入页面的form代码。</p>
+<p>2）编写登入controller接口代码。</p>
+<p>3）根据传入的用户名参数从数据库查询用户信息。</p>
+<p>4）比较查询出来的密码数据与传入的密码，相同则登入通过，否则登入失败。</p>
+<p><strong>Spring Security登入逻辑开发流程：</strong></p>
+<p>1）编写登入页面的form代码。</p>
+<p>2）Spring Security核心配置类开发。</p>
+<p>3）实现UserDetailsService接口，在loadUserByUsername方法实现用户信息的加载。</p>
+<p><font size=4 color=green ><strong>为什么SpringSecurity登入业务开发工作量少</strong></font><hr>
+SpringSecurity开发工作少，是因为它对登入业务进行了非常完整的建模，登入业务的整个过程中，需要开发者自己开发的局部逻辑不多，其中包括：自定义登入页面，自定义用户数据获取来源（UserDetailsService实现类）</p>
+<p>使用SpringSecurity来做系统的安全服务到底有多爽，下图代表了我此刻的内心。</p>
+<p><img src="/upload/2020/11/v450jsmt1mjhjqk3adfja4l63c.jpg" alt="alt" /></p>
+<hr>
+<font size=4 color=green >**快速入门**</font>
+<hr>
+<p><strong>SpringBoot项目pom依赖</strong></p>
+<p>这个是集成SpringSecurity所需要依赖的jar包。</p>
+<pre><code class="language-js">&lt;!--security start--&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-security&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</code></pre>
+<p>Springboot项目的pom文件中至少要包含上面两个依赖包。</p>
+<p><strong>SpringSecurity配置类</strong></p>
+<p>配置类要继承抽象类WebSecurityConfigurerAdapter，并使用注解@Configuration、@EnableGlobalMethodSecurity(prePostEnabled = true)修饰配置类。</p>
+<pre><code class="language-js">/**
+ * @Author: Galen
+ * @Date: 2019/3/27-14:43
+ * @Description: spring-security权限管理的核心配置
+ **/
+@Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private UserSecurityService userSecurityService;
+
+    /**
+     * @Author: jackdking
+     * @Description: 配置userDetails的数据源，密码加密格式
+     * @Date: 2020/5/21-5:24
+     * @Param: [auth]
+     * @return: void
+     **/
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userSecurityService)
+                .passwordEncoder(new BCryptPasswordEncoder());// 实现自定义登录校验
     }
-  
-    String Xip = request.getHeader(&quot;X-Real-IP&quot;);
-    String XFor = request.getHeader(&quot;X-Forwarded-For&quot;);
-  
-    String UNKNOWN_IP = &quot;unknown&quot;;
-    if (!StringUtils.isEmpty(XFor) &amp;&amp; !UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      //多次反向代理后会有多个ip值，第一个ip才是真实ip
-      int index = XFor.indexOf(&quot;,&quot;);
-      if (index != -1) {
-        return XFor.substring(0, index);
-      } else {
-        return XFor;
-      }
+
+    /**
+     * @Author: Galen
+     * @Description: 配置放行的资源
+     * @Date: 2019/3/28-9:23
+     * @Param: [web]
+     * @return: void
+     **/
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(&quot;/login.html&quot;, &quot;/index.html&quot;,&quot;/css/**&quot;, &quot;/static/**&quot;, &quot;/login_p&quot;, &quot;/favicon.ico&quot;)
+                // 给 swagger 放行；不需要权限能访问的资源
+                .antMatchers(&quot;/swagger-ui.html&quot;, &quot;/swagger-resources/**&quot;, &quot;/images/**&quot;, &quot;/webjars/**&quot;, &quot;/v2/api-docs&quot;, &quot;/configuration/ui&quot;, &quot;/configuration/security&quot;);
     }
-  
-    XFor = Xip;
-    if (!StringUtils.isEmpty(XFor) &amp;&amp; !UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      return XFor;
+
+    /**
+     * @Author: Galen
+     * @Description: 拦截配置
+     * @Date: 2019/4/4-10:44
+     * @Param: [http]
+     * @return: void
+     **/
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                // 使其支持跨域
+                .requestMatchers(CorsUtils :: isPreFlightRequest).permitAll()
+                // 其他路径需要授权访问
+                .anyRequest().authenticated()
+                
+                .and()
+                .formLogin().loginPage(&quot;/login_p&quot;)// 设置登录页面，
+                //奇怪的是 这个url并没有被访问到。
+                .loginProcessingUrl(&quot;/login&quot;)// 自定义的登录接口，这个接口必须和你登入页面form的action地址一样。否则一直进入login_p页面：如果loginProcessingUrl不配置，默认是跟loginPage一样
+                .usernameParameter(&quot;username&quot;).passwordParameter(&quot;password&quot;)//告诉security form表单用户名和密码的参数表达式。
+                .failureHandler(new MyAuthenticationFailureHandler())// 这个失败处理 跟 failureUrl 配置是互斥的。 两种只选择一种
+                .successHandler(new MyAuthenticationSuccessHandler())//跟defaultSuccessUrl互斥 ，这个支持返回json数据。如果不设置这个成功后的处理器，则会报错 999。
+//                .defaultSuccessUrl(&quot;/index&quot;)   //跟successHandler配置互斥，这个支持重定向到成功页面。 访问指定页面，用户未登入，跳转至登入页面，如果登入成功，跳转至用户访问指定页面，用户访问登入页面，默认的跳转页面
+//                .failureUrl(&quot;/error_p&quot;) // 重定向失败页面   跟 failureHandler 配置是互斥的。 两种只选择一种
+                .permitAll()
+                
+                .and()
+                .csrf().disable(); //关闭csrf
     }
-  
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;Proxy-Client-IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;WL-Proxy-Client-IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;HTTP_CLIENT_IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;HTTP_X_FORWARDED_FOR&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getRemoteAddr();
-    }
-    return XFor;
-  }
 }
 </code></pre>
-<p>有了这个filter，我们就能在日志中查看所有url的响应时间，然后对比网站静态化前后的响应时间变化。</p>
-<p><a name="3"><font  size=4 face="黑体"><strong>3. 优化方案</strong></font></a></p>
-<p><strong>静态化处理</strong>
-每个页面请求到来，拦截在执行controller接口逻辑之前，判断该请求是否有存在的html文件，如果有直接重定向，跳过数据库访问、数据计算、模板解析等过程。</p>
-<p>如果不存在，则不拦截，正常走业务逻辑、视图解析等正常处理流程。</p>
-<p><strong>大型新闻网站的静态化方案</strong></p>
-<p><img src="/upload/2020/11/s051duoj5ehi1rc8kmb98afhsa.jpg" alt="alt" /></p>
-<p>可以看到，大型网站一般都是将访问的每个url都有直接关联到的静态html，而静态html的维护是由另外一套系统来做。这种方式比较繁琐，系统也很复杂，下面来一起看看我设计的轻量静态化方案。</p>
-<p><strong>轻量的网页静态HTML化方案</strong></p>
-<p>轻量的静态化方案，是基于注解开发的，对业务代码没有侵入性。拦截器在执行controller接口方法之前先执行注解切面逻辑，通过spring的切面编程方式，可以把这部分逻辑作为增强逻辑放到切面模块。</p>
-<p>那controller接口方法的代码不用做任何更改，做到了对业务代码<strong>零入侵</strong>。接下来就来谈谈具体实现方案。</p>
-<p><a name="4"><font  size=4 face="黑体"><strong>4. 方案落地开发</strong></font></a></p>
-<p>废话不多说，直接上代码，博客网站首页的controller接口业务代码，看看是如何启动页面静态化的。</p>
-<pre><code class="language-js"> /**
-     * 首页
-     *
-     * @param vo
-     * @param model
-     * @return
-     */
-    @RequestMapping(&quot;/&quot;)
-    @BussinessLog(value = &quot;进入首页&quot;, platform = PlatformEnum.WEB)
-    @StaticPage(enable=true)
-    public ModelAndView home(ArticleConditionVO vo, Model model) {
-        model.addAttribute(&quot;url&quot;, INDEX_URL);
-        loadIndexPage(vo, model);
+<ul>
+<li>配置类覆盖configure(AuthenticationManagerBuilder auth)，设置用户信息来源接口userDetailsService的实现类，以及用户密码的加密实现对象BCryptPasswordEncoder。</li>
+<li>配置类覆盖configure(WebSecurity web)，告知security框架哪些url不登入也能访问，例如一些css文件、js文件、登入页面等等。</li>
+<li>配置类覆盖configure(HttpSecurity http)，告知security登入业务的一些信息，例如登录页面、自定义的登录接口、form表单用户名和密码的参数表达式、登入失败或成功的handler类。</li>
+</ul>
+<p><strong>userDetailsService的开发</strong></p>
+<p>在这个实现类中，security框架允许开发者自定义用户信息的来源：可以是在代码里面，或是数据库、缓存服务器、第三方服务等。在这个demo项目里，我们运用的比较简单，直接写死在代码中,创建了SecuritySysUser对象返回给Security。</p>
+<pre><code class="language-js">SecuritySysUser securityUser = new SecuritySysUser();
+securityUser.setUsername(username);
+securityUser.setPassword(&quot;$2a$10$4H1JSQxyrJlguu0/V4DnR.s2NBjE.k6rI6.W.1AFL0UEnR2IR2/5y&quot;);
+securityUser.setEnabled(true);
 
-        return ResultUtil.view(INDEX_URL);
-    }
+List&lt;SecuritySysRole&gt; roles = new ArrayList&lt;&gt;();
+SecuritySysRole role = new SecuritySysRole();
+role.setNameCn(&quot;ROLE_ADMIN&quot;);
+securityUser.setRoles(roles);
+
+if (securityUser == null) {
+    throw new UsernameNotFoundException(&quot;用户名不对&quot;);
+}
+
+log.info(&quot;用户信息：{}&quot; , securityUser.toString());
+
+return securityUser;
 </code></pre>
-<p>是的，一个自定义注解@StaticPage直接开启首页接口页面的静态html化，做到了业务代码的零入侵！</p>
-<p><strong>切面增强逻辑</strong></p>
-<ol>
-<li>切面逻辑这块的开发，是直接获取url请求的request对象，并获取html的path，计算得到html的相对路径。</li>
-<li>创建file对象，判断是否存在html文件，存在则重定向到html，结束接口后续响应。</li>
-<li>文件不存在，则不中断响应，响应线程走正常执行业务逻辑、解析模板等过程。</li>
-</ol>
-<p><strong>如何维护静态html文件</strong></p>
-<p>这里设计的方案是，系统根据url所带的秘钥参数来决定执行逻辑，静态化请求都由博客网站后台发出，这是更新html文件的管理方法。如果秘钥正确，则只生成html静态文件，如果秘钥不存在，则重定向到html或生成html后再重定向。</p>
-<p><strong>自定义ViewClass</strong></p>
-<p>SpringBoot项目的解析器ViewResolver可配置自定义ViewClass类，如下代码所示。</p>
-<pre><code class="language-js">@Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
-    
-    @Bean
-    public FreeMarkerViewResolver freeMarkerViewResolver() {
-        FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
-        resolver.setViewClass(MyFreeMarkerView.class);
-        resolver.setPrefix(&quot;&quot;);
-        resolver.setSuffix(&quot;.ftl&quot;);
-        resolver.setContentType(&quot;text/html; charset=UTF-8&quot;);
-        resolver.setRequestContextAttribute(&quot;rc&quot;);
-        return resolver;
-    }
-    
+<p>到这，使用security框架来开发用户登入业务结束了，那我们来看看运行效果。</p>
+<p><a name="3"><font  size=5 face="黑体"><strong>3. 运行Spring Security项目</strong></font></a></p>
+<p>本文的demo项目获取方式在文章底部查看。</p>
+<p>右击项目文件com.jackdking.security.SpringSecurityApplication，选择Run As -&gt; Java Application。</p>
+<p>浏览器输入http://localhost:9090，进入login登入页面。</p>
+<p><img src="/upload/2020/11/vohc9qp1sgj9brpcjechgi248u.jpg" alt="alt" /></p>
+<p>输入用户名/密码：admin/admin，点击登入按钮，然后查看返回的登入json信息。</p>
+<p><img src="/upload/2020/11/3t85kddrkoj83ratlo52q73qd7.jpg" alt="alt" /></p>
+<p>登入成功返回的json数据是security框架的登入成功处理器返回的结果：successHandler(new MyAuthenticationSuccessHandler())。</p>
+<pre><code class="language-js">@Override
+public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    response.setContentType(&quot;application/json;charset=utf-8&quot;);
+    RespBean respBean = RespBean.ok(&quot;【MyAuthenticationSuccessHandler】登录成功!&quot;, SecurityUserUtil.getCurrentUser());
+    new GalenWebMvcWrite().writeToWeb(request,response, respBean);
+    System.out.println(&quot;【MyAuthenticationSuccessHandler】登录成功!&quot;);
 }
 </code></pre>
-<p>在执行完controller接口后、解析视图模板之前执行ViewClass中的doRender方法逻辑，如下代码的位置，这块逻辑来判断是否继续执行模板解析逻辑。</p>
-<pre><code class="language-js">public class MyFreeMarkerView extends FreeMarkerView{  
-	
+<p>输入错误的用户名和密码，返回的json信息，是错误处理器中的第一个异常错误类UsernameNotFoundException。</p>
+<p><img src="/upload/2020/11/q1gkukoh3ejajreqilr654tenb.jpg" alt="alt" /></p>
+<p>登入失败返回的json数据是security框架的登入失败处理器返回的结果：failureHandler(new MyAuthenticationFailureHandler())。</p>
+<pre><code class="language-js"> response.setContentType(&quot;application/json;charset=utf-8&quot;);
+RespBean respBean;
+if (exception instanceof BadCredentialsException ||
+        exception instanceof UsernameNotFoundException) {
+    respBean = RespBean.error(&quot;账户名或者密码输入错误!&quot;);
+} else if (exception instanceof LockedException) {
+    respBean = RespBean.error(&quot;账户被锁定，请联系管理员!&quot;);
+} else if (exception instanceof CredentialsExpiredException) {
+    respBean = RespBean.error(&quot;密码过期，请联系管理员!&quot;);
+} else if (exception instanceof AccountExpiredException) {
+    respBean = RespBean.error(&quot;账户过期，请联系管理员!&quot;);
+} else if (exception instanceof DisabledException) {
+    respBean = RespBean.error(&quot;账户被禁用，请联系管理员!&quot;);
+} else {
+    respBean = RespBean.error(&quot;登录失败!&quot;);
+}
 
-	private static final Logger log = LoggerFactory.getLogger(MyFreeMarkerView.class);
-
-   
-    @Override  
-    protected void doRender(Map model,  
-            HttpServletRequest request, HttpServletResponse response)  
-            throws Exception { 
-            ......在业务逻辑执行之后 、 模板解析之前的逻辑。
-            }
+System.out.println(&quot;失败逻辑处理。&quot;);
+//response.setStatus(401);
+new GalenWebMvcWrite().writeToWeb(request, response, respBean);
 </code></pre>
-<p><a name="5"><font  size=4 face="黑体"><strong>5. 优化成果</strong></font></a>
-<a name="6"><font  size=4 face="黑体"><strong>6. 网站性能还能提升吗？</strong></font></a></p>
-<p>其实，在前面分析的响应过程里，html下载(html文件的网络传输)也是非常消耗时间的阶段，静态化html文件的存放位置还能进一步优化，在这个项目中我们存放在服务这一侧，其实还可以放在网站接入层nginx服务器。</p>
-<p>对于静态html文件，可以直接上传到与用户在同一个城市的网络运营商CDN服务器，这样文件的网络传输过程就大大缩减了，网页打开速度会更快。现在很多新闻网站、博客网站都是在使用运营商CDN服务的，甚至视频网站也会将最新视频上传到CDN，以加快用户响应速度。</p>
-<p>完整的demo项目，请关注公众号“前沿科技bot“并发送&quot;&quot;获取。</p>
+<p><a name="4"><font  size=5 face="黑体"><strong>4. 如何正确看待web安全服务</strong></font></a></p>
+<p>作为架构师，当然希望系统能使用成熟的、功能特性丰富的安全服务框架，而security正是做好的选择。而且无论是从建设安全服务的人力、测试、运维、风险等成本角度考虑，security都是非常香的。</p>
+<p>Spring Security安全服务框架的配置化开发也大大提高了整个团队的开发效率，如果系统单独自己做一个安全服务框架，未来团队成员交接成本也会非常的高，也会伴随着较大的风险成本。</p>
+<p>完整的demo项目，请关注公众号“前沿科技bot“并发送&quot;SEC-ONE&quot;获取。</p>
 <p><img src="/upload/2020/05/6s8d58g77ehftpcen62h4v4bss.png" alt="alt" /></p>
 </div>
     <div id="guanzhu" class= "asb-post-01"  style="display:block">
@@ -688,7 +683,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 <html lang="en">
 <body>
 <div>
-    <div id="127" class="comment-container">
+    <div id="122" class="comment-container">
         <div id="comments" class="clearfix">
             <div>
                 <span class="response">
@@ -697,7 +692,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 <form method="post" id="comment-form" class="comment-form" role="form"
                       onsubmit="return TaleComment.subComment();">
                     <input type="hidden" name="coid" id="coid"/>
-                    <input type="hidden" name="cid" id="cid" value="127"/>
+                    <input type="hidden" name="cid" id="cid" value="122"/>
                     <input type="hidden" name="_csrf_token" value=""/>
                     <input type="text" name="author" maxlength="12" id="author"
                            class="form-control input-control clearfix"

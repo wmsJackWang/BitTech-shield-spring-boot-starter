@@ -14,7 +14,7 @@
     <meta name="description"/>
     <link rel="shortcut icon" href="/user/img/logo.png"/>
     <link rel="apple-touch-icon" href="/user/img/apple-touch-icon.png"/>
-    <title>大型网站架构师方案—屌爆了！这种优化方案让我网站响应速度提高了近80倍 - 微服务与架构师社区</title>
+    <title>Java架构师方案—分布式事务2PC方案Atomikos(附完整项目代码) - 微服务与架构师社区</title>
     <link href="//cdn.bootcss.com/highlight.js/9.9.0/styles/xcode.min.css" rel="stylesheet"/>
     <link href="/user/css/style.min.css" rel="stylesheet"/>
     
@@ -268,14 +268,14 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 <section class="jumbotron intro" data-pattern-id="本站 所有文章">
     <div class="container" >
         <div id="jumbotron-meta-info" style="color: #FFFFFF;">        
-            <h1>大型网站架构师方案—屌爆了！这种优化方案让我网站响应速度提高了近80倍</h1>
+            <h1>Java架构师方案—分布式事务2PC方案Atomikos(附完整项目代码)</h1>
             <br/>
             <span class="meta-info" style="color: #FFFFFF;" >
                 <span class="octicon octicon-calendar"></span> 
             	作者：空白
             	
  				
-                	<p><time datetime="2020-11-22" itemprop="datePublished">Time: 2020-11-22</time></p>
+                	<p><time datetime="2020-07-11" itemprop="datePublished">Time: 2020-07-11</time></p>
             	
             </span>
         </div>
@@ -464,204 +464,245 @@ function refresh(){
 <article class="main-content post-page">
     <div id="post-content"  class="post-content"><ul>
 <li>
-<p><font size=4><a href="#1"><strong>1. 网站性能的指标</strong></a></font></p>
+<p><font size=4><a href="#1"><strong>1. 分布式事务2PC原理</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#2"><strong>2. 网站性能检测方法</strong></a></font></p>
+<p><font size=4><a href="#2"><strong>2. springboot集成Atomikos</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#3"><strong>3. 优化方案</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#4"><strong>4. 方案落地开发</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#5"><strong>5. 优化成果</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#6"><strong>6. 网站性能还能提升吗？</strong></a></font></p>
+<p><font size=4><a href="#3"><strong>3. 2PC分布式事务的问题局限性</strong></a></font></p>
 </li>
 </ul>
-<p><a name="1"><font  size=4 face="黑体"><strong>1. 网站性能的指标</strong></font></a></p>
-<p>博客网站的页面打开时间一旦超过10s就会容易让用户关闭网站，从而增加跳出率。但实际情况是，大部分用户对于网页打开时间超过3s的可能都无法接受。</p>
-<p><strong>网站性能指标</strong></p>
-<p>对于网站的性能指标，最重要的是响应时间、吞吐量、并发数。
-<strong>响应时间</strong>是浏览器发出请求到收到响应并最终渲染到界面上的总时间，能很直观的反映系统的快慢。
-<strong>吞吐量</strong>是单位时间处理的请求数，也称为TPS，能体现系统容量。
-<strong>并发数</strong>是指系统同时能处理的请求数，例如双十一，上亿用户在线，而且短时间内都访问系统，这时候网站就需要极高的并发能力支持。</p>
-<p><strong>关联</strong>
-其实细细思考，这几个网站的性能指标，它们之间是有关联关系的。
-就拿高速公路收费站来类比，响应时间(RT)就是收费窗口处理收费事件的时间，吞吐量(TPS)是单位时间内收费站窗口总共经过了多少辆车，而并发量(P)就是总共有多少个收费通道。</p>
-<p>TPS = p*(1/RT）</p>
-<p><strong>但是这篇文章核心内容是谈谈如何优化网站的RT：响应时间。</strong> 通过降低网站RT时间来提高网站的吞吐量，提高用户的体验。</p>
-<p><a name="2"><font  size=4 face="黑体"><strong>2. 网站性能检测方法</strong></font></a></p>
-<p>从输入url，到页面渲染结束，全过程可大致分为以下几个阶段：</p>
-<ol>
-<li>从浏览器输入url，DNS域名解析，查找到域名绑定的id地址。</li>
-<li>建立TCP连接：客户端浏览器和web服务器建立TCP连接（传输控制协议），三次握手。</li>
-<li>发送HTTP request请求：客户端浏览器向对应的ip地址web服务器发送http请求。</li>
-<li>web服务器反向代理：Nginx反向代理，解析域名转发到对应的应用服务器上。</li>
-<li>服务器业务逻辑处理：业务接口逻辑，访问数据库或访问缓存，数据计算等过程。</li>
-<li>视图解析：拿第五步得到业务数据结合视图模板进行解析，得到html文件。</li>
-<li>客户端浏览器渲染：渲染响应页面，客户端浏览器下载数据，解析HTML，完成页面的排版。</li>
-<li>响应完成，断开tcp连接。</li>
-</ol>
-<p>在这8个阶段，其中对于网站响应优化最明显的地方就是<strong>第五、六阶段</strong>，对于绝大多数博客网站来说，网页都是相对静态的，很少有数据的变化。因此通过将博客网页静态化处理，可以省去响应过程最耗时的这两个阶段，能大大降低响应时间。</p>
-<p><strong>过滤器统计响应时间</strong></p>
-<p>SpringBoot的API过滤器:ApiAccessFilter。使用注解的开发方式，如下代码所示。@WebFilter修饰实现了Filter接口的类，参数filterName为拦截器名称，urlPatterns设置拦截的url模式。Api响应时间计算逻辑在doFilter方法中实现。</p>
-<pre><code class="language-js">@WebFilter(filterName = &quot;ApiAccessFilter&quot;, urlPatterns = &quot;/*&quot;)
-public class ApiAccessFilter implements Filter { 
-  
-  @Override
-  public void init(FilterConfig filterConfig) { 
-  }
-  
-  @Override
-  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
-    FilterChain filterChain) throws IOException, ServletException {
-  
-    HttpServletRequest request = (HttpServletRequest) servletRequest;
-  
-//    Long requestId = IdGenUtils.nextIdByMem(); // 请求ID，这个是我业务中的id，大家可自行决定是否需要
-    long start = System.currentTimeMillis(); // 请求进入时间
-  
-    log.info(&quot;[Api Access] start. uri: {}, method: {}, client: {}&quot;,
-    request.getRequestURI(), request.getMethod(), getIP(request));
-    filterChain.doFilter(servletRequest, servletResponse);
-    log.info(&quot;[Api Access]  end. uri: {}, method: {}, client: {}, duration: {}ms&quot;,
-    request.getRequestURI(), request.getMethod(), getIP(request),System.currentTimeMillis() - start); 
-  }
-  
-  @Override
-  public void destroy() {
-  
-  }
-  
-  /**
-   * 获取IP地址
-   *
-   * @param request 请求
-   * @return request发起客户端的IP地址
-   */
-  private String getIP(HttpServletRequest request) {
-    if (request == null) {
-      return &quot;0.0.0.0&quot;;
-    }
-  
-    String Xip = request.getHeader(&quot;X-Real-IP&quot;);
-    String XFor = request.getHeader(&quot;X-Forwarded-For&quot;);
-  
-    String UNKNOWN_IP = &quot;unknown&quot;;
-    if (!StringUtils.isEmpty(XFor) &amp;&amp; !UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      //多次反向代理后会有多个ip值，第一个ip才是真实ip
-      int index = XFor.indexOf(&quot;,&quot;);
-      if (index != -1) {
-        return XFor.substring(0, index);
-      } else {
-        return XFor;
-      }
-    }
-  
-    XFor = Xip;
-    if (!StringUtils.isEmpty(XFor) &amp;&amp; !UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      return XFor;
-    }
-  
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;Proxy-Client-IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;WL-Proxy-Client-IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;HTTP_CLIENT_IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;HTTP_X_FORWARDED_FOR&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getRemoteAddr();
-    }
-    return XFor;
-  }
-}
+<p><a name="1"><font  size=4 face="黑体"><strong>1. 分布式事务2PC原理</strong></font></a></p>
+<p><font  size=3 ><strong>事务有哪些基本特性（ACID）？</strong></font></p>
+<ul>
+<li>
+<p>原子性：一个业务过程中，事务内的多个数据变更操作要么全部成功，要么全部失败。</p>
+</li>
+<li>
+<p>一致性：指的是业务的正确性，业务数据的一致性；例如，银行转账业务，从账户A转10元到账户B，最后结果肯定是B账户多了10元，A账户少了10元；不能出现A金额没少但B金额多了的结果。</p>
+</li>
+<li>
+<p>隔离性：多个并发事务之间相互隔离，不能互相干扰。简单提一下事务的隔离机制和事务并发引起的问题</p>
+<ul>
+<li>
+<p>隔离机制：读未提交，读已提交，可重复读，顺序读写</p>
+</li>
+<li>
+<p>事务并发问题：脏读，幻读（虚读），不可重复读。</p>
+</li>
+</ul>
+</li>
+<li>
+<p>持久性：事务完成后，对数据库的更改是永久保存的，不能回滚。</p>
+</li>
+</ul>
+<p><font  size=3 >** 什么是2PC？**</font></p>
+<p>两阶段提交(two phrase commit），不言而喻，是指分布式事务工作流程分为两个阶段。对于单体架构的单个数据库的事务，我们会开启事务管理器，并在需要事务的方法上声明事务注解并确定事务元数据，本地事务是基于数据库资源层实现。</p>
+<p>2PC分布式事务解决方案，是基于资源层来实现，其中两个阶段分别是：预备阶段，提交阶段。</p>
+<ul>
+<li>
+<p>预备阶段：数据库开启事务，执行业务sql，但是数据库事务并没有提交，而是等待事务协调器commit命令或rollback命令。</p>
+</li>
+<li>
+<p>提交阶段：数据库收到commit命令后提交事务，或者收到rollback命令后回滚数据库。</p>
+</li>
+</ul>
+<p>两阶段提交方案中，有两种角色：事务协调者和事务参与者。</p>
+<ul>
+<li>
+<p>事务协调者：协调者角色主要负责协调不同数据库事务执行情况，保证跨数据库业务中事务的原子性，事务协调者根据预备阶段的的执行情况，来决定提交阶段发送commit命令还是rollback命令。</p>
+</li>
+<li>
+<p>事务参与者：事务参与者主要是指资源层的数据库，数据库要支持两阶段提交分布式事务方案，必须要实现XA协议。</p>
+</li>
+</ul>
+<p>参考流程图如下：</p>
+<p><img src="/upload/2020/05/og4l6kmm22gblpi198ud3npelg.png" alt="alt" /></p>
+<p>状态图分析：</p>
+<ul>
+<li>
+<p>事务协调者：预备阶段，协调者发送预备命令给参与者，并进入等待状态，直到返回执行结果。</p>
+</li>
+<li>
+<p>事务参与者：执行完预备阶段，返回协调者执行结果后进入等待状态，直到协调者最后发送的提交或回滚命令。</p>
+</li>
+<li>
+<p>协调者判断：协调者收集到所有的参与者返回的结果后，判断所有结果是否都是成功，成功则发送给所有参与者提交命令，否则发送回滚命令。</p>
+</li>
+</ul>
+<p><a name="2"><font  size=4 face="黑体"><strong>2. springboot集成Atomikos</strong></font></a></p>
+<p><font  size=3 ><strong>配置数据库参数</strong></font></p>
+<p>在properties文件中配置两个不同的数据库参数</p>
+<pre><code class="language-js">##Spring表数据库配置
+spring.jta.atomikos.datasource.spring.max-pool-size=25
+spring.jta.atomikos.datasource.spring.min-pool-size=3
+spring.jta.atomikos.datasource.spring.max-lifetime=20000
+spring.jta.atomikos.datasource.spring.borrow-connection-timeout=10000
+spring.jta.atomikos.datasource.spring.unique-resource-name=spring
+spring.jta.atomikos.datasource.spring.xa-properties.url=jdbc:mysql://url2:3306/spring?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false&amp;serverTimezone=UTC
+spring.jta.atomikos.datasource.spring.xa-properties.username=xxx
+spring.jta.atomikos.datasource.spring.xa-properties.password=xxx
+spring.jta.atomikos.datasource.spring.xa-properties.driverClassName=com.mysql.jdbc.Driver
+# 初始化大小，最小，最大
+spring.jta.atomikos.datasource.spring.xa-properties.initialSize=10
+spring.jta.atomikos.datasource.spring.xa-properties.minIdle=20
+spring.jta.atomikos.datasource.spring.xa-properties.maxActive=100
+## 配置获取连接等待超时的时间
+spring.jta.atomikos.datasource.spring.xa-properties.maxWait=60000
+# 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+spring.jta.atomikos.datasource.spring.xa-properties.timeBetweenEvictionRunsMillis=60000
+# 配置一个连接在池中最小生存的时间，单位是毫秒
+spring.jta.atomikos.datasource.spring.xa-properties.minEvictableIdleTimeMillis=300000
+spring.jta.atomikos.datasource.spring.xa-properties.testWhileIdle=true
+spring.jta.atomikos.datasource.spring.xa-properties.testOnBorrow=false
+spring.jta.atomikos.datasource.spring.xa-properties.testOnReturn=false
+# 打开PSCache，并且指定每个连接上PSCache的大小
+spring.jta.atomikos.datasource.spring.xa-properties.poolPreparedStatements=true
+spring.jta.atomikos.datasource.spring.xa-properties.maxPoolPreparedStatementPerConnectionSize=20
+# 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+spring.jta.atomikos.datasource.spring.xa-properties.filters=stat,slf4j,wall
+spring.jta.atomikos.datasource.spring.xa-data-source-class-name=com.alibaba.druid.pool.xa.DruidXADataSource
+#------------------------------ 分隔符-------------------------------------
+##test表数据库配置
+spring.jta.atomikos.datasource.test.max-pool-size=25
+spring.jta.atomikos.datasource.test.min-pool-size=3
+spring.jta.atomikos.datasource.test.max-lifetime=20000
+spring.jta.atomikos.datasource.test.borrow-connection-timeout=10000
+spring.jta.atomikos.datasource.test.unique-resource-name=test
+spring.jta.atomikos.datasource.test.xa-properties.url=jdbc:mysql://url1:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;useSSL=false&amp;serverTimezone=UTC
+spring.jta.atomikos.datasource.test.xa-properties.username=xxx
+spring.jta.atomikos.datasource.test.xa-properties.password=xxx
+spring.jta.atomikos.datasource.test.xa-properties.driverClassName=com.mysql.jdbc.Driver
+spring.jta.atomikos.datasource.test.xa-properties.initialSize=10
+spring.jta.atomikos.datasource.test.xa-properties.minIdle=20
+spring.jta.atomikos.datasource.test.xa-properties.maxActive=100
+spring.jta.atomikos.datasource.test.xa-properties.maxWait=60000
+spring.jta.atomikos.datasource.test.xa-properties.timeBetweenEvictionRunsMillis=60000
+spring.jta.atomikos.datasource.test.xa-properties.minEvictableIdleTimeMillis=300000
+spring.jta.atomikos.datasource.test.xa-properties.testWhileIdle=true
+spring.jta.atomikos.datasource.test.xa-properties.testOnBorrow=false
+spring.jta.atomikos.datasource.test.xa-properties.testOnReturn=false
+spring.jta.atomikos.datasource.test.xa-properties.poolPreparedStatements=true
+spring.jta.atomikos.datasource.test.xa-properties.maxPoolPreparedStatementPerConnectionSize=20
+# 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+spring.jta.atomikos.datasource.test.xa-properties.filters=stat,slf4j,wall
+spring.jta.atomikos.datasource.test.xa-data-source-class-name=com.alibaba.druid.pool.xa.DruidXADataSource
+#jta相关参数配置
+#spring.jta.log-dir=classpath:transaction-logs
+#spring.jta.transaction-manager-id=txManager
 </code></pre>
-<p>有了这个filter，我们就能在日志中查看所有url的响应时间，然后对比网站静态化前后的响应时间变化。</p>
-<p><a name="3"><font  size=4 face="黑体"><strong>3. 优化方案</strong></font></a></p>
-<p><strong>静态化处理</strong>
-每个页面请求到来，拦截在执行controller接口逻辑之前，判断该请求是否有存在的html文件，如果有直接重定向，跳过数据库访问、数据计算、模板解析等过程。</p>
-<p>如果不存在，则不拦截，正常走业务逻辑、视图解析等正常处理流程。</p>
-<p><strong>大型新闻网站的静态化方案</strong></p>
-<p><img src="/upload/2020/11/s051duoj5ehi1rc8kmb98afhsa.jpg" alt="alt" /></p>
-<p>可以看到，大型网站一般都是将访问的每个url都有直接关联到的静态html，而静态html的维护是由另外一套系统来做。这种方式比较繁琐，系统也很复杂，下面来一起看看我设计的轻量静态化方案。</p>
-<p><strong>轻量的网页静态HTML化方案</strong></p>
-<p>轻量的静态化方案，是基于注解开发的，对业务代码没有侵入性。拦截器在执行controller接口方法之前先执行注解切面逻辑，通过spring的切面编程方式，可以把这部分逻辑作为增强逻辑放到切面模块。</p>
-<p>那controller接口方法的代码不用做任何更改，做到了对业务代码<strong>零入侵</strong>。接下来就来谈谈具体实现方案。</p>
-<p><a name="4"><font  size=4 face="黑体"><strong>4. 方案落地开发</strong></font></a></p>
-<p>废话不多说，直接上代码，博客网站首页的controller接口业务代码，看看是如何启动页面静态化的。</p>
-<pre><code class="language-js"> /**
-     * 首页
-     *
-     * @param vo
-     * @param model
-     * @return
+<p><font  size=3 ><strong>两个数据源</strong></font></p>
+<p>在配置类MybatisConfiguration中创建数据源bean：SpringDataSource和TestDataSource。</p>
+<pre><code class="language-js">
+@Configuration
+@EnableConfigurationProperties
+@EnableTransactionManagement(proxyTargetClass = true)
+public class MybatisConfiguration {
+    /**
+     * spring数据库配置前缀.
      */
-    @RequestMapping(&quot;/&quot;)
-    @BussinessLog(value = &quot;进入首页&quot;, platform = PlatformEnum.WEB)
-    @StaticPage(enable=true)
-    public ModelAndView home(ArticleConditionVO vo, Model model) {
-        model.addAttribute(&quot;url&quot;, INDEX_URL);
-        loadIndexPage(vo, model);
+    final static String SPRING_PREFIX = &quot;spring.jta.atomikos.datasource.spring&quot;;
+    /**
+     * test数据库配置前缀.
+     */
+    final static String TEST_PREFIX = &quot;spring.jta.atomikos.datasource.test&quot;;
 
-        return ResultUtil.view(INDEX_URL);
+    /**
+     * The constant logger.
+     */
+    final static Logger logger = LoggerFactory.getLogger(MybatisConfiguration.class);
+
+
+
+
+
+    /**
+     * 配置Spring数据库的数据源
+     *
+     * @return the data source
+     */
+    @Bean(name = &quot;SpringDataSource&quot;)
+    @ConfigurationProperties(prefix = SPRING_PREFIX)  // application.properties中对应属性的前缀
+    public DataSource springDataSource() {
+        return new AtomikosDataSourceBean();
     }
-</code></pre>
-<p>是的，一个自定义注解@StaticPage直接开启首页接口页面的静态html化，做到了业务代码的零入侵！</p>
-<p><strong>切面增强逻辑</strong></p>
-<ol>
-<li>切面逻辑这块的开发，是直接获取url请求的request对象，并获取html的path，计算得到html的相对路径。</li>
-<li>创建file对象，判断是否存在html文件，存在则重定向到html，结束接口后续响应。</li>
-<li>文件不存在，则不中断响应，响应线程走正常执行业务逻辑、解析模板等过程。</li>
-</ol>
-<p><strong>如何维护静态html文件</strong></p>
-<p>这里设计的方案是，系统根据url所带的秘钥参数来决定执行逻辑，静态化请求都由博客网站后台发出，这是更新html文件的管理方法。如果秘钥正确，则只生成html静态文件，如果秘钥不存在，则重定向到html或生成html后再重定向。</p>
-<p><strong>自定义ViewClass</strong></p>
-<p>SpringBoot项目的解析器ViewResolver可配置自定义ViewClass类，如下代码所示。</p>
-<pre><code class="language-js">@Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
-    
-    @Bean
-    public FreeMarkerViewResolver freeMarkerViewResolver() {
-        FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
-        resolver.setViewClass(MyFreeMarkerView.class);
-        resolver.setPrefix(&quot;&quot;);
-        resolver.setSuffix(&quot;.ftl&quot;);
-        resolver.setContentType(&quot;text/html; charset=UTF-8&quot;);
-        resolver.setRequestContextAttribute(&quot;rc&quot;);
-        return resolver;
+
+    /**
+     * 配置Test数据库的数据源
+     *
+     * @return the data source
+     */
+    @Bean(name = &quot;TestDataSource&quot;)
+    @ConfigurationProperties(prefix = TEST_PREFIX)  // application.properties中对应属性的前缀
+    public DataSource testDataSource() {
+        return new AtomikosDataSourceBean();
     }
-    
 }
 </code></pre>
-<p>在执行完controller接口后、解析视图模板之前执行ViewClass中的doRender方法逻辑，如下代码的位置，这块逻辑来判断是否继续执行模板解析逻辑。</p>
-<pre><code class="language-js">public class MyFreeMarkerView extends FreeMarkerView{  
-	
+<p><font  size=3 ><strong>两个Session工厂对象</strong></font></p>
+<p>mybatis中重要的组件是Session工厂，每个数据库都有个固定的session工厂，应用与数据库交互前需要向对应的工厂申请资源。两个session工厂配置类分别生成两种不同数据库的session工厂。</p>
+<pre><code class="language-js">@Configuration
+@MapperScan(basePackages = {&quot;com.jta.mapper.spring&quot;}, sqlSessionFactoryRef = &quot;springSqlSessionFactory&quot;)
+public class SpringDataSourceConfiguration {
+    /**
+     * The constant MAPPER_XML_LOCATION.
+     */
+    public static final String MAPPER_XML_LOCATION = &quot;classpath:mapper/spring/*.xml&quot;;
 
-	private static final Logger log = LoggerFactory.getLogger(MyFreeMarkerView.class);
+    /**
+     * The Open plat form data source.
+     */
+    @Autowired
+    @Qualifier(&quot;SpringDataSource&quot;)
+    DataSource springDataSource;
 
-   
-    @Override  
-    protected void doRender(Map model,  
-            HttpServletRequest request, HttpServletResponse response)  
-            throws Exception { 
-            ......在业务逻辑执行之后 、 模板解析之前的逻辑。
-            }
+    /**
+     * 配置Sql Session模板
+     *
+     * @return the sql session template
+     * @throws Exception the exception
+     */
+    @Bean
+    public SqlSessionTemplate springSqlSessionTemplate() throws Exception {
+        return new SqlSessionTemplate(springSqlSessionFactory());
+    }
+
+    /**
+     * 配置SQL Session工厂
+     *
+     * @return the sql session factory
+     * @throws Exception the exception
+     */
+    @Bean
+    public SqlSessionFactory springSqlSessionFactory() throws Exception {
+        SqlSessionFactoryBean factoryBean = new SqlSessionFactoryBean();
+        factoryBean.setDataSource(springDataSource);
+        //指定XML文件路径
+        factoryBean.setMapperLocations(new PathMatchingResourcePatternResolver().getResources(MAPPER_XML_LOCATION));
+        return factoryBean.getObject();
+    }
+}
 </code></pre>
-<p><a name="5"><font  size=4 face="黑体"><strong>5. 优化成果</strong></font></a>
-<a name="6"><font  size=4 face="黑体"><strong>6. 网站性能还能提升吗？</strong></font></a></p>
-<p>其实，在前面分析的响应过程里，html下载(html文件的网络传输)也是非常消耗时间的阶段，静态化html文件的存放位置还能进一步优化，在这个项目中我们存放在服务这一侧，其实还可以放在网站接入层nginx服务器。</p>
-<p>对于静态html文件，可以直接上传到与用户在同一个城市的网络运营商CDN服务器，这样文件的网络传输过程就大大缩减了，网页打开速度会更快。现在很多新闻网站、博客网站都是在使用运营商CDN服务的，甚至视频网站也会将最新视频上传到CDN，以加快用户响应速度。</p>
-<p>完整的demo项目，请关注公众号“前沿科技bot“并发送&quot;&quot;获取。</p>
+<p>另外一个session工厂配置类，请查看本项目完整代码。</p>
+<p><font  size=3 ><strong>测试</strong></font></p>
+<p>分布式事务测试，启动应用，使用postman进行测试。</p>
+<p>在postman中输入地址：localhost:8080/insertPeopleAndUser?peopleName=jack&amp;userName=helloworld001，访问结果如图所示</p>
+<p><img src="/upload/2020/07/vnj6rrft9qh90ru0uohjloelih.png" alt="alt" /></p>
+<p>people数据插入失败，导致回滚了，验证user数据是否也成功回滚了？</p>
+<p><img src="/upload/2020/07/3r9a2fhpasig3ra01uai6c3b0t.jpg" alt="alt" /></p>
+<p>helloworld001数据没有插入user表。回滚成功！</p>
+<p>到此，springboot项目就成功整合了Atomikos框架实现分布式事务的2PC方案，详细代码请参考我的完整项目。</p>
+<p><a name="3"><font  size=4 face="黑体"><strong>3. 2PC分布式事务的问题及局限性</strong></font></a></p>
+<p>性能低效：2PC方案的两种角色都会阻塞等待，直到返回执行结果或收到命令，事务锁会一直积压，导致数据库性能会非常差。</p>
+<p>单点故障：事务协调者是整个XA模型的核心，一旦事务协调者节点挂掉，会导致参与者收不到提交或回滚的通知，从而导致参与者节点始终处于事务无法完成的中间状态。</p>
+<p>数据不一致：第二个阶段，如果发生局部网络问题，一部分事务参与者收到了提交消息，另一部分事务参与者没收到提交消息，那么就会导致节点间数据的不一致问题。</p>
+<p>对于2PC方案，是基于资源层的分布式事务解决方案，常用于单体应用操作不同数据库的场景。对于微服务架构就不适用了，大家选择方案的时候还要根据具体情况来做。</p>
+<p>本文是有已经实现的完整项目，读者可以先收藏起来，以后可以拿来即用。关注“前沿科技“公众后，发送“两阶段提交“消息获得项目地址。</p>
+<center><font  size=2><font color=red>转载这篇文章需要标注作者和出处：</font><font color=purple >空白-bittechblog</font></font></center>
+<p>欢迎加入技术群：获得更多java，springboot，redis，kafka圈的好友，共图技术未来
+<a href=“http://bittechblog.com/article/gongtushe-group“ target="_blank">点击获取技术群二维码 </a></p>
+<p>还要配置状态转移信息以及事件处理器逻辑的开发。完整的demo项目，请关注公众号“前沿科技bot“并发送&quot;状态机&quot;获取。</p>
 <p><img src="/upload/2020/05/6s8d58g77ehftpcen62h4v4bss.png" alt="alt" /></p>
 </div>
     <div id="guanzhu" class= "asb-post-01"  style="display:block">
@@ -688,7 +729,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 <html lang="en">
 <body>
 <div>
-    <div id="127" class="comment-container">
+    <div id="80" class="comment-container">
         <div id="comments" class="clearfix">
             <div>
                 <span class="response">
@@ -697,7 +738,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 <form method="post" id="comment-form" class="comment-form" role="form"
                       onsubmit="return TaleComment.subComment();">
                     <input type="hidden" name="coid" id="coid"/>
-                    <input type="hidden" name="cid" id="cid" value="127"/>
+                    <input type="hidden" name="cid" id="cid" value="80"/>
                     <input type="hidden" name="_csrf_token" value=""/>
                     <input type="text" name="author" maxlength="12" id="author"
                            class="form-control input-control clearfix"

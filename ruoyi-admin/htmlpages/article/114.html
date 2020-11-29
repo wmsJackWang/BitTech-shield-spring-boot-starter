@@ -14,7 +14,7 @@
     <meta name="description"/>
     <link rel="shortcut icon" href="/user/img/logo.png"/>
     <link rel="apple-touch-icon" href="/user/img/apple-touch-icon.png"/>
-    <title>大型网站架构师方案—屌爆了！这种优化方案让我网站响应速度提高了近80倍 - 微服务与架构师社区</title>
+    <title>SpringBoot学习示例—Redis多个实例简单的手动配置之整合Lettuce池(附完整项目代码) - 微服务与架构师社区</title>
     <link href="//cdn.bootcss.com/highlight.js/9.9.0/styles/xcode.min.css" rel="stylesheet"/>
     <link href="/user/css/style.min.css" rel="stylesheet"/>
     
@@ -268,14 +268,14 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 <section class="jumbotron intro" data-pattern-id="本站 所有文章">
     <div class="container" >
         <div id="jumbotron-meta-info" style="color: #FFFFFF;">        
-            <h1>大型网站架构师方案—屌爆了！这种优化方案让我网站响应速度提高了近80倍</h1>
+            <h1>SpringBoot学习示例—Redis多个实例简单的手动配置之整合Lettuce池(附完整项目代码)</h1>
             <br/>
             <span class="meta-info" style="color: #FFFFFF;" >
                 <span class="octicon octicon-calendar"></span> 
             	作者：空白
             	
  				
-                	<p><time datetime="2020-11-22" itemprop="datePublished">Time: 2020-11-22</time></p>
+                	<p><time datetime="2020-10-20" itemprop="datePublished">Time: 2020-10-20</time></p>
             	
             </span>
         </div>
@@ -464,204 +464,185 @@ function refresh(){
 <article class="main-content post-page">
     <div id="post-content"  class="post-content"><ul>
 <li>
-<p><font size=4><a href="#1"><strong>1. 网站性能的指标</strong></a></font></p>
+<p><font size=4><a href="#1"><strong>1. Redis整合Lettuce池配置多个实例</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#2"><strong>2. 网站性能检测方法</strong></a></font></p>
+<p><font size=4><a href="#2"><strong>2. 快速上手</strong></a></font></p>
 </li>
 <li>
-<p><font size=4><a href="#3"><strong>3. 优化方案</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#4"><strong>4. 方案落地开发</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#5"><strong>5. 优化成果</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#6"><strong>6. 网站性能还能提升吗？</strong></a></font></p>
+<p><font size=4><a href="#3"><strong>3. 测试效果</strong></a></font></p>
 </li>
 </ul>
-<p><a name="1"><font  size=4 face="黑体"><strong>1. 网站性能的指标</strong></font></a></p>
-<p>博客网站的页面打开时间一旦超过10s就会容易让用户关闭网站，从而增加跳出率。但实际情况是，大部分用户对于网页打开时间超过3s的可能都无法接受。</p>
-<p><strong>网站性能指标</strong></p>
-<p>对于网站的性能指标，最重要的是响应时间、吞吐量、并发数。
-<strong>响应时间</strong>是浏览器发出请求到收到响应并最终渲染到界面上的总时间，能很直观的反映系统的快慢。
-<strong>吞吐量</strong>是单位时间处理的请求数，也称为TPS，能体现系统容量。
-<strong>并发数</strong>是指系统同时能处理的请求数，例如双十一，上亿用户在线，而且短时间内都访问系统，这时候网站就需要极高的并发能力支持。</p>
-<p><strong>关联</strong>
-其实细细思考，这几个网站的性能指标，它们之间是有关联关系的。
-就拿高速公路收费站来类比，响应时间(RT)就是收费窗口处理收费事件的时间，吞吐量(TPS)是单位时间内收费站窗口总共经过了多少辆车，而并发量(P)就是总共有多少个收费通道。</p>
-<p>TPS = p*(1/RT）</p>
-<p><strong>但是这篇文章核心内容是谈谈如何优化网站的RT：响应时间。</strong> 通过降低网站RT时间来提高网站的吞吐量，提高用户的体验。</p>
-<p><a name="2"><font  size=4 face="黑体"><strong>2. 网站性能检测方法</strong></font></a></p>
-<p>从输入url，到页面渲染结束，全过程可大致分为以下几个阶段：</p>
-<ol>
-<li>从浏览器输入url，DNS域名解析，查找到域名绑定的id地址。</li>
-<li>建立TCP连接：客户端浏览器和web服务器建立TCP连接（传输控制协议），三次握手。</li>
-<li>发送HTTP request请求：客户端浏览器向对应的ip地址web服务器发送http请求。</li>
-<li>web服务器反向代理：Nginx反向代理，解析域名转发到对应的应用服务器上。</li>
-<li>服务器业务逻辑处理：业务接口逻辑，访问数据库或访问缓存，数据计算等过程。</li>
-<li>视图解析：拿第五步得到业务数据结合视图模板进行解析，得到html文件。</li>
-<li>客户端浏览器渲染：渲染响应页面，客户端浏览器下载数据，解析HTML，完成页面的排版。</li>
-<li>响应完成，断开tcp连接。</li>
-</ol>
-<p>在这8个阶段，其中对于网站响应优化最明显的地方就是<strong>第五、六阶段</strong>，对于绝大多数博客网站来说，网页都是相对静态的，很少有数据的变化。因此通过将博客网页静态化处理，可以省去响应过程最耗时的这两个阶段，能大大降低响应时间。</p>
-<p><strong>过滤器统计响应时间</strong></p>
-<p>SpringBoot的API过滤器:ApiAccessFilter。使用注解的开发方式，如下代码所示。@WebFilter修饰实现了Filter接口的类，参数filterName为拦截器名称，urlPatterns设置拦截的url模式。Api响应时间计算逻辑在doFilter方法中实现。</p>
-<pre><code class="language-js">@WebFilter(filterName = &quot;ApiAccessFilter&quot;, urlPatterns = &quot;/*&quot;)
-public class ApiAccessFilter implements Filter { 
-  
-  @Override
-  public void init(FilterConfig filterConfig) { 
-  }
-  
-  @Override
-  public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
-    FilterChain filterChain) throws IOException, ServletException {
-  
-    HttpServletRequest request = (HttpServletRequest) servletRequest;
-  
-//    Long requestId = IdGenUtils.nextIdByMem(); // 请求ID，这个是我业务中的id，大家可自行决定是否需要
-    long start = System.currentTimeMillis(); // 请求进入时间
-  
-    log.info(&quot;[Api Access] start. uri: {}, method: {}, client: {}&quot;,
-    request.getRequestURI(), request.getMethod(), getIP(request));
-    filterChain.doFilter(servletRequest, servletResponse);
-    log.info(&quot;[Api Access]  end. uri: {}, method: {}, client: {}, duration: {}ms&quot;,
-    request.getRequestURI(), request.getMethod(), getIP(request),System.currentTimeMillis() - start); 
-  }
-  
-  @Override
-  public void destroy() {
-  
-  }
-  
-  /**
-   * 获取IP地址
-   *
-   * @param request 请求
-   * @return request发起客户端的IP地址
-   */
-  private String getIP(HttpServletRequest request) {
-    if (request == null) {
-      return &quot;0.0.0.0&quot;;
-    }
-  
-    String Xip = request.getHeader(&quot;X-Real-IP&quot;);
-    String XFor = request.getHeader(&quot;X-Forwarded-For&quot;);
-  
-    String UNKNOWN_IP = &quot;unknown&quot;;
-    if (!StringUtils.isEmpty(XFor) &amp;&amp; !UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      //多次反向代理后会有多个ip值，第一个ip才是真实ip
-      int index = XFor.indexOf(&quot;,&quot;);
-      if (index != -1) {
-        return XFor.substring(0, index);
-      } else {
-        return XFor;
-      }
-    }
-  
-    XFor = Xip;
-    if (!StringUtils.isEmpty(XFor) &amp;&amp; !UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      return XFor;
-    }
-  
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;Proxy-Client-IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;WL-Proxy-Client-IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;HTTP_CLIENT_IP&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getHeader(&quot;HTTP_X_FORWARDED_FOR&quot;);
-    }
-    if (StringUtils.isEmpty(XFor) || UNKNOWN_IP.equalsIgnoreCase(XFor)) {
-      XFor = request.getRemoteAddr();
-    }
-    return XFor;
-  }
-}
+<p><a name="1"><font  size=4 face="黑体"><strong>1. Redis整合Lettuce池配置多个实例</strong></font></a></p>
+<p>Redis 是目前业界使用最广泛的内存数据存储。相比 Memcached，Redis 支持更丰富的数据结构，例如 hashes, lists, sets ，sortedsets等。数据库有分库分表，当然redis也能实现mysql一样的分库逻辑。本文介绍 Redis 在 Spring Boot 中分库的应用场景。</p>
+<p><a name="2"><font  size=4 face="黑体"><strong>2. 快速上手</strong></font></a></p>
+<p><strong>1、引入依赖包</strong></p>
+<pre><code class="language-js">&lt;!-- 引入 redis 依赖 --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;!-- 引入 Lettuce池 依赖 --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;org.apache.commons&lt;/groupId&gt;
+    &lt;artifactId&gt;commons-pool2&lt;/artifactId&gt;
+&lt;/dependency&gt;
+&lt;!-- 引入 fastjson 依赖，序列化使用的是fastjson --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+    &lt;artifactId&gt;fastjson&lt;/artifactId&gt;
+    &lt;version&gt;1.2.44&lt;/version&gt; 
+&lt;/dependency&gt;
 </code></pre>
-<p>有了这个filter，我们就能在日志中查看所有url的响应时间，然后对比网站静态化前后的响应时间变化。</p>
-<p><a name="3"><font  size=4 face="黑体"><strong>3. 优化方案</strong></font></a></p>
-<p><strong>静态化处理</strong>
-每个页面请求到来，拦截在执行controller接口逻辑之前，判断该请求是否有存在的html文件，如果有直接重定向，跳过数据库访问、数据计算、模板解析等过程。</p>
-<p>如果不存在，则不拦截，正常走业务逻辑、视图解析等正常处理流程。</p>
-<p><strong>大型新闻网站的静态化方案</strong></p>
-<p><img src="/upload/2020/11/s051duoj5ehi1rc8kmb98afhsa.jpg" alt="alt" /></p>
-<p>可以看到，大型网站一般都是将访问的每个url都有直接关联到的静态html，而静态html的维护是由另外一套系统来做。这种方式比较繁琐，系统也很复杂，下面来一起看看我设计的轻量静态化方案。</p>
-<p><strong>轻量的网页静态HTML化方案</strong></p>
-<p>轻量的静态化方案，是基于注解开发的，对业务代码没有侵入性。拦截器在执行controller接口方法之前先执行注解切面逻辑，通过spring的切面编程方式，可以把这部分逻辑作为增强逻辑放到切面模块。</p>
-<p>那controller接口方法的代码不用做任何更改，做到了对业务代码<strong>零入侵</strong>。接下来就来谈谈具体实现方案。</p>
-<p><a name="4"><font  size=4 face="黑体"><strong>4. 方案落地开发</strong></font></a></p>
-<p>废话不多说，直接上代码，博客网站首页的controller接口业务代码，看看是如何启动页面静态化的。</p>
-<pre><code class="language-js"> /**
-     * 首页
-     *
-     * @param vo
-     * @param model
-     * @return
-     */
-    @RequestMapping(&quot;/&quot;)
-    @BussinessLog(value = &quot;进入首页&quot;, platform = PlatformEnum.WEB)
-    @StaticPage(enable=true)
-    public ModelAndView home(ArticleConditionVO vo, Model model) {
-        model.addAttribute(&quot;url&quot;, INDEX_URL);
-        loadIndexPage(vo, model);
+<p>SpringBoot 提供了对 Redis 集成的组件包：spring-boot-starter-data-redis，spring-boot-starter-data-redis依赖于spring-data-redis 和 lettuce 。lettuce使用netty NIO来管理连接对象的，十分高效且线程安全，多个线程可共享一个connection对象。</p>
+<p>SpringBoot2.0升级了redis池，从jedis升级到了lettuce，而且用户可无感知的切换到lettuce。</p>
+<p><strong>2.添加配置文件</strong></p>
+<p>两种添加配置文件的方式，一种是application.properties，另一种是application.yml。读者选择一种即可。</p>
+<p><strong>application.properties</strong></p>
+<pre><code class="language-js">#redis db1
+spring.redis.redis-onedb.database=1
+spring.redis.redis-onedb.hostName=localhost
+spring.redis.redis-onedb.port=6379
+spring.redis.redis-onedb.timeout=5000
+#redis db2
+spring.redis.redis-twodb.database=2
+spring.redis.redis-twodb.hostName=localhost
+spring.redis.redis-twodb.port=6379
+spring.redis.redis-twodb.timeout=5000
 
-        return ResultUtil.view(INDEX_URL);
-    }
+
+spring.redis.lettuce.pool.MaxTotal=50
+spring.redis.lettuce.pool.minIdle=1
+spring.redis.lettuce.pool.maxWaitMillis=5000
+spring.redis.lettuce.pool.maxIdle=5
+spring.redis.lettuce.pool.testOnBorrow=true
+spring.redis.lettuce.pool.testOnReturn=true
+spring.redis.lettuce.pool.testWhileIdle=true
 </code></pre>
-<p>是的，一个自定义注解@StaticPage直接开启首页接口页面的静态html化，做到了业务代码的零入侵！</p>
-<p><strong>切面增强逻辑</strong></p>
-<ol>
-<li>切面逻辑这块的开发，是直接获取url请求的request对象，并获取html的path，计算得到html的相对路径。</li>
-<li>创建file对象，判断是否存在html文件，存在则重定向到html，结束接口后续响应。</li>
-<li>文件不存在，则不中断响应，响应线程走正常执行业务逻辑、解析模板等过程。</li>
-</ol>
-<p><strong>如何维护静态html文件</strong></p>
-<p>这里设计的方案是，系统根据url所带的秘钥参数来决定执行逻辑，静态化请求都由博客网站后台发出，这是更新html文件的管理方法。如果秘钥正确，则只生成html静态文件，如果秘钥不存在，则重定向到html或生成html后再重定向。</p>
-<p><strong>自定义ViewClass</strong></p>
-<p>SpringBoot项目的解析器ViewResolver可配置自定义ViewClass类，如下代码所示。</p>
-<pre><code class="language-js">@Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
-    
-    @Bean
-    public FreeMarkerViewResolver freeMarkerViewResolver() {
-        FreeMarkerViewResolver resolver = new FreeMarkerViewResolver();
-        resolver.setViewClass(MyFreeMarkerView.class);
-        resolver.setPrefix(&quot;&quot;);
-        resolver.setSuffix(&quot;.ftl&quot;);
-        resolver.setContentType(&quot;text/html; charset=UTF-8&quot;);
-        resolver.setRequestContextAttribute(&quot;rc&quot;);
-        return resolver;
-    }
-    
-}
+<p><strong>application.yml</strong></p>
+<pre><code class="language-js">spring:
+  redis:
+    lettuce:
+      pool:
+        MaxTotal: 50
+        minIdle: 1
+        maxWaitMillis: 5000
+        maxIdle: 5
+        testOnBorrow: true
+        testOnReturn: true
+        testWhileIdle: true
+    redis-twodb:
+      database: 1
+      hostName: localhost
+      port: 6379
+      timeout: 5000
+    redis-onedb:
+      database: 2
+      hostName: localhost
+      port: 6379
+      timeout: 5000
+        
 </code></pre>
-<p>在执行完controller接口后、解析视图模板之前执行ViewClass中的doRender方法逻辑，如下代码的位置，这块逻辑来判断是否继续执行模板解析逻辑。</p>
-<pre><code class="language-js">public class MyFreeMarkerView extends FreeMarkerView{  
+<p><strong>3.配置类RedisConfig</strong></p>
+<pre><code class="language-js">
+@Configuration
+public class RedisConfig {
 	
+	
+@Bean
+@ConfigurationProperties(prefix = &quot;spring.redis.lettuce.pool&quot;)
+@Scope(value = &quot;prototype&quot;)
+public GenericObjectPoolConfig redisPool(){
+    return new GenericObjectPoolConfig();
+}
 
-	private static final Logger log = LoggerFactory.getLogger(MyFreeMarkerView.class);
+@Bean
+@ConfigurationProperties(prefix = &quot;spring.redis.redis-onedb&quot;)
+public RedisStandaloneConfiguration redisConfigA(){
+    return new RedisStandaloneConfiguration();
+}
 
-   
-    @Override  
-    protected void doRender(Map model,  
-            HttpServletRequest request, HttpServletResponse response)  
-            throws Exception { 
-            ......在业务逻辑执行之后 、 模板解析之前的逻辑。
-            }
+
+@Primary
+@Bean
+public LettuceConnectionFactory factoryA(GenericObjectPoolConfig config, RedisStandaloneConfiguration redisConfigA){
+    LettuceClientConfiguration clientConfiguration = LettucePoolingClientConfiguration.builder()
+            .poolConfig(config).commandTimeout(Duration.ofMillis(config.getMaxWaitMillis())).build();
+    return new LettuceConnectionFactory(redisConfigA, clientConfiguration);
+}
+
+
+@Bean(name = &quot;oneRedis&quot;)
+public StringRedisTemplate redisBusTemplate(@Qualifier(&quot;factoryA&quot;) LettuceConnectionFactory factoryA){
+    StringRedisTemplate template = getRedisTemplate();
+    template.setConnectionFactory(factoryA);
+    return template;
+}
+
+
+
+@Bean
+@ConfigurationProperties(prefix = &quot;spring.redis.redis-twodb&quot;)
+public RedisStandaloneConfiguration redisConfigB(){
+    return new RedisStandaloneConfiguration();
+}
+
+@Bean
+public LettuceConnectionFactory factoryB(GenericObjectPoolConfig config, RedisStandaloneConfiguration redisConfigB){
+    LettuceClientConfiguration clientConfiguration = LettucePoolingClientConfiguration.builder()
+            .poolConfig(config).commandTimeout(Duration.ofMillis(config.getMaxWaitMillis())).build();
+    return new LettuceConnectionFactory(redisConfigB, clientConfiguration);
+}
+
+
+@Bean(name = &quot;twoRedis&quot;)
+public StringRedisTemplate redisLoginTemplate(@Qualifier(&quot;factoryB&quot;)LettuceConnectionFactory factoryB){
+    StringRedisTemplate template = getRedisTemplate();
+    template.setConnectionFactory(factoryB);
+    return template;
+}
+
+private StringRedisTemplate getRedisTemplate(){
+    StringRedisTemplate template = new StringRedisTemplate();
+    template.setValueSerializer(new GenericFastJsonRedisSerializer());
+    template.setValueSerializer(new StringRedisSerializer());
+    return template;
+}
+}
 </code></pre>
-<p><a name="5"><font  size=4 face="黑体"><strong>5. 优化成果</strong></font></a>
-<a name="6"><font  size=4 face="黑体"><strong>6. 网站性能还能提升吗？</strong></font></a></p>
-<p>其实，在前面分析的响应过程里，html下载(html文件的网络传输)也是非常消耗时间的阶段，静态化html文件的存放位置还能进一步优化，在这个项目中我们存放在服务这一侧，其实还可以放在网站接入层nginx服务器。</p>
-<p>对于静态html文件，可以直接上传到与用户在同一个城市的网络运营商CDN服务器，这样文件的网络传输过程就大大缩减了，网页打开速度会更快。现在很多新闻网站、博客网站都是在使用运营商CDN服务的，甚至视频网站也会将最新视频上传到CDN，以加快用户响应速度。</p>
-<p>完整的demo项目，请关注公众号“前沿科技bot“并发送&quot;&quot;获取。</p>
+<p><strong>RedisConfig类中配置的Lettuce多例模式池对象。</strong></p>
+<pre><code class="language-js">@Bean
+@ConfigurationProperties(prefix = &quot;spring.redis.lettuce.pool&quot;)
+@Scope(value = &quot;prototype&quot;)
+public GenericObjectPoolConfig redisPool(){
+    return new GenericObjectPoolConfig();
+}
+</code></pre>
+<p><strong>我们来梳理一下：</strong></p>
+<ol>
+<li>
+<p>RedisTemplate对象 <strong>依赖</strong> LettuceConnectionFactory对象；</p>
+</li>
+<li>
+<p>LettuceConnectionFactory对象 依赖 RedisStandaloneConfiguration池配置对象以及Redis配置对象。</p>
+</li>
+<li>
+<p>oneRedis-&gt;factoryA-&gt;redisConfigA + redisPool , twoRedis-&gt;factoryB-&gt;redisConfigB + redisPool</p>
+</li>
+</ol>
+<p><a name="3"><font  size=4 face="黑体"><strong>3. 测试效果</strong></font></a></p>
+<p><strong>编写测试代码RedisTestor类的run方法。</strong></p>
+<pre><code class="language-js">System.out.println(&quot;在db1中设置key的值为：hello db1&quot;);
+oneRedis.opsForValue().set(&quot;key&quot;, &quot;hello db1&quot;);
+System.out.println(&quot;在db2中设置key的值为：hello db1&quot;);
+twoRedis.opsForValue().set(&quot;key&quot;, &quot;hello db1&quot;);
+
+System.out.println(&quot;db1中key：&quot;+oneRedis.opsForValue().get(&quot;key&quot;));
+System.out.println(&quot;db2中key：&quot;+twoRedis.opsForValue().get(&quot;key&quot;));
+</code></pre>
+<p><strong>查看db1、db2的数据</strong></p>
+<p><img src="/upload/2020/10/s28h11271ag77pcli75218ilf4.jpg" alt="alt" /></p>
+<p>完整的demo项目，请关注公众号“前沿科技bot“并发送&quot;状态机&quot;获取。</p>
 <p><img src="/upload/2020/05/6s8d58g77ehftpcen62h4v4bss.png" alt="alt" /></p>
 </div>
     <div id="guanzhu" class= "asb-post-01"  style="display:block">
@@ -688,7 +669,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 <html lang="en">
 <body>
 <div>
-    <div id="127" class="comment-container">
+    <div id="114" class="comment-container">
         <div id="comments" class="clearfix">
             <div>
                 <span class="response">
@@ -697,7 +678,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 <form method="post" id="comment-form" class="comment-form" role="form"
                       onsubmit="return TaleComment.subComment();">
                     <input type="hidden" name="coid" id="coid"/>
-                    <input type="hidden" name="cid" id="cid" value="127"/>
+                    <input type="hidden" name="cid" id="cid" value="114"/>
                     <input type="hidden" name="_csrf_token" value=""/>
                     <input type="text" name="author" maxlength="12" id="author"
                            class="form-control input-control clearfix"

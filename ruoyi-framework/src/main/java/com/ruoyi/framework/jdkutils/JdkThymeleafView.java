@@ -10,7 +10,6 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URLDecoder;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -19,10 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.spring5.view.ThymeleafView;
 
+import com.ruoyi.framework.config.BlogApplicationConfig;
 import com.ruoyi.framework.config.BlogConfig;
 import com.ruoyi.framework.holder.RequestHolder;
 import com.ruoyi.framework.holder.SpringContextHolder;
@@ -40,24 +41,24 @@ public class JdkThymeleafView extends ThymeleafView{
 	public void render(Map<String, ?> model, HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		// TODO Auto-generated method stub
-		
+		Map<String, Object> modelMap = (Map<String, Object>) model;
 		System.out.println("测试 render");
-		model = getAllAttribute(request);
+//		model = getAllAttribute(request);
 		
 		 /* 
          * 默认不生成静态文件,除非在Action中进行如下设置  
          * model.addAttribute("STATIC_PAGE", true); 
          */  
-        if(model.get("STATIC_PAGE") == null || Boolean.FALSE.equals(model.get("STATIC_PAGE"))){//接口没有配置静态化注解，则走正常模板流程  
+        if(request.getAttribute("STATIC_PAGE") == null || Boolean.FALSE.equals(request.getAttribute("STATIC_PAGE"))){//接口没有配置静态化注解，则走正常模板流程  
         	log.info("请求走正常模板流程");
     		renderFragment(null, model, request, response); 
-        }else if(model.get("IS_CREATEHTML") == null || Boolean.FALSE.equals(model.get("IS_CREATEHTML"))) {
+        }else if(request.getAttribute("IS_CREATEHTML") == null || Boolean.FALSE.equals(request.getAttribute("IS_CREATEHTML"))) {
         	//接口配置了静态化注解，请求由普通用户发起，则判断该请求是否有静态化html文件，有则直接返回静态文件，没有则走正常模板流程
         	log.info("有静态html直接重定向到html，没有则生成html文件  并重定向");
-        	getBackHtml(request, response);  
+        	getBackHtml(request, response,modelMap);  
         }else{  //接口配置了静态化注解，且请求是由blog后台发出的  创建静态化html请求。
         	log.info("该请求只创建html文件");
-            createHTML(request, response,true);  //创建静态文件html,后台定时任务调用返回
+            createHTML(request, response,true,modelMap);  //创建静态文件html,后台定时任务调用返回
         }
 		
 	}
@@ -82,7 +83,7 @@ public class JdkThymeleafView extends ThymeleafView{
         return htmlFile.getParentFile().exists()&&htmlFile.exists();
     }
   
-    private void getBackHtml(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private void getBackHtml(HttpServletRequest request, HttpServletResponse response,Map<String, Object> model) throws Exception {
 		// TODO Auto-generated method stub
 //    	String basePath = getStaticPageBasePath() + "/htmlpages";//configHelper.getProperty("static_html_path");  
 //        // String basePath =  
@@ -103,11 +104,11 @@ public class JdkThymeleafView extends ThymeleafView{
             return;
         }  
         //这个应该要静态化的接口  ，没有静态化html，则主动生成html文件
-        createHTML(request, response,false);  //创建静态文件html ,并且重定向到html地址
+        createHTML(request, response,false,model);  //创建静态文件html ,并且重定向到html地址
 	}
 
 	public void createHTML(HttpServletRequest request,  
-            HttpServletResponse response,boolean createOnly) throws IOException, ServletException {  
+            HttpServletResponse response,boolean createOnly,Map<String, Object> model) throws IOException, ServletException {  
 //        // 静态文件根目录的绝对路径  
 //        ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(request  
 //                .getSession().getServletContext());  
@@ -137,10 +138,10 @@ public class JdkThymeleafView extends ThymeleafView{
         // 处理模版  
         TemplateEngine templateEngine = SpringContextHolder.getAppContext().getBean(TemplateEngine.class);
         //获取数据模型,findBySpuId是一个方法,传入spuid获取所需数据
-        Map<String, Object> variables = getAllAttribute(request);
+//        Map<String, Object> variables = getAllAttribute(request);
         //创建Context对象
         WebContext webContext = new WebContext(request, response,
-                request.getServletContext(), request.getLocale(), variables);
+                request.getServletContext(), request.getLocale(), model);
         templateEngine.process(getTemplateName(),webContext,out);
         //这是静态页面生成的地址路径,在配置文件中有配置
     	log.info("创建路径url模板对应的html静态文件，保存html的相对路径：{}",responsePath);
@@ -161,19 +162,19 @@ public class JdkThymeleafView extends ThymeleafView{
         }
     }  
       
-    private Map<String, Object> getAllAttribute(HttpServletRequest request) {
-		// TODO Auto-generated method stub
-    	Map<String, Object> result = new HashMap<String, Object>();
-    	Enumeration<String> enumerations = request.getAttributeNames();
-    	String key = null;
-    	while(enumerations.hasMoreElements())
-    	{
-    		key = enumerations.nextElement();
-//    		System.out.println(key);
-    		result.put(key, request.getAttribute(key));
-    	}
-		return result;
-	}
+//    private Map<String, Object> getAllAttribute(HttpServletRequest request) {
+//		// TODO Auto-generated method stub
+//    	Map<String, Object> result = new HashMap<String, Object>();
+//    	Enumeration<String> enumerations = request.getAttributeNames();
+//    	String key = null;
+//    	while(enumerations.hasMoreElements())
+//    	{
+//    		key = enumerations.nextElement();
+////    		System.out.println(key);
+//    		result.put(key, request.getAttribute(key));
+//    	}
+//		return result;
+//	}
 
 
 	/** 
@@ -214,14 +215,15 @@ public class JdkThymeleafView extends ThymeleafView{
          * redis中的url集合是为了方便后台admin项目  来主动调用 需要重新生成静态页面的url。
          */
         //判断这个url是否在已经生成静态html的 url集合中
-//        if(!BlogApplicationContext.staticPageUrls.contains(staticPageUrl)) 
-//        {
-//        	//添加到本地的url集合中去
-//        	BlogApplicationContext.staticPageUrls.add(staticPageUrl);
-//        	RedisService redisService = BlogApplicationContext.context.getBean(RedisService.class);
-//        	//添加到redis的url集合中去
-//        	redisService.setOfSet("staticPageUrls",staticPageUrl);
-//        }
+        if(!BlogApplicationConfig.staticPageUrls.contains(staticPageUrl)) 
+        {
+        	//添加到本地的url集合中去
+        	BlogApplicationConfig.staticPageUrls.add(staticPageUrl);
+//        	RedisService redisService = BlogApplicationContext.contex;
+        	RedisTemplate<String, Object> redisTemplate = (RedisTemplate<String, Object>) SpringContextHolder.getAppContext().getBean("staticPageRedisTemplate");
+        	//添加到redis的url集合中去
+        	redisTemplate.opsForSet().add("staticPageUrls","http://bittechblog.com/"+staticPageUrl);
+        }
   
         // 加上.html后缀  
         requestURI = requestURI + ".html";  
