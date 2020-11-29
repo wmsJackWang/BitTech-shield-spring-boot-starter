@@ -159,7 +159,7 @@ xss:
 # staticpage 配置
 staticpage:
   #是否开启静态化
-  enable: false
+  enable: true
   #静态化后，admin端发送静态化页面创建请求时  需要的秘钥。
   staticPageScretKey: secretKey-test
   #静态页面名称是否开启使用  url的参数来生成唯一的文件名

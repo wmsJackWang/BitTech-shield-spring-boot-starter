@@ -13,7 +13,7 @@
     <meta name="description" th:content="${description ?:commons.site_option('site_description')}"/>
     <link rel="shortcut icon" th:href="@{/user/img/logo.png}"/>
     <link rel="apple-touch-icon" th:href="@{/user/img/apple-touch-icon.png}"/>
-    <title><th:block th:text="${title ?: '程序员'}+' - '+${commons.site_option('site_title','微服务与架构师社区')}"></th:block></title>
+    <title><th:block th:text="${title ?: '微服务社区'}+' - '+${commons.site_option('site_title','分布式架构+SpringCloud微服务+Redis+Mysql')}"></th:block></title>
     <link th:href="@{//cdn.bootcss.com/highlight.js/9.9.0/styles/xcode.min.css}" rel="stylesheet"/>
     <link th:href="@{/user/css/style.min.css}" rel="stylesheet"/>
     
@@ -86,8 +86,8 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 </div>
 <![endif]-->
 <header id="header" style="background-color: rgba(0,0,0,0.1);" class="header bg-white">
-    <div class="navbar-container" >
-        <a th:href="${commons.site_url()}" class="navbar-logo">微服务与架构师社区</a>
+    <div class="navbar-container" style="width: 90%;">
+        <a th:href="${commons.site_url()}" class="navbar-logo">微服务社区</a>
 
 
         <div class="navbar-menu" >        
@@ -140,12 +140,12 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
     
     <div style="background:#87CEFA;color:#FFF;width:100%" class="container" >
             
-        <div style="background:#87CEFA;color:#FFF" class="navbar-container" >
+        <div style="background:#87CEFA;color:#FFF;width:90%;" class="navbar-container" >
         	<nav class="site-header-nav" role="navigation">
         
 	        	<div class="navbar-menu" >      
 		            <div class=" site-header-nav-item hvr-underline-from-center">
-		                <a href="/"
+		                <a href="/page/1"
 		                   target="_self"
 		                   title="首页">首页
 		                </a>
