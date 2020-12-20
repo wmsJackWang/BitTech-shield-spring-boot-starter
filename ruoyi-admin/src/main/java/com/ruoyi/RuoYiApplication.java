@@ -4,6 +4,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.ComponentScans;
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 @MapperScan("springboot.dao")//启动扫描dao包，@MapperScan除了加载默认的所有包外，还会去指定的包加载mapper对象。
 @ComponentScan({"springboot","com.ruoyi"})
+@ServletComponentScan
 public class RuoYiApplication
 {
     public static void main(String[] args)

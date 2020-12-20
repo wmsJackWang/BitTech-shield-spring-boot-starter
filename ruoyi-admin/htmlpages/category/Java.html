@@ -14,7 +14,7 @@
     <meta name="description"/>
     <link rel="shortcut icon" href="/user/img/logo.png"/>
     <link rel="apple-touch-icon" href="/user/img/apple-touch-icon.png"/>
-    <title>程序员 - 微服务与架构师社区</title>
+    <title>Java - 分布式架构+SpringCloud微服务+Redis+Mysql</title>
     <link href="//cdn.bootcss.com/highlight.js/9.9.0/styles/xcode.min.css" rel="stylesheet"/>
     <link href="/user/css/style.min.css" rel="stylesheet"/>
     
@@ -87,20 +87,18 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 </div>
 <![endif]-->
 <header id="header" style="background-color: rgba(0,0,0,0.1);" class="header bg-white">
-    <div class="navbar-container" >
-        <a href="/page/1" class="navbar-logo">微服务与架构师社区</a>
+    <div class="navbar-container" style="width: 90%;">
+        <a href="/page/1" class="navbar-logo">微服务社区</a>
 
 
         <div class="navbar-menu" >        
 
             <a style="color: #fff" href="/archives">归档</a>
             <a style="color: #fff" href="/links">友链</a> 
-            <!--<a style="color: #fff" th:href="${commons.site_url('/about')}">关于</a>-->
+            <a style="color: #fff" href="/article/about-me">关于</a>
             <!--<a  style="color: #fff"  th:href="${#httpServletRequest.getScheme() + '://' + #httpServletRequest.getServerName() + ':' + #request.getServerPort()  + #request.getContextPath() + '/article/about-me'}">
             	关于</a>
             -->
-            <a  style="color: #fff"  href="http://bittechblog.com/article/about-me">
-            	关于</a>
             
             <!--
             <div class="am-dropdown" data-am-dropdown style="color: #fff">
@@ -141,7 +139,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
     
     <div style="background:#87CEFA;color:#FFF;width:100%" class="container" >
             
-        <div style="background:#87CEFA;color:#FFF" class="navbar-container" >
+        <div style="background:#87CEFA;color:#FFF;width:90%;" class="navbar-container" >
         	<nav class="site-header-nav" role="navigation">
         
 	        	<div class="navbar-menu" >      
@@ -160,7 +158,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 <!-- 		                </a> -->
 <!-- 		            </div> -->
 		            <div class=" site-header-nav-item hvr-underline-from-center">
-		                <a href="http://bittechblog.com/blog/type/1"
+		                <a href="/category/Java架构方案"
 		                   target="_self"
 		                   title="Java架构师方案宝典">Java架构师方案宝典
 		                </a>
@@ -168,7 +166,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 		            </div>
 		            
 		            <div class=" site-header-nav-item hvr-underline-from-center">
-		                <a href="http://bittechblog.com/blog/type/5"
+		                <a href="/category/SpringBoot"
 		                   target="_self"
 		                   title="Spring Boot">
 		                    Spring Boot
@@ -189,7 +187,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 		            </div>
 	            
 		            <div class=" site-header-nav-item hvr-underline-from-center">
-		                <a href="http://bittechblog.com/blog/tag/2"
+		                <a href="/category/Java"
 		                   target="_self"
 		                   title="Java">
 		                    Java
@@ -210,7 +208,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 		            </div>
 	            
 		            <div class=" site-header-nav-item hvr-underline-from-center">
-		                <a href="http://bittechblog.com/blog/type/16"
+		                <a href="/category/Redis"
 		                   target=""
 		                   title="Redis">
 		                    Redis
@@ -269,7 +267,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 <section class="jumbotron intro" data-pattern-id="本站 所有文章">
     <div class="container" >
         <div id="jumbotron-meta-info" style="color: #FFFFFF;">        
-            <h1>聊技术，谈架构，重业务，在共图社</h1>
+            <h1>分类:Java</h1>
             <br/>
             <span class="meta-info" style="color: #FFFFFF;" >
                 <span class="octicon octicon-calendar"></span> 
@@ -285,289 +283,154 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 <body>
 <div class="am-g am-g-fixed blog-fixed index-page" style="max-width: 90%;">
     <div class="am-u-md-8 am-u-sm-12"  style="width:70%;">
-        <div>
+    
         
-           	
-            <img class="settop" src="/jack/img/settop.png" >
-            
-            
-            <article class="am-g blog-entry-article">
-<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
-<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
-<!--                 </div> -->
-                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
-                    <h2>
-                        <div><a href="/article/127">大型网站架构师方案—屌爆了！这种优化方案让我网站响应速度提高了近80倍</a>
-                        </div>
-                    </h2>
-                    <!-- 文章摘要-->
-                    <div style="font-size: 15px;"> 1. 网站性能的指标 2. 网站性能检测方法 3. 优化方案 4. 方案落地开发 5. 优化成果 6. 网站性能还能提升吗？ 1. 网站性能的指标 </div>
-                    <!-- 文章分类 -->
-                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/%E9%BB%98%E8%AE%A4%E5%88%86%E7%B1%BB">默认分类</a><span>&nbsp;&nbsp;</span></span>
-                    <!-- 发布时间 -->
-                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-11-22</span>
-                    
-                </div>
-            </article>
-
-        </div>
-        <div>
         
-           	
-            <img class="settop" src="/jack/img/settop.png" >
-            
-            
-            <article class="am-g blog-entry-article">
-<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
-<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
-<!--                 </div> -->
-                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
-                    <h2>
-                        <div><a href="/article/122">Java架构师方案——Spring Security（一）快速入门</a>
-                        </div>
-                    </h2>
-                    <!-- 文章摘要-->
-                    <div style="font-size: 15px;"> 1. 导读 2. 快速认识Spring Security 3. 运行Spring Security项目 4. 架构师角色对web安全服务的理解 1.</div>
-                    <!-- 文章分类 -->
-                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/%E9%BB%98%E8%AE%A4%E5%88%86%E7%B1%BB">默认分类</a><span>&nbsp;&nbsp;</span></span>
-                    <!-- 发布时间 -->
-                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-11-09</span>
-                    
-                </div>
-            </article>
-
-        </div>
-        <div>
         
-           	
-            <img class="settop" src="/jack/img/settop.png" >
-            
-            
-            <article class="am-g blog-entry-article">
-<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
-<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
-<!--                 </div> -->
-                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
-                    <h2>
-                        <div><a href="/article/116">Spring Security——模拟Spring Security，我徒手写了一个简单的安全框架</a>
-                        </div>
-                    </h2>
-                    <!-- 文章摘要-->
-                    <div style="font-size: 15px;"> 1. 导读 2. 核心的组件和逻辑 3. 运行测试 4. Spring Security分析总结 1. 导读 阅读这篇文章，跟着笔者一起从0到1开始</div>
-                    <!-- 文章分类 -->
-                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/Java%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88">Java架构方案</a><span>&nbsp;&nbsp;</span></span>
-                    <!-- 发布时间 -->
-                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-10-31</span>
-                    
-                </div>
-            </article>
-
-        </div>
-        <div>
         
-           	
-            <img class="settop" src="/jack/img/settop.png" >
-            
-            
-            <article class="am-g blog-entry-article">
-<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
-<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
-<!--                 </div> -->
-                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
-                    <h2>
-                        <div><a href="/article/107">SpringBoot学习示例—整合Redis之StringRedisTemplate、乐观锁、事务(附完整项目代码)</a>
-                        </div>
-                    </h2>
-                    <!-- 文章摘要-->
-                    <div style="font-size: 15px;"> 1. 前言 2. 整合Redis快速入门 3. StringRedisTemplate基本操作及测试 4. 实现Redis事务 5. Redis乐观</div>
-                    <!-- 文章分类 -->
-                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/%E9%BB%98%E8%AE%A4%E5%88%86%E7%B1%BB">默认分类</a><span>&nbsp;&nbsp;</span></span>
-                    <!-- 发布时间 -->
-                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-10-18</span>
-                    
-                </div>
-            </article>
-
-        </div>
-        <div>
+	        <div>
+	        
+	           	
+	            <img class="settop" src="/jack/img/settop.png" >
+	            
+	            
+	            <article class="am-g blog-entry-article">
+	<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+	<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+	<!--                 </div> -->
+	                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+	                    <h2>
+	                        <div><a href="/article/multidatasource">Java架构师方案—多数据源原理及应用(一)(附完整项目代码)</a>
+	                        </div>
+	                    </h2>
+	                    <!-- 文章摘要-->
+	                    <div style="font-size: 15px;"> 1. 原生jdbc数据库开发 2. 数据源领域模型 3. 多数据源组件AbstractRoutingDataSource 4. 多数据源下读写分离应</div>
+	                    <!-- 文章分类 -->
+	                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/Java%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88">Java架构方案</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/SpringBoot">SpringBoot</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/Java">Java</a><span>&nbsp;&nbsp;</span></span>
+	                    <!-- 发布时间 -->
+	                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-08-08</span>
+	                    
+	                </div>
+	            </article>
+	
+	        </div>
         
-           	
-            <img class="settop" src="/jack/img/settop.png" >
-            
-            
-            <article class="am-g blog-entry-article">
-<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
-<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
-<!--                 </div> -->
-                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
-                    <h2>
-                        <div><a href="/article/106">Java架构师方案—基于JWT的Token认证(附完整项目代码)</a>
-                        </div>
-                    </h2>
-                    <!-- 文章摘要-->
-                    <div style="font-size: 15px;"> 1. JWT鉴权、session认证 2. 什么是JWT 3. 快速开发JWT应用 4. JWT的优点和缺点分析 1. JWT鉴权、session认</div>
-                    <!-- 文章分类 -->
-                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/%E9%BB%98%E8%AE%A4%E5%88%86%E7%B1%BB">默认分类</a><span>&nbsp;&nbsp;</span></span>
-                    <!-- 发布时间 -->
-                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-10-14</span>
-                    
-                </div>
-            </article>
-
-        </div>
-        <div>
+	        <div>
+	        
+	           	
+	            
+	            <article class="am-g blog-entry-article">
+	<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+	<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+	<!--                 </div> -->
+	                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+	                    <h2>
+	                        <div><a href="/article/105">你知道JDK的延迟队列吗？</a>
+	                        </div>
+	                    </h2>
+	                    <!-- 文章摘要-->
+	                    <div style="font-size: 15px;"> 1. 我用延迟队列保证redis的key执行速度均匀！ 2. 实现原理 1. 我用延迟队列保证redis的key执行速度均匀！ 最近，在搞redis</div>
+	                    <!-- 文章分类 -->
+	                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/Java">Java</a><span>&nbsp;&nbsp;</span></span>
+	                    <!-- 发布时间 -->
+	                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-10-14</span>
+	                    
+	                </div>
+	            </article>
+	
+	        </div>
         
-           	
-            <img class="settop" src="/jack/img/settop.png" >
-            
-            
-            <article class="am-g blog-entry-article">
-<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
-<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
-<!--                 </div> -->
-                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
-                    <h2>
-                        <div><a href="/article/cluster-session-redis">Java架构师方案—分布式session基于redis的共享机制(附完整项目代码)</a>
-                        </div>
-                    </h2>
-                    <!-- 文章摘要-->
-                    <div style="font-size: 15px;"> 1. 读这篇文章你可以学到的东西 2. 基于redis存储共享session方案 3. 登入数据存放到session服务器 4. 拦截器注册及配置 </div>
-                    <!-- 文章分类 -->
-                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/Java%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88">Java架构方案</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/SpringBoot">SpringBoot</a><span>&nbsp;&nbsp;</span></span>
-                    <!-- 发布时间 -->
-                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-10-13</span>
-                    
-                </div>
-            </article>
-
-        </div>
-        <div>
+	        <div>
+	        
+	           	
+	            
+	            <article class="am-g blog-entry-article">
+	<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+	<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+	<!--                 </div> -->
+	                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+	                    <h2>
+	                        <div><a href="/article/springboot-statemachine1">Java架构师方案—透彻理解「状态机」的全套机制 (附完整项目代码)</a>
+	                        </div>
+	                    </h2>
+	                    <!-- 文章摘要-->
+	                    <div style="font-size: 15px;"> 1. 消息传递 2. 事件监听 3. 多个以及多种状态机并存 4. 状态分支 5. 状态机工厂 1. 消息传递 状态机可以看成是一个控制中心，接受外</div>
+	                    <!-- 文章分类 -->
+	                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/Java%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88">Java架构方案</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/SpringBoot">SpringBoot</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/Java">Java</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/%E9%BB%98%E8%AE%A4%E5%88%86%E7%B1%BB">默认分类</a><span>&nbsp;&nbsp;</span></span>
+	                    <!-- 发布时间 -->
+	                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-05-22</span>
+	                    
+	                </div>
+	            </article>
+	
+	        </div>
         
-           	
-            <img class="settop" src="/jack/img/settop.png" >
-            
-            
-            <article class="am-g blog-entry-article">
-<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
-<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
-<!--                 </div> -->
-                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
-                    <h2>
-                        <div><a href="/article/multiple-datasource">Java架构师方案—多数据源开发详解及原理(二)(附完整项目代码)</a>
-                        </div>
-                    </h2>
-                    <!-- 文章摘要-->
-                    <div style="font-size: 15px;"> 1. mybatis下数据源开发工作 2. 数据源与DAO的关系原理模型 3. 为什么要配置SqlSessionTemplate类的bean 4. </div>
-                    <!-- 文章分类 -->
-                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/Java%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88">Java架构方案</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/SpringBoot">SpringBoot</a><span>&nbsp;&nbsp;</span></span>
-                    <!-- 发布时间 -->
-                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-09-15</span>
-                    
-                </div>
-            </article>
-
-        </div>
-        <div>
+	        <div>
+	        
+	           	
+	            
+	            <article class="am-g blog-entry-article">
+	<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+	<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+	<!--                 </div> -->
+	                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+	                    <h2>
+	                        <div><a href="/article/springboot-statemachine">Java架构师方案—状态机(附完整项目代码)</a>
+	                        </div>
+	                    </h2>
+	                    <!-- 文章摘要-->
+	                    <div style="font-size: 15px;"> 1. 简单介绍状态机 2. 状态机的本质 3. 状态机应用场景 1. 简单介绍状态机 状态机由状态寄存器和组合逻辑电路构成，能够根据控制信号按照预先</div>
+	                    <!-- 文章分类 -->
+	                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/Java%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88">Java架构方案</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/SpringBoot">SpringBoot</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/Java">Java</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/%E9%BB%98%E8%AE%A4%E5%88%86%E7%B1%BB">默认分类</a><span>&nbsp;&nbsp;</span></span>
+	                    <!-- 发布时间 -->
+	                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-05-17</span>
+	                    
+	                </div>
+	            </article>
+	
+	        </div>
         
-           	
-            <img class="settop" src="/jack/img/settop.png" >
-            
-            
-            <article class="am-g blog-entry-article">
-<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
-<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
-<!--                 </div> -->
-                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
-                    <h2>
-                        <div><a href="/article/multidatasource">Java架构师方案—多数据源原理及应用(一)(附完整项目代码)</a>
-                        </div>
-                    </h2>
-                    <!-- 文章摘要-->
-                    <div style="font-size: 15px;"> 1. 原生jdbc数据库开发 2. 数据源领域模型 3. 多数据源组件AbstractRoutingDataSource 4. 多数据源下读写分离应</div>
-                    <!-- 文章分类 -->
-                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/Java%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88">Java架构方案</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/SpringBoot">SpringBoot</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/Java">Java</a><span>&nbsp;&nbsp;</span></span>
-                    <!-- 发布时间 -->
-                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-08-08</span>
-                    
-                </div>
-            </article>
+	        <div>
+	        
+	           	
+	            
+	            <article class="am-g blog-entry-article">
+	<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+	<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+	<!--                 </div> -->
+	                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+	                    <h2>
+	                        <div><a href="/article/jedis-lua-1">Jedis与lua脚本——lua脚本在redis中的使用</a>
+	                        </div>
+	                    </h2>
+	                    <!-- 文章摘要-->
+	                    <div style="font-size: 15px;"> 1 使用lua的几个好处 2 redis原生API Jedis执行lua脚本的两种API方法 3 lua分布式锁 4 lua高并发减库存 5 lua</div>
+	                    <!-- 文章分类 -->
+	                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/Redis">Redis</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/Java">Java</a><span>&nbsp;&nbsp;</span></span>
+	                    <!-- 发布时间 -->
+	                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-02-28</span>
+	                    
+	                </div>
+	            </article>
+	
+	        </div>
 
-        </div>
-        <div>
-        
-           	
-            <img class="settop" src="/jack/img/settop.png" >
-            
-            
-            <article class="am-g blog-entry-article">
-<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
-<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
-<!--                 </div> -->
-                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
-                    <h2>
-                        <div><a href="/article/Atomikos">Java架构师方案—分布式事务2PC方案Atomikos(附完整项目代码)</a>
-                        </div>
-                    </h2>
-                    <!-- 文章摘要-->
-                    <div style="font-size: 15px;"> 1. 分布式事务2PC原理 2. springboot集成Atomikos 3. 2PC分布式事务的问题局限性 1. 分布式事务2PC原理 事务有哪</div>
-                    <!-- 文章分类 -->
-                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/Java%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88">Java架构方案</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/SpringBoot">SpringBoot</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/%E4%BA%8B%E5%8A%A1">事务</a><span>&nbsp;&nbsp;</span></span>
-                    <!-- 发布时间 -->
-                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-07-11</span>
-                    
-                </div>
-            </article>
-
-        </div>
-        <div>
-        
-           	
-            
-            <article class="am-g blog-entry-article">
-<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
-<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
-<!--                 </div> -->
-                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
-                    <h2>
-                        <div><a href="/article/115">SpringBoot学习示例—全面解析RedisTemplate配置及序列化、与StringRedisTemplate序列化区别(附完整项目代码)</a>
-                        </div>
-                    </h2>
-                    <!-- 文章摘要-->
-                    <div style="font-size: 15px;"> 1. RedisTemplate快速开发 2. 两种实例的redis数据序列化区别 3. 用RedisTemplate还是StringRedisTe</div>
-                    <!-- 文章分类 -->
-                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/%E9%BB%98%E8%AE%A4%E5%88%86%E7%B1%BB">默认分类</a><span>&nbsp;&nbsp;</span></span>
-                    <!-- 发布时间 -->
-                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-10-20</span>
-                    
-                </div>
-            </article>
-
-        </div>
-
-        <div class="am-pagination">
-            <ol class="am-pagination">
+	        <div class="am-pagination">
+	            <ol class="am-pagination">
     
 
 
     
         <li class="current"><a href="/page/1">1</a></li>
     
-        <li><a href="/page/2">2</a></li>
-    
-        <li><a href="/page/3">3</a></li>
-    
-        <li><a href="/page/4">4</a></li>
-    
-        <li><a href="/page/5">5</a></li>
-    
 
 
-    
-        <li class="am-pagination-next"><a href="/page/2">→</a></li>
     
 
 </ol>
-        </div>
+	        </div>
+        
+        
     </div>
 
 
@@ -575,7 +438,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
         <div class="blog-sidebar-widget blog-bor">
             <h2 class="blog-text-center blog-title"><span>About ME</span></h2>
             <img src="/jantent/assets/img/f10.jpg" alt="about me" class="blog-entry-img"/>
-            <img src="/jack/img/wechat.jpg" alt="about me" class="blog-entry-img"/>
+            <img src="/jack/img/gongzhonghao.jpg" alt="about me"  style="width:70%;" class="blog-entry-img"/>
             <p>
                                          加我微信,发送“共图社” 
             </p>
@@ -605,9 +468,326 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
             <div class="am-u-sm-12 blog-clear-padding">
                     
                             
+                            
+                                <a href="/tag/Java" style="font-size: 11.74px;margin: 5px;" >
+                                    Java
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/ThreadLocal" style="font-size: 11.74px;margin: 5px;" >
+                                    ThreadLocal
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/Lua" style="font-size: 11.74px;margin: 5px;" >
+                                    Lua
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/Redis" style="font-size: 11.74px;margin: 5px;" >
+                                    Redis
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/Jedis" style="font-size: 11.74px;margin: 5px;" >
+                                    Jedis
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/高可用" style="font-size: 11.74px;margin: 5px;" >
+                                    高可用
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/架构设计" style="font-size: 11.74px;margin: 5px;" >
+                                    架构设计
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/高性能" style="font-size: 11.74px;margin: 5px;" >
+                                    高性能
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/哨兵模式原理" style="font-size: 11.74px;margin: 5px;" >
+                                    哨兵模式原理
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/易伸缩" style="font-size: 11.74px;margin: 5px;" >
+                                    易伸缩
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/关于我" style="font-size: 11.74px;margin: 5px;" >
+                                    关于我
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/工作巨坑" style="font-size: 11.74px;margin: 5px;" >
+                                    工作巨坑
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/Mysql" style="font-size: 11.74px;margin: 5px;" >
+                                    Mysql
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/控制层偏门需求及解决方案" style="font-size: 11.74px;margin: 5px;" >
+                                    控制层偏门需求及解决方案
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/重定向原理" style="font-size: 11.74px;margin: 5px;" >
+                                    重定向原理
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/重定向前后端方式" style="font-size: 11.74px;margin: 5px;" >
+                                    重定向前后端方式
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/分库分表技术实现" style="font-size: 11.74px;margin: 5px;" >
+                                    分库分表技术实现
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/目标计划" style="font-size: 11.74px;margin: 5px;" >
+                                    目标计划
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/springboot开发问题整理" style="font-size: 11.74px;margin: 5px;" >
+                                    springboot开发问题整理
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/数据库事务" style="font-size: 11.74px;margin: 5px;" >
+                                    数据库事务
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/Github" style="font-size: 11.74px;margin: 5px;" >
+                                    Github
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/springboot教程系列" style="font-size: 11.74px;margin: 5px;" >
+                                    springboot教程系列
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/复习" style="font-size: 11.74px;margin: 5px;" >
+                                    复习
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/状态机" style="font-size: 11.74px;margin: 5px;" >
+                                    状态机
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/JDKBlog" style="font-size: 11.74px;margin: 5px;" >
+                                    JDKBlog
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/共图社" style="font-size: 11.74px;margin: 5px;" >
+                                    共图社
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/springboot" style="font-size: 11.74px;margin: 5px;" >
+                                    springboot
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/重试" style="font-size: 11.74px;margin: 5px;" >
+                                    重试
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/线程池" style="font-size: 11.74px;margin: 5px;" >
+                                    线程池
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/Spring Security" style="font-size: 11.74px;margin: 5px;" >
+                                    Spring Security
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/简历" style="font-size: 11.74px;margin: 5px;" >
+                                    简历
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+            </div>
+        </div>
+        
+        <div class="blog-clear-margin blog-sidebar-widget blog-bor am-g ">
+            <h2 class="blog-title  fa fa-tags fa-fw icon" style="width: auto;font-size: 25px;font-weight: 700;"><span>分类</span></h2>
+            <div class="am-u-sm-12 blog-clear-padding">
+                    
+                            
                                 <a href="/category/默认分类" class="blog-tag">
                                     默认分类
-                                     (48)
+                                     (49)
                                 </a>
                             
                             

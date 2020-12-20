@@ -436,6 +436,11 @@ public class Commons {
         String url = "/category/"+metaDto.getName();
         return url;
     }
+    
+    public static String showTagUrl(MetaDto metaDto){
+        String url = "/tag/"+metaDto.getName();
+        return url;
+    }
     /**
      * 获取社交的链接地址
      *

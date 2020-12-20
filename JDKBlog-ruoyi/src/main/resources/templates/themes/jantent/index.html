@@ -43,12 +43,12 @@
         <div class="blog-sidebar-widget blog-bor">
             <h2 class="blog-text-center blog-title"><span>About ME</span></h2>
             <img th:src="@{/jantent/assets/img/f10.jpg}" alt="about me" class="blog-entry-img"/>
-            <img th:src="@{/jack/img/wechat.jpg}" alt="about me" class="blog-entry-img"/>
+            <img th:src="@{/jack/img/gongzhonghao.jpg}" alt="about me"  style="width:70%;" class="blog-entry-img"/>
             <p>
-                                         加我微信,发送“共图社” 
+                                         关注“前沿科技bot”公众号,发送“共图社” 消息,加入我们这一群兴趣相投的开发者队伍。
             </p>
             <p>
-            	<b> 加入共图社,一起做开源项目</b>
+            	<b> 加入共图社,一起做开源项目</b>	
             </p>
             
             <p>
@@ -68,8 +68,31 @@
                 <a href=""><span class="am-icon-weibo am-icon-fw blog-icon"></span></a>
             </p>
         </div>
+        
         <div class="blog-clear-margin blog-sidebar-widget blog-bor am-g ">
             <h2 class="blog-title  fa fa-tags fa-fw icon" style="width: auto;font-size: 25px;font-weight: 700;"><span>TAG cloud</span></h2>
+            <div class="am-u-sm-12 blog-clear-padding">
+                    <th:block th:each="c : ${tags}">
+                            <th:block th:if="${c.name == '默认分类'}"
+                                <a th:href="${commons.showTagUrl(c)}" style="font-size: 11.74px;margin: 5px;">
+                                    <th:block th:text="${c.name}"/>	
+                                    <th:block th:text="' ('+${c.count}+')'"/>
+                                </a>
+                            </th:block>
+                            <th:block th:unless="${c.name == '默认分类'}">
+                                <a th:href="${commons.showTagUrl(c)}" style="font-size: 11.74px;margin: 5px;" >
+                                    <th:block th:text="${c.name}"/>
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            </th:block>
+
+                    </th:block>
+            </div>
+        </div>
+        
+        <div class="blog-clear-margin blog-sidebar-widget blog-bor am-g ">
+            <h2 class="blog-title  fa fa-tags fa-fw icon" style="width: auto;font-size: 25px;font-weight: 700;"><span>分类</span></h2>
             <div class="am-u-sm-12 blog-clear-padding">
                     <th:block th:each="c : ${categories}">
                             <th:block th:if="${c.name == '默认分类'}">

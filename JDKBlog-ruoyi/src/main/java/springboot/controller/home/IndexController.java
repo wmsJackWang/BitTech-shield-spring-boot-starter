@@ -79,7 +79,7 @@ public class IndexController extends AbstractController {
      */
     @GetMapping(value = "/")
     @StaticPage(enable=true)
-    public String index(HttpServletRequest request, @RequestParam(value = "limit", defaultValue = "10") int limit) {
+    public String index(HttpServletRequest request, @RequestParam(value = "limit", defaultValue = "12") int limit) {
         return this.index(request, 1, limit);
     }
 
@@ -93,14 +93,16 @@ public class IndexController extends AbstractController {
      */
     @GetMapping(value = "page/{p}")
     @StaticPage(enable=true)
-    public String index(HttpServletRequest request, @PathVariable int p, @RequestParam(value = "limit", defaultValue = "10") int limit) {
+    public String index(HttpServletRequest request, @PathVariable int p, @RequestParam(value = "limit", defaultValue = "12") int limit) {
         // 开启thymeleaf缓存，加快访问速度
         p = p < 0 || p > WebConst.MAX_PAGE ? 1 : p;
         //内容服务contentService
         PageInfo<ContentVo> articles = contentService.getContents(p, limit);
-        //获取
+        //获取标签  categories分类
         List<MetaDto> categories = metaService.getMetaList(Types.CATEGORY.getType(), null, WebConst.MAX_POSTS);
+        List<MetaDto> tags = metaService.getMetaList(Types.TAG.getType(), null, WebConst.MAX_POSTS);
         request.setAttribute("categories", categories);
+        request.setAttribute("tags", tags);
         request.setAttribute("articles", articles);
         if (p > 1) {
             this.title(request, "第" + p + "页");
@@ -280,10 +282,16 @@ public class IndexController extends AbstractController {
     	logger.info("keyword:{}",keyWord);
     	page = page < 0 || page > WebConst.MAX_PAGE ? 1 : page;
         MetaDto metaDto = metaService.getMeta(Types.CATEGORY.getType(), keyWord);
+        
         if (null == metaDto) {
             return this.render_404();
         }
         PageInfo<ContentVo> contentsPaginator = contentService.getArticles(metaDto.getMid(), page, limit);
+        //获取标签  categories分类
+        List<MetaDto> categories = metaService.getMetaList(Types.CATEGORY.getType(), null, WebConst.MAX_POSTS);
+        List<MetaDto> tags = metaService.getMetaList(Types.TAG.getType(), null, WebConst.MAX_POSTS);
+        request.setAttribute("categories", categories);
+        request.setAttribute("tags", tags);
         request.setAttribute("articles", contentsPaginator);
         request.setAttribute("meta", metaDto);
         request.setAttribute("type", "分类");
@@ -357,6 +365,11 @@ public class IndexController extends AbstractController {
     public String search(HttpServletRequest request, @PathVariable String keyword, @PathVariable int page, @RequestParam(value = "limit", defaultValue = "12") int limit) {
         page = page < 0 || page > WebConst.MAX_PAGE ? 1 : page;
         PageInfo<ContentVo> articles = contentService.getArticles(keyword, page, limit);
+        //获取标签  categories分类
+        List<MetaDto> categories = metaService.getMetaList(Types.CATEGORY.getType(), null, WebConst.MAX_POSTS);
+        List<MetaDto> tags = metaService.getMetaList(Types.TAG.getType(), null, WebConst.MAX_POSTS);
+        request.setAttribute("categories", categories);
+        request.setAttribute("tags", tags);
         request.setAttribute("articles", articles);
         request.setAttribute("type", "搜索");
         request.setAttribute("keyword", keyword);
@@ -397,6 +410,11 @@ public class IndexController extends AbstractController {
         }
 
         PageInfo<ContentVo> contentsPaginator = contentService.getArticles(metaDto.getMid(), page, limit);
+        //获取标签  categories分类
+        List<MetaDto> categories = metaService.getMetaList(Types.CATEGORY.getType(), null, WebConst.MAX_POSTS);
+        List<MetaDto> tags = metaService.getMetaList(Types.TAG.getType(), null, WebConst.MAX_POSTS);
+        request.setAttribute("categories", categories);
+        request.setAttribute("tags", tags);
         request.setAttribute("articles", contentsPaginator);
         request.setAttribute("meta", metaDto);
         request.setAttribute("type", "标签");

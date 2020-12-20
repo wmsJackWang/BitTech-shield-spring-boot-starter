@@ -485,6 +485,6 @@
     select a.*
     from t_contents a left join t_relationships b on a.cid = b.cid
     where b.mid = #{value} and a.status = 'publish' and a.type = 'post'
-    order by a.created desc
+    order by isTop desc ,  a.created desc
   </select>
 </mapper>

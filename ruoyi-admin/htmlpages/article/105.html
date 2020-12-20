@@ -14,7 +14,7 @@
     <meta name="description"/>
     <link rel="shortcut icon" href="/user/img/logo.png"/>
     <link rel="apple-touch-icon" href="/user/img/apple-touch-icon.png"/>
-    <title>Spring Security——模拟Spring Security，我徒手写了一个简单的安全框架 - 微服务与架构师社区</title>
+    <title>你知道JDK的延迟队列吗？ - 分布式架构+SpringCloud微服务+Redis+Mysql</title>
     <link href="//cdn.bootcss.com/highlight.js/9.9.0/styles/xcode.min.css" rel="stylesheet"/>
     <link href="/user/css/style.min.css" rel="stylesheet"/>
     
@@ -86,20 +86,18 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 </div>
 <![endif]-->
 <header id="header" style="background-color: rgba(0,0,0,0.1);" class="header bg-white">
-    <div class="navbar-container" >
-        <a href="/page/1" class="navbar-logo">微服务与架构师社区</a>
+    <div class="navbar-container" style="width: 90%;">
+        <a href="/page/1" class="navbar-logo">微服务社区</a>
 
 
         <div class="navbar-menu" >        
 
             <a style="color: #fff" href="/archives">归档</a>
             <a style="color: #fff" href="/links">友链</a> 
-            <!--<a style="color: #fff" th:href="${commons.site_url('/about')}">关于</a>-->
+            <a style="color: #fff" href="/article/about-me">关于</a>
             <!--<a  style="color: #fff"  th:href="${#httpServletRequest.getScheme() + '://' + #httpServletRequest.getServerName() + ':' + #request.getServerPort()  + #request.getContextPath() + '/article/about-me'}">
             	关于</a>
             -->
-            <a  style="color: #fff"  href="http://bittechblog.com/article/about-me">
-            	关于</a>
             
             <!--
             <div class="am-dropdown" data-am-dropdown style="color: #fff">
@@ -140,7 +138,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
     
     <div style="background:#87CEFA;color:#FFF;width:100%" class="container" >
             
-        <div style="background:#87CEFA;color:#FFF" class="navbar-container" >
+        <div style="background:#87CEFA;color:#FFF;width:90%;" class="navbar-container" >
         	<nav class="site-header-nav" role="navigation">
         
 	        	<div class="navbar-menu" >      
@@ -159,7 +157,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 <!-- 		                </a> -->
 <!-- 		            </div> -->
 		            <div class=" site-header-nav-item hvr-underline-from-center">
-		                <a href="http://bittechblog.com/blog/type/1"
+		                <a href="/category/Java架构方案"
 		                   target="_self"
 		                   title="Java架构师方案宝典">Java架构师方案宝典
 		                </a>
@@ -167,7 +165,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 		            </div>
 		            
 		            <div class=" site-header-nav-item hvr-underline-from-center">
-		                <a href="http://bittechblog.com/blog/type/5"
+		                <a href="/category/SpringBoot"
 		                   target="_self"
 		                   title="Spring Boot">
 		                    Spring Boot
@@ -188,7 +186,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 		            </div>
 	            
 		            <div class=" site-header-nav-item hvr-underline-from-center">
-		                <a href="http://bittechblog.com/blog/tag/2"
+		                <a href="/category/Java"
 		                   target="_self"
 		                   title="Java">
 		                    Java
@@ -209,7 +207,7 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 		            </div>
 	            
 		            <div class=" site-header-nav-item hvr-underline-from-center">
-		                <a href="http://bittechblog.com/blog/type/16"
+		                <a href="/category/Redis"
 		                   target=""
 		                   title="Redis">
 		                    Redis
@@ -268,14 +266,14 @@ document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐�
 <section class="jumbotron intro" data-pattern-id="本站 所有文章">
     <div class="container" >
         <div id="jumbotron-meta-info" style="color: #FFFFFF;">        
-            <h1>Spring Security——模拟Spring Security，我徒手写了一个简单的安全框架</h1>
+            <h1>你知道JDK的延迟队列吗？</h1>
             <br/>
             <span class="meta-info" style="color: #FFFFFF;" >
                 <span class="octicon octicon-calendar"></span> 
             	作者：空白
             	
  				
-                	<p><time datetime="2020-10-31" itemprop="datePublished">Time: 2020-10-31</time></p>
+                	<p><time datetime="2020-10-14" itemprop="datePublished">Time: 2020-10-14</time></p>
             	
             </span>
         </div>
@@ -463,197 +461,92 @@ function refresh(){
 <div>
 <article class="main-content post-page">
     <div id="post-content"  class="post-content"><ul>
-<li>
-<p><font size=4><a href="#1"><strong>1. 导读</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#2"><strong>2. 核心的组件和逻辑</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#3"><strong>3. 运行测试</strong></a></font></p>
-</li>
-<li>
-<p><font size=4><a href="#4"><strong>4. Spring Security分析总结</strong></a></font></p>
-</li>
+<li><font size=4><a href="#1"><strong>1. 我用延迟队列保证redis的key执行速度均匀！</strong></a></font></li>
+<li><font size=4><a href="#2"><strong>2. 实现原理</strong></a></font></li>
 </ul>
-<p><a name="1"><font  size=4 face="黑体"><strong>1. 导读</strong></font></a></p>
-<blockquote>
-<p>阅读这篇文章，跟着笔者一起从0到1开始写一个模拟Spring Security框架的工具。
-读完文章，你将了解Spring Security核心原理。
-本文demo是在Java架构师方案宝典系列中的jackdking-login-redis-token项目基础上衍生出来的。</p>
-</blockquote>
-<p><a name="2"><font  size=4 face="黑体"><strong>2. 核心的组件和逻辑</strong></font></a></p>
-<p>在导读中，笔者说这篇文章demo是在jackdking-login-redis-token项目基础上开发的，这个项目的具体是如何建立的可查看Java架构师方案宝典系列的这篇文章：<a 
-href="http://bittechblog.com/blog/article/26" target="_blank">Java架构师方案—分布式session基于redis的共享机制(附完整项目代码)</a>。 详细讲解了项目的从0到1的建设过程。</p>
-<p><strong>认证</strong>
-在demo里，笔者没有添加对数据库的访问，而是直接将两种用户admin/admin、user/user放在代码中，通过下面的方式来实现认证逻辑，正常情况下是：先根据用户名来访问数据库，查出用户信息后再比对密码完成认证。</p>
-<p>Security的userdetail是要求开发者完整实现访问数据库并完成认证逻辑的。</p>
-<pre><code class="language-js">  if(!(username.equals(&quot;admin&quot;)&amp;&amp;password.equals(&quot;admin&quot;))&amp;&amp;!(username.equals(&quot;user&quot;)&amp;&amp;password.equals(&quot;user&quot;)))
-  {
+<p><a name="1"><font  size=4 face="黑体"><strong>1. 我用延迟队列保证redis的key执行速度均匀！</strong></font></a></p>
+<p>最近，在搞redis的时候，有个问题让人头大：redis过期数据内存占用过大，没有及时清理（redis觉得内存还没大到影响命令执行速度的时候，是不会触发大批量清理的），因此内存已经大到13G了。</p>
+<p><img src="/upload/2020/10/78u0adp3e4ha7r242ercn6f1qu.png" alt="alt" /></p>
+<p>但是我们可以不借助redis清除策略去清理，去访问每一个过期的key，先通过scan来安全扫描redis的key，再ttl检测key是否过期，过期数据删除，这样就能清楚redis的过期key内存，保证redis的安全运行。</p>
+<p><img src="/upload/2020/10/qps9fmqi26jlkoh3am5o9245m7.png" alt="alt" /></p>
+<p>为了保证key的del速度均匀，不影响线上业务。这里借助延迟队列来实现：DelayQueue</p>
+<p><a name="2"><font  size=4 face="黑体"><strong>2. 实现原理</strong></font></a></p>
+<p>将每次扫描得到的过期key放入到延迟队列的item中，并随机设置一个大范围内将来的删除时间（保证时间点分布均匀）。
+开启另外一个单线程池来执行删除item中的key</p>
+<p><strong>DelayQueue的Item类</strong></p>
+<p>延迟元素类需要实现Delaye接口，覆盖compareTo，getDelay方法。这样的元素类对象才会被延迟队列识别并处理。</p>
+<pre><code class="language-js">class Item implements Delayed ,Runnable{
+    /* 触发时间*/
+    private long time;
+    String name;
+ 
+    public Item(String name, long time, TimeUnit unit) {
+        this.name = name;
+        this.time = System.currentTimeMillis() + (time &gt; 0? unit.toMillis(time): 0);
+    }
+ 
+    @Override
+    public long getDelay(TimeUnit unit) {
+        return time - System.currentTimeMillis();
+    }
+ 
+    @Override
+    public int compareTo(Delayed o) {
+        Item item = (Item) o;
+        long diff = this.time - item.time;
+        if (diff &gt;= 0) {// 改成&gt;=会造成问题
+            return 1;
+        }else {
+            return -1;
+        }
+    }
+ 
+    @Override
+    public String toString() {
+        return &quot;Item{&quot; +
+                &quot;time=&quot; + time +
+                &quot;, name='&quot; + name + '\'' +
+                '}';
+    }
 
-      return RestResponseBo.fail(&quot;用户名或者密码不正确!&quot;);
-  }
-</code></pre>
-<p><strong>分配权限</strong></p>
-<p>在demo中，用户的session信息会保存在redis中，用户的cookie中只保存sessionId，每次访问都会根据sessionId来取出session信息。其中权限信息就会保存在sessin信息中。</p>
-<p><strong>admin</strong>：管理员
-<strong>user</strong>: 普通用户</p>
-<pre><code class="language-js">  if(username.equals(&quot;admin&quot;)) {
-      UserDetail userDetail = new UserDetail();
-      userDetail.setUsername(username);
-      List&lt;String&gt; roles = new ArrayList&lt;String&gt;();
-      roles.add(&quot;admin&quot;);
-      roles.add(&quot;user&quot;);
-      userDetail.setRoles(roles);
-      operator.set(JdkApiInterceptor.USER_REDIS_DETAIL + &quot;:&quot; + username, JSONUtil.toJsonStr(userDetail));
-  }
-  
-  if(username.equals(&quot;user&quot;)){
-      UserDetail userDetail = new UserDetail();
-      userDetail.setUsername(username);
-      List&lt;String&gt; roles = new ArrayList&lt;String&gt;();
-      roles.add(&quot;user&quot;);
-      userDetail.setRoles(roles);
-      operator.set(JdkApiInterceptor.USER_REDIS_DETAIL + &quot;:&quot; + username, JSONUtil.toJsonStr(userDetail));
-  }
-</code></pre>
-<p><strong>redis中保存的session信息</strong></p>
-<p><img src="/upload/2020/10/v4gst5a7rmismormp8qhg43hkc.png" alt="alt" /></p>
-<p>我们可以看到，admin用户拥有所有权限：admin，user。而user用户的权限是：user。</p>
-<p><strong>资源权限控制</strong></p>
-<p>通过@PreAuthority注解来控制接口的访问权限，如果用户没有访问权限，则拒绝用户；如果有权限，则不拦截并执行相关业务逻辑。</p>
-<p>这两个接口 /admin , /user分别要求访问的用户权限是admin和user。admin管理员权限可以访问全部接口，但是user用户则只能访问接口/user，接口/admin则拒绝访问。</p>
-<p>那么这种控制如何实现呢？接下来看看AOP的试下原理。</p>
-<pre><code class="language-js">    @PostMapping(value = {&quot;/admin&quot;})
-    @PreAuthority(roles= &quot;admin&quot;)
-	@ResponseBody
-    public RestResponseBo admin() {
-    	RestResponseBo&lt;String&gt; result = new RestResponseBo&lt;&gt;(true); 
-    	result.setPayload(&quot;admin 才能访问的信息&quot;);
-        return result;
-    }
-    
-    @PostMapping(value = {&quot;/user&quot;})
-    @PreAuthority(roles= &quot;user&quot;)
-	@ResponseBody
-    public RestResponseBo user() {
-    	RestResponseBo&lt;String&gt; result = new RestResponseBo&lt;&gt;(true); 
-    	result.setPayload(&quot;user 访问的信息&quot;);
-        return result;
-    }
-</code></pre>
-<p><strong>AOP切面控制逻辑</strong></p>
-<p>切面编程原理在这里就不再细说，着重讲一下利用aop开发的权限拦截逻辑。</p>
-<ol>
-<li>先通过注解对象获取资源的权限信息preAuthority.roles()。</li>
-<li>通过ThreadLocal机制，获取用户的权限信息UserDetail details = (UserDetail)SecurityContextHolder.get();</li>
-<li>分析用户是否又访问该资源的权限，没有权限则拒绝访问。</li>
-</ol>
-<pre><code class="language-js">@Aspect
-@Component
-public class AuthorityAspect {
-
-	
-    @Around(&quot;@annotation(preAuthority)&quot;)
-    public Object  preAuthority(ProceedingJoinPoint proceedingJoinPoint , PreAuthority preAuthority){
-    	
-//        DataSourceType curType = dbType.value();
-    	String [] authority = preAuthority.roles();
-    	System.out.println(&quot;print: &quot;+authority[0]);
-    	
-    	//判断权限逻辑
-    	if(!ObjectUtils.isEmpty(authority))
-    	{
-    		boolean isThrough = false;
-    		UserDetail details = (UserDetail)SecurityContextHolder.get();
-    		List&lt;String&gt; roles = details.getRoles();
-    		for(String s : authority)
-    			if(roles.contains(s)||roles.contains(&quot;admin&quot;))//如果 权限中有一个是 资源权限则通过 ,管理员也通过
-    				isThrough = true;
-    		if(!isThrough)
-                return RestResponseBo.fail(&quot;权限不够&quot;);
-    		
-    	}
-    	
-    	//业务方法
-        //访问目标方法的参数：
-        Object[] args = proceedingJoinPoint.getArgs();
-    	Object result = null;
-		try {
-			result = proceedingJoinPoint.proceed();
-		} catch (Throwable e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	
-    	return result;
-    }
-	
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		 System.out.format(&quot;name:{%s}, time:{%s}\n&quot;,this.name, LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+	}
 }
 </code></pre>
-<p><strong>用户权限信息传递逻辑</strong></p>
-<p>笔者使用了ThreadLocal机制，如果读者不熟悉ThreadLocal值传递机制，大家可以查看我的这篇文章：。</p>
-<p>ThreadLocal能跨方法进行值传递，不需要通过方法参数进行传递数据。用户访问的时候，请求线程在springmvc层的HandlerInterceptor中就已经将用户的session信息获取到并放到线程对象中。</p>
-<p>第一步，从redis中获取session数据：JSONObject obj = JSONUtil.parseObj(redis.get(USER_REDIS_DETAIL + &quot;:&quot; + userName));
-第二步，将session,数据放入到线程对象中：SecurityContextHolder.set(JSONUtil.toBean(obj, UserDetail.class));</p>
-<pre><code class="language-js">    /**
-     * 拦截请求，在controller调用之前
-     * 返回 false：请求被拦截，返回
-     * 返回 true ：请求OK，可以继续执行，放行
-     */
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object arg2) throws Exception {
-        //获取用户cookies
-        String userName = CookieUtil.getCookie(&quot;userName&quot;);
-        
-        //放开登入接口
-//        String uri = request.getRequestURI();
-//        logger.info(&quot;请求uri:&quot; + uri);
-//        
-//        if(uri.equals(&quot;loginCheck&quot;))
-//        	return true;
-//        
-        logger.info(&quot; ======= 拦截UserId：&quot; + userName);
-        //用户id和token都不为空
-        if (!StringUtils.isEmpty(userName)) {
-        	
-        	//根据userid生成唯一key从redis中查出唯一token
-            String uniqueToken = redis.get(USER_REDIS_SESSION + &quot;:&quot; + userName);
-            logger.info(&quot;拦截uniqueToken：&quot; + uniqueToken);
-            
-            //如果唯一token为空 ，则拦截url重定向到登入页面
-            if (StringUtils.isEmpty(uniqueToken)) {
-                response.sendRedirect(&quot;/login&quot;);
-                returnErrorResponse(response, &quot;请登录...&quot;);
+<p><strong>测试模块</strong></p>
+<pre><code class="language-js">public class DelayedQueneTest {
+	
+	static ExecutorService executor = Executors.newSingleThreadExecutor();
+	 
+    public static void main(String[] args) throws InterruptedException {
+        Item item1 = new Item(&quot;item1&quot;, 5, TimeUnit.SECONDS);
+        Item item2 = new Item(&quot;item2&quot;,10, TimeUnit.SECONDS);
+        Item item3 = new Item(&quot;item3&quot;,15, TimeUnit.SECONDS);
+        DelayQueue&lt;Item&gt; queue = new DelayQueue&lt;&gt;(); 
+        queue.put(item1);
+        queue.put(item2);
+        queue.put(item3);
+        System.out.println(&quot;begin time:&quot; + LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
-                return false;
-            }
-        //用户id和token有一个为空，则重定向登入页面
-        } else {
-            response.sendRedirect(&quot;/login&quot;);
-            returnErrorResponse(response,&quot;请登录...&quot;);
-            return false;
-        }
-        //从redis服务器中获取用户session信息，包括权限信息。
-        JSONObject obj = JSONUtil.parseObj(redis.get(USER_REDIS_DETAIL + &quot;:&quot; + userName));
-        SecurityContextHolder.set(JSONUtil.toBean(obj, UserDetail.class));
-        return true;
+        System.out.println(&quot;2323&quot;.split(&quot;,&quot;)[0]);
+        executor.submit(queue.take());
+        executor.submit(queue.take());
+        executor.submit(queue.take()); 
+        
+        
+//        for (int i = 0; i &lt; 3; i++) {
+//            Item take = queue.take();
+//            System.out.format(&quot;name:{%s}, time:{%s}\n&quot;,take.name, LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+//        }
     }
+ 
+}
 </code></pre>
-<p><a name="3"><font  size=4 face="黑体"><strong>3. 运行测试</strong></font></a></p>
-<p>导入jackdking-login-security-simulator项目，启动项目，项目结构如下：</p>
-<p><img src="/upload/2020/10/3qt1oq37lkj6lqn5tl32fo2m8c.jpg" alt="alt" /></p>
-<p>启动成功后，访问localhost:8080，分别使用两个账号登入（admin/admin , user/user）。</p>
-<p><img src="/upload/2020/10/q0c5s4cvbsgecrjr8pjcqq06v5.jpg" alt="alt" /></p>
-<p>使用两个账号登入后操作点击按钮访问接口/admin，/user。查看安全控制效果。</p>
-<p><img src="/upload/2020/10/pfk9jinu34himpak2h716rea05.jpg" alt="alt" /></p>
-<p>我们发现admin用户能访问所有接口，而user用户不能访问/admin接口。提示如下，操作失败：权限不够。</p>
-<p><img src="/upload/2020/10/qj8r6ia5sui0mpgvikqkajampk.jpg" alt="alt" /></p>
-<p>到此，demo的测试成功，安全服务成功了。我们已经简单实现了security框架的核心功能。</p>
-<p><a name="4"><font  size=4 face="黑体"><strong>4. Spring Security分析总结</strong></font></a></p>
-<p>Spring Security框架的核心功能跟demo的实现是一样的，Spring Security的领域模型设计更加完善，鉴权，认证，授权等都有非常完整的领域对象，大家在学习Spring Security的时候，可以对比着demo来学习它的核心机制。笔者就写到这里了，相关Spring Security的学习，大家可以查看我的博客网站的Spring Security系列文章，我将从0到1地为读者朋友们介绍分析。</p>
-<p>完整的demo项目，请关注公众号“前沿科技bot“并发送&quot;SSS&quot;获取。</p>
-<p><img src="/upload/2020/05/6s8d58g77ehftpcen62h4v4bss.png" alt="alt" /></p>
+<p>好的，今天延迟队列的分享就到这里了，大家可以实现下redis过期key清理的方案。</p>
+<p><img src="/upload/2020/10/465ebmtltug62qofb05dbfv2pb.png" alt="alt" /></p>
 </div>
     <div id="guanzhu" class= "asb-post-01"  style="display:block">
     		<div class ="mask"></div>
@@ -679,7 +572,7 @@ public class AuthorityAspect {
 <html lang="en">
 <body>
 <div>
-    <div id="116" class="comment-container">
+    <div id="105" class="comment-container">
         <div id="comments" class="clearfix">
             <div>
                 <span class="response">
@@ -688,7 +581,7 @@ public class AuthorityAspect {
                 <form method="post" id="comment-form" class="comment-form" role="form"
                       onsubmit="return TaleComment.subComment();">
                     <input type="hidden" name="coid" id="coid"/>
-                    <input type="hidden" name="cid" id="cid" value="116"/>
+                    <input type="hidden" name="cid" id="cid" value="105"/>
                     <input type="hidden" name="_csrf_token" value=""/>
                     <input type="text" name="author" maxlength="12" id="author"
                            class="form-control input-control clearfix"

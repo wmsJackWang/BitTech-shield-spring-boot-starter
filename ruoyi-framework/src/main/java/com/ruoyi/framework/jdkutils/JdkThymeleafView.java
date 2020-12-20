@@ -83,7 +83,7 @@ public class JdkThymeleafView extends ThymeleafView{
         return htmlFile.getParentFile().exists()&&htmlFile.exists();
     }
   
-    private void getBackHtml(HttpServletRequest request, HttpServletResponse response,Map<String, Object> model) throws Exception {
+    private void getBackHtml(HttpServletRequest request, HttpServletResponse response,Map<String, Object> model){
 		// TODO Auto-generated method stub
 //    	String basePath = getStaticPageBasePath() + "/htmlpages";//configHelper.getProperty("static_html_path");  
 //        // String basePath =  
@@ -96,15 +96,23 @@ public class JdkThymeleafView extends ThymeleafView{
         String responsePath = "/htmlpages" + requestHTML;  
 ////        System.out.println(responsePath);
 //        File htmlFile = new File(htmlPath);  
-        //父目录存在且html文件存在则返回 静态文件，否则直接走正常模板流程
-        if (isExistHtmlFile()) { 
-        	log.info("有静态html直接重定向到html，直接重定向到模板对应的html文件路径：{}",responsePath);
-        	responsePath = URLDecoder.decode(responsePath, "UTF-8");//转发前对含有中文的url进行解码
-        	request.getRequestDispatcher(responsePath).forward(request, response);  
-            return;
-        }  
-        //这个应该要静态化的接口  ，没有静态化html，则主动生成html文件
-        createHTML(request, response,false,model);  //创建静态文件html ,并且重定向到html地址
+        try {
+	        //父目录存在且html文件存在则返回 静态文件，否则直接走正常模板流程
+	        if (isExistHtmlFile()) { 
+	        	log.info("有静态html直接重定向到html，直接重定向到模板对应的html文件路径：{}",responsePath);
+	        	responsePath = URLDecoder.decode(responsePath, "UTF-8");//转发前对含有中文的url进行解码
+	        	request.getRequestDispatcher(responsePath).forward(request, response);  
+	            return;
+	        }  
+	        //这个应该要静态化的接口  ，没有静态化html，则主动生成html文件
+	        createHTML(request, response,false,model);  //创建静态文件html ,并且重定向到html地址
+        }catch (Exception e) {
+			// TODO: handle exception
+        	log.info("重定向失败，重定向到模板对应的html文件路径：{}",responsePath);
+        	
+		} finally {
+			// TODO: handle finally clause
+		}
 	}
 
 	public void createHTML(HttpServletRequest request,  

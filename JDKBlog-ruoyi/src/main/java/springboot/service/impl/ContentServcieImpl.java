@@ -147,7 +147,7 @@ public class ContentServcieImpl implements IContentService {
     @Override
     public PageInfo<ContentVo> getArticles(Integer mid, int page, int limit) {
         int total = metaDao.countWithSql(mid);
-        PageHelper.startPage(page, limit);
+        PageHelper.startPage(page, limit);//isTop desc , created desc
         List<ContentVo> list = contentDao.findByCatalog(mid);
         PageInfo<ContentVo> paginator = new PageInfo<>(list);
         paginator.setTotal(total);

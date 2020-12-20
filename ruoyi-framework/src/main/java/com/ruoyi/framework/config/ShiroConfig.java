@@ -258,6 +258,7 @@ public class ShiroConfig
         filterChainDefinitionMap.put("/htmlpages/**", "anon");
         filterChainDefinitionMap.put("/comment/**", "anon");
         filterChainDefinitionMap.put("/category/**", "anon");
+        filterChainDefinitionMap.put("/tag/**", "anon");
         filterChainDefinitionMap.put("/links/**", "anon");
         filterChainDefinitionMap.put("/selfdefine/**", "anon");
         filterChainDefinitionMap.put("/search/**", "anon");
