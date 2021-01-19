@@ -125,6 +125,7 @@ public class JdkThymeleafView extends ThymeleafView{
 		
         String basePath = getStaticPageBasePath() + "/htmlpages";//configHelper.getProperty("static_html_path");
         System.out.println("创建文件的路径："+JdkThymeleafView.getStaticPageBasePath());
+        pushStaticPageUrl(request);
         // String basePath =  
         // "D:\\Program Files\\Apache Software Foundation\\Tomcat 7.0\\webapps\\ROOT\\static\\";  
         // 访问的URL(根目录以后,如xxx/113.html)  
@@ -197,7 +198,6 @@ public class JdkThymeleafView extends ThymeleafView{
         // web应用/目录/文件,如/xxxx/1  
         String requestURI = request.getRequestURI();  
         
-        String staticPageUrl = requestURI;//静态 HTML的页面url
         // basePath里面已经有了web应用名称，所以直接把它replace掉，以免重复  
         requestURI = requestURI.replaceFirst(contextPath, "");  
   
@@ -205,7 +205,6 @@ public class JdkThymeleafView extends ThymeleafView{
         
         if(blogConfig.getPageNameWithParams())
         {
-        	staticPageUrl = staticPageUrl + "?" +request.getQueryString();
 	        // 得到参数  
 	        Enumeration<?> pNames = request.getParameterNames();  
 	        while (pNames.hasMoreElements()) {  
@@ -213,24 +212,6 @@ public class JdkThymeleafView extends ThymeleafView{
 	            String value = request.getParameter(name);  
 	            requestURI = requestURI + "_" + name + "=" + value;  
 	        } 
-        }
-        
-        /*
-         * 这段逻辑，是将静态页面的url集中存储到redis中
-         * 
-         * 本地也有url缓存集合，是为了避免 url一直重复放入到redis中。
-         * 
-         * redis中的url集合是为了方便后台admin项目  来主动调用 需要重新生成静态页面的url。
-         */
-        //判断这个url是否在已经生成静态html的 url集合中
-        if(!BlogApplicationConfig.staticPageUrls.contains(staticPageUrl)) 
-        {
-        	//添加到本地的url集合中去
-        	BlogApplicationConfig.staticPageUrls.add(staticPageUrl);
-//        	RedisService redisService = BlogApplicationContext.contex;
-        	RedisTemplate<String, Object> redisTemplate = (RedisTemplate<String, Object>) SpringContextHolder.getAppContext().getBean("staticPageRedisTemplate");
-        	//添加到redis的url集合中去
-        	redisTemplate.opsForSet().add("staticPageUrls","http://bittechblog.com/"+staticPageUrl);
         }
   
         // 加上.html后缀  
@@ -245,16 +226,34 @@ public class JdkThymeleafView extends ThymeleafView{
 		return requestURI;  
     }  
     
+    public void pushStaticPageUrl(HttpServletRequest request) {  
+    	
+        BlogConfig blogConfig = SpringContextHolder.getBean(BlogConfig.class);      
+
+        String staticPageUrl = request.getRequestURI();//静态 HTML的页面url
+
+        if(blogConfig.getPageNameWithParams())
+        	staticPageUrl += "?" +request.getQueryString();
+        
+    	/*
+         * 这段逻辑，是将静态页面的url集中存储到redis中
+         * 
+         * 本地也有url缓存集合，是为了避免 url一直重复放入到redis中。
+         * 
+         * redis中的url集合是为了方便后台admin项目  来主动调用 需要重新生成静态页面的url。
+         */
+        //判断这个url是否在已经生成静态html的 url集合中
+        if(!BlogApplicationConfig.staticPageUrls.contains(staticPageUrl)) 
+        {
+        	//添加到本地的url集合中去
+        	BlogApplicationConfig.staticPageUrls.add(staticPageUrl);
+//        	RedisService redisService = BlogApplicationContext.contex;
+        	RedisTemplate<String, Object> redisTemplate = (RedisTemplate<String, Object>) SpringContextHolder.getAppContext().getBean("staticPageRedisTemplate");
+        	//添加到redis的url集合中去
+        	redisTemplate.opsForSet().add("JDKBlog:staticPageUrls","http://bittechblog.com"+staticPageUrl);
+        }}
     
-//    public static void main(String[] args) {
-//
-//        try {
-//			System.out.println(URLDecoder.decode("Java%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88,", "UTF-8"));
-//		} catch (UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
+    
      
     public static String getStaticPageBasePath() {
         String path = JdkThymeleafView.class.getProtectionDomain().getCodeSource().getLocation().getPath();

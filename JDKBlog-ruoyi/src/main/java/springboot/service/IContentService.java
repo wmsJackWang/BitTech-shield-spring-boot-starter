@@ -70,6 +70,14 @@ public interface IContentService {
     PageInfo<ContentVo> getArticlesWithpage(ContentVoExample commentVoExample, Integer page, Integer limit);
 
     /**
+     * @param commentVoExample
+     * @param page
+     * @param limit
+     * @return
+     */
+    PageInfo<ContentVo> getArticlesWithpage_(ContentVoExample commentVoExample, Integer page, Integer limit);
+
+    /**
      * 根据文章id删除
      *
      * @param cid

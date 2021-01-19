@@ -89,6 +89,21 @@
   <sql id="Blob_Column_List">
     content
   </sql>
+  
+  <select id="selectByExampleWithBLOBs_" parameterType="springboot.modal.vo.ContentVoExample" resultMap="ResultMapWithBLOBs">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from t_contents
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
   <select id="selectByExampleWithBLOBs" parameterType="springboot.modal.vo.ContentVoExample" resultMap="ResultMapWithBLOBs">
     select
     <if test="distinct">

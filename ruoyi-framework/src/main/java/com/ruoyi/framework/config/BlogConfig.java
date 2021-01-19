@@ -12,6 +12,8 @@ public class BlogConfig{
 	public Boolean pageNameWithParams;//静态页面名称是否开启使用  url的参数来生成唯一的文件名
 	
 	public Boolean enable;//控制整个网站的静态化  是否开启
+	
+	public String staticPageUrlSetName;//静态网页url存放的redis set集合名称
 
 	public String getStaticPageScretKey() {
 		return staticPageScretKey;
@@ -37,10 +39,18 @@ public class BlogConfig{
 		this.enable = enable;
 	}
 
+	public String getStaticPageUrlSetName() {
+		return staticPageUrlSetName;
+	}
+
+	public void setStaticPageUrlSetName(String staticPageUrlSetName) {
+		this.staticPageUrlSetName = staticPageUrlSetName;
+	}
+
 	@Override
 	public String toString() {
 		return "BlogConfig [staticPageScretKey=" + staticPageScretKey + ", pageNameWithParams=" + pageNameWithParams
-				+ ", enable=" + enable + "]";
+				+ ", enable=" + enable + ", staticPageUrlSetName=" + staticPageUrlSetName + "]";
 	}
-
+	
 }

@@ -164,3 +164,5 @@ staticpage:
   staticPageScretKey: secretKey-test
   #静态页面名称是否开启使用  url的参数来生成唯一的文件名
   pageNameWithParams: false
+  #静态页面存放到redis中的set数据名称
+  staticPageUrlSetName: JDKBlog:staticPageUrls

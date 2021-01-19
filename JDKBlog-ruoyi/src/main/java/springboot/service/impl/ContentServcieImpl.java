@@ -175,6 +175,13 @@ public class ContentServcieImpl implements IContentService {
     }
 
     @Override
+    public PageInfo<ContentVo> getArticlesWithpage_(ContentVoExample commentVoExample, Integer page, Integer limit) {
+        PageHelper.startPage(page, limit);
+        List<ContentVo> contentVos = contentDao.selectByExampleWithBLOBs_(commentVoExample);
+        return new PageInfo<>(contentVos);
+    }
+
+    @Override
     public void deleteByCid(Integer cid) {
         ContentVo contentVo = this.getContents(cid + "");
         if (null != contentVo) {

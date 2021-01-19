@@ -265,6 +265,10 @@ public class ShiroConfig
         filterChainDefinitionMap.put("/tag/**", "anon");
         filterChainDefinitionMap.put("/comm/ipban", "anon");
         
+        
+
+        filterChainDefinitionMap.put("/admin/restapi/article", "anon");//localhost:8081/admin/restapi/article?page=2
+        
         //jdkblog的静态资源路径
         filterChainDefinitionMap.put("/jantent/**", "anon");
         filterChainDefinitionMap.put("/user/**", "anon");
