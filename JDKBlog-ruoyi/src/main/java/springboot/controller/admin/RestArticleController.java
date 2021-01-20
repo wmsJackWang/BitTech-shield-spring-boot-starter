@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,8 +57,8 @@ public class RestArticleController {
      * @return
      */
     @GetMapping(value = "/article")
-    public JSONObject index(@RequestParam(value = "page", defaultValue = "1") int page,
-                        @RequestParam(value = "limit", defaultValue = "15") int limit,
+    public JSONObject index(@RequestParam(value = "pageNumber", defaultValue = "1") int page,
+                        @RequestParam(value = "pageSize", defaultValue = "15") int limit,
                         HttpServletRequest request) {
     	
     	logger.info("page:{}",page);
