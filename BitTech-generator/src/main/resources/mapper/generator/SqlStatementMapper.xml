@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.generator.mapper.SqlStatementMapper">
+    
+    <resultMap type="SqlStatement" id="SqlStatementResult">
+        <result property="sqlId"    column="sql_id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="tableName"    column="table_name"    />
+        <result property="sqlContent"    column="sql_content"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectSqlStatementVo">
+        select sql_id, user_id, table_name, sql_content, create_by, create_time, update_by, update_time, remark from sql_statement
+    </sql>
+
+    <select id="selectSqlStatementList" parameterType="com.ruoyi.generator.domain.SqlStatement" resultMap="SqlStatementResult">
+        <include refid="selectSqlStatementVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="tableName != null  and tableName != ''"> and table_name like concat('%', #{tableName}, '%')</if>
+            <if test="sqlContent != null  and sqlContent != ''"> and sql_content = #{sqlContent}</if>
+        </where>
+    </select>
+    
+    <select id="selectSqlStatementById" parameterType="Long" resultMap="SqlStatementResult">
+        <include refid="selectSqlStatementVo"/>
+        where sql_id = #{sqlId}
+    </select>
+        
+    <insert id="insertSqlStatement" parameterType="com.ruoyi.generator.domain.SqlStatement" useGeneratedKeys="true" keyProperty="sqlId">
+        insert into sql_statement
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">user_id,</if>
+            <if test="tableName != null  and tableName != ''">table_name,</if>
+            <if test="sqlContent != null  and sqlContent != ''">sql_content,</if>
+            <if test="createBy != null  and createBy != ''">create_by,</if>
+            <if test="createTime != null ">create_time,</if>
+            <if test="updateBy != null  and updateBy != ''">update_by,</if>
+            <if test="updateTime != null ">update_time,</if>
+            <if test="remark != null  and remark != ''">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null ">#{userId},</if>
+            <if test="tableName != null  and tableName != ''">#{tableName},</if>
+            <if test="sqlContent != null  and sqlContent != ''">#{sqlContent},</if>
+            <if test="createBy != null  and createBy != ''">#{createBy},</if>
+            <if test="createTime != null ">#{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">#{updateBy},</if>
+            <if test="updateTime != null ">#{updateTime},</if>
+            <if test="remark != null  and remark != ''">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateSqlStatement" parameterType="com.ruoyi.generator.domain.SqlStatement">
+        update sql_statement
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="tableName != null  and tableName != ''">table_name = #{tableName},</if>
+            <if test="sqlContent != null  and sqlContent != ''">sql_content = #{sqlContent},</if>
+            <if test="createBy != null  and createBy != ''">create_by = #{createBy},</if>
+            <if test="createTime != null ">create_time = #{createTime},</if>
+            <if test="updateBy != null  and updateBy != ''">update_by = #{updateBy},</if>
+            <if test="updateTime != null ">update_time = #{updateTime},</if>
+            <if test="remark != null  and remark != ''">remark = #{remark},</if>
+        </trim>
+        where sql_id = #{sqlId}
+    </update>
+
+    <delete id="deleteSqlStatementById" parameterType="Long">
+        delete from sql_statement where sql_id = #{sqlId}
+    </delete>
+
+    <delete id="deleteSqlStatementByIds" parameterType="String">
+        delete from sql_statement where sql_id in 
+        <foreach item="sqlId" collection="array" open="(" separator="," close=")">
+            #{sqlId}
+        </foreach>
+    </delete>
+    
+</mapper>

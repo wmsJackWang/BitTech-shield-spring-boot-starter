@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="en">
+
+<head>
+    <meta name="baidu-site-verification" content="code-L413BKVJUv" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
+    <meta name="renderer" content="webkit"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-transform"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="keywords"/>
+    <meta name="description"/>
+    <link rel="shortcut icon" href="/user/img/logo.png"/>
+    <link rel="apple-touch-icon" href="/user/img/apple-touch-icon.png"/>
+    <title>Java架构师方案——CTO说：“小王，设计并落地一个滴滴打车后端派单系统吧” - 分布式架构+SpringCloud微服务+Redis+Mysql</title>
+    <link href="//cdn.bootcss.com/highlight.js/9.9.0/styles/xcode.min.css" rel="stylesheet"/>
+    <link href="/user/css/style.min.css" rel="stylesheet"/>
+    
+    <!-- Third-Party CSS -->
+    <link rel="stylesheet" href="http://favorites.ren/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" th:href="@{/jantent/assets/css/octicons/octicons.css}"> -->
+    <link rel="stylesheet" href="http://favorites.ren/bower_components/hover/css/hover-min.css">
+    <link rel="stylesheet" href="http://favorites.ren/bower_components/primer-markdown/dist/user-content.min.css">
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/syntax.css">
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/gitalk.css">
+       
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/common.css">
+
+    <!-- CSS set in page -->
+    
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/blog-page.css">
+    
+    
+    <!-- CSS set in layout -->
+    
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    
+    <script type="text/javascript" src="http://favorites.ren/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="http://favorites.ren/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/jantent/assets/js/lock.js"></script>
+    
+    
+    <script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+    <script src="/jantent/assets/js/amazeui.min.js"></script>
+    <script src="/jantent/assets/js/readmore.js"></script>
+    <script src="/jantent/assets/js/readmore.min.js"></script>
+    <link rel="stylesheet" href="/jantent/assets/css/amazeui.min.css"/>
+    <link rel="stylesheet" href="/jantent/assets/css/app.css"/>
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        /*让每一个下拉按钮占据的宽度与居中*/
+        .am-dropdown{
+            width:25%;
+            text-align:center;
+        }
+        .index-page>div>div{
+		  position: relative;
+		}
+		.settop{
+		  position: absolute;
+		  right: -16px !important;
+		  top: -30px !important;
+		}
+    </style>
+</head>
+
+<script type="text/javascript">
+
+document.write(unescape("%3Cspan id='cnzz_stat_icon_1279171775'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1279171775%26online%3D1' type='text/javascript'%3E%3C/script%3E"));
+document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐藏
+
+</script>
+
+<body  gtools_scp_screen_capture_injected="true">
+<!--[if lt IE 8]>
+<div class="browsehappy" role="dialog">
+    当前网页 <strong>不支持</strong> 你正在使用的浏览器. 为了正常的访问, 请 <a href="http://browsehappy.com/" target="_blank">升级你的浏览器</a>。
+</div>
+<![endif]-->
+<header id="header" style="background-color: rgba(0,0,0,0.1);" class="header bg-white">
+    <div class="navbar-container" style="width: 90%;">
+        <a href="/page/1" class="navbar-logo">微服务社区</a>
+
+
+        <div class="navbar-menu" >        
+
+            <a style="color: #fff" href="/archives">归档</a>
+            <a style="color: #fff" href="/links">友链</a> 
+            <a style="color: #fff" href="/article/about-me">关于</a>
+            <!--<a  style="color: #fff"  th:href="${#httpServletRequest.getScheme() + '://' + #httpServletRequest.getServerName() + ':' + #request.getServerPort()  + #request.getContextPath() + '/article/about-me'}">
+            	关于</a>
+            -->
+            
+            <!--
+            <div class="am-dropdown" data-am-dropdown style="color: #fff">
+                <button style="color: #fff"  class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle >Redis<span class="am-icon-caret-down"></span></button>
+                <ul class="am-dropdown-content ">
+                    <li><a href="#" >Redis主从模式</a></li>
+                    <li><a href="#" >Redis哨兵模式</a></li>
+                    <li class="am-divider"></li>
+                    <li><a href="#" >Redis集群模式</a></li>
+                </ul>
+		    </div>
+		    -->
+        </div>
+        <div class="navbar-search" onclick="">
+            <span class="icon-search"></span>
+            <form role="search" onsubmit="return false;">
+                <span class="search-box">
+                    <input type="text" id="search-inp" class="input" placeholder="搜索..." maxlength="30"
+                           autocomplete="off"/>
+                </span>
+            </form>
+        </div>
+        
+        <div class="navbar-mobile-menu" onclick="">
+            <span class="icon-menu cross"><span class="middle"></span></span>
+            <ul>
+                <li><a style="color: #fff" href="/archives">归档</a></li>
+                <li><a style="color: #fff" href="/links">友链</a></li>
+                <li>
+                <!--<a style="color: #fff" th:href="${commons.site_url('/about')}">关于</a>
+                -->
+	                <a  style="color: #fff"  href="http://localhost:8081/article/about-me">
+	            	关于</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <div style="background:#87CEFA;color:#FFF;width:100%" class="container" >
+            
+        <div style="background:#87CEFA;color:#FFF;width:90%;" class="navbar-container" >
+        	<nav class="site-header-nav" role="navigation">
+        
+	        	<div class="navbar-menu" >      
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/page/1"
+		                   target="_self"
+		                   title="首页">首页
+		                </a>
+		                
+		            </div>
+		            
+<!-- 		            <div class=" site-header-nav-item hvr-underline-from-center"> -->
+<!-- 		                <a href="/article/23" -->
+<!-- 		                   target="_self" -->
+<!-- 		                   title="新基建与数字化转型">新基建与数字化转型 -->
+<!-- 		                </a> -->
+<!-- 		            </div> -->
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/category/Java架构方案"
+		                   target="_self"
+		                   title="Java架构师方案宝典">Java架构师方案宝典
+		                </a>
+		                
+		            </div>
+		            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/category/SpringBoot"
+		                   target="_self"
+		                   title="Spring Boot">
+		                    Spring Boot
+		                </a>
+		                
+		                <ul class="submenu">
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Spring Boot</a></li>
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Spring Cloud</a></li>
+		                    
+		                </ul>
+		                
+		            </div>
+	            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/category/Java"
+		                   target="_self"
+		                   title="Java">
+		                    Java
+		                </a>
+		                
+		                <ul class="submenu">
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Jvm 系列文章</a></li>
+		                    
+		                    <li><a href="" 
+		                           target="_blank"
+		                     >Java 极客技术</a></li>
+		                    
+		                </ul>
+		                
+		            </div>
+	            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/category/Redis"
+		                   target=""
+		                   title="Redis">
+		                    Redis
+		                </a>
+		                
+		                <ul class="submenu">
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Python 教程</a></li>
+		                    
+		                    <li><a href="" 
+		                           target="_blank"
+		                     >Python 技术</a></li>
+		                    
+		                </ul>
+		                
+		            </div>
+	            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/archives"
+		                   target="_self"
+		                   title="Archives">
+		                    Archives
+		                </a>
+		                
+		            </div>
+		            	            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/index"
+		                   target="_self"
+		                   title="登录/注册">
+		                   	     登录/注册
+		                </a>
+		                
+		            </div>
+		           
+		        </div>
+        	</nav>
+        	
+		</div>
+	</div>
+</header>
+</body>
+</html>
+<html lang="en">
+<head>
+<style type="text/css">
+		.intro {
+				background: url(http://bittechblog.com/upload/2020/09/q8k9tdeo4eht1parhc0vgm4mlp.jpg) no-repeat center 0 ; 
+				background-size: 100% 100% ;
+				}
+</style>
+</head>
+<body>
+<section class="jumbotron intro" data-pattern-id="本站 所有文章">
+    <div class="container" >
+        <div id="jumbotron-meta-info" style="color: #FFFFFF;">        
+            <h1>Java架构师方案——CTO说：“小王，设计并落地一个滴滴打车后端派单系统吧”</h1>
+            <br/>
+            <span class="meta-info" style="color: #FFFFFF;" >
+                <span class="octicon octicon-calendar"></span> 
+            	作者：空白
+            	
+ 				
+                	<p><time datetime="2021-04-15" itemprop="datePublished">Time: 2021-04-15</time></p>
+            	
+            </span>
+        </div>
+    </div>
+</section>
+</body>
+</html>
+
+<style>
+
+.maskImg{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 300px;
+	height: 300px;
+	margin: -150px 0 0 -150px;
+	display: block;
+	z-index: 999999999;
+	cursor:pointer;
+}
+
+.qrcodeMask{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 300px;
+	height: 300px;
+	margin-left: -150px;
+	display: block;
+	z-index: 10000000;
+	margin-top: 325px;
+	background: rgba(0,0,0,.5);
+}
+
+.lock {
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 30px;
+}
+
+.asb-post-01 {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    display: block;
+    z-index: 10000;
+    margin-bottom: 0;
+}
+
+.asb-post-01 .mask {
+    height: 240px;
+    width: 100%;
+    background: -webkit-gradient(linear, 0 top, 0 bottom, from(rgba(255, 255, 255, 0)), to(#fff));
+}
+.asb-post-01 .info {
+	background: white;
+	height: 510px;
+	text-align: center;
+}
+</style>
+
+
+<script type="text/javascript">
+//DOM 完全就绪时执行
+var $article = $("div.post-content");
+var $qrcodeMask = $("div.qrcodeMask");
+var article = $article[0], height = 0;
+var halfHeight = 0;
+var token = getToken();
+
+//循环三分钟，如果想要结果可查看
+var timesRun = 0;
+
+$(function() {
+    // 找到文章所在的容器
+    var top = 0;
+    var $article = $("div.post-content");
+    if ($article.length > 0) {
+        // 文章的实际高度
+        article = $article[0], height = article.clientHeight;
+        console.log(article);
+        // 文章隐藏后的高度
+        halfHeight = height * 0.5;
+        top = halfHeight;
+        $article.css('height', halfHeight  + 'px');
+        $article.addClass('lock');
+    }
+    
+
+    var $guanzhu = $("div.asb-post-01");
+    $guanzhu.css('top', top + 25 + 'px');//二维码在文章页面的绝对位置 计算值
+    
+    token = getToken();
+    $('span.token').html(token);
+    
+    refresh();
+
+});
+
+
+function getCookie(name) {
+    var value = "; " + document.cookie;
+    var parts = value.split("; " + name + "=");
+    if (parts.length == 2)
+        return parts.pop().split(";").shift();
+}
+
+function getToken() {
+    let value = getCookie('UM_distinctid');
+    if (!value) {
+        return defaultToken;
+    }
+    return value.substring(value.length - 6).toUpperCase();
+}
+
+var _lock = function() {
+
+	var $article = $("div.post-content");
+    $article.css('height', halfHeight  + 'px');
+    $article.addClass('lock');
+    $('.asb-post-01').css('display', 'block');
+}
+
+var _unlock = function() {
+
+	var $article = $("div.post-content");
+    $article.css('height', 'initial');
+    $article.removeClass('lock');
+    $('.asb-post-01').css('display', 'none');
+}
+
+// 查询后端的结果
+function _detect(){
+    console.log('Detecting Token', token);
+    $.ajax({
+        url : 'http://bittechblog.com/roncopay/wx/check/isSubscribe',
+        method : 'POST',
+        data : {
+            'token' : token
+        },
+        dataType: 'json',
+        contentType: 'application/x-www-form-urlencoded', // application/json
+        success : function(data) {
+            console.log('locked', data.locked);
+
+            if (data.locked === true) {
+                _lock();
+            } else {
+                _unlock();
+                timesRun = 9;//停止定时任务
+            }
+        },
+        error : function(data) {
+            _unlock();
+            timesRun = 9;//停止定时任务
+        }
+    })
+}
+
+function interval(){
+  var interval_ = setInterval(function(){
+	    timesRun += 1;
+	    if(timesRun === 10){    
+	        clearInterval(interval_);
+	        document.getElementById("qrcodeMask").style.visibility="visible";
+	    }
+	    _detect();
+	    //do whatever here..
+	}, 3000);
+}
+  
+//点击刷新
+function refresh(){
+	timesRun = 0;
+	document.getElementById("qrcodeMask").style.visibility="hidden"; 
+    interval();
+}
+    
+    
+</script>
+
+<body>
+<div>
+<article class="main-content post-page">
+    <div id="post-content"  class="post-content"><ul>
+<li>
+<p><font size=4><a href="#1"><strong>1. 今天接到了CTO的任务</strong></a></font></p>
+</li>
+<li>
+<p><font size=4><a href="#2"><strong>2. 打车派单系统概要设计</strong></a></font></p>
+</li>
+<li>
+<p><font size=4><a href="#3"><strong>3. 打车派单系统核心逻辑</strong></a></font></p>
+</li>
+<li>
+<p><font size=4><a href="#4"><strong>4. 派单系统长远发展规划</strong></a></font></p>
+</li>
+<li>
+<p><font size=4><a href="#5"><strong>5. 测试派单系统</strong></a></font></p>
+</li>
+</ul>
+<p><a name="1"><font  size=4 face="黑体"><strong>1. 今天接到了CTO的任务</strong></font></a></p>
+<p>某一天，突然CTO拉我去开会，说道，“小王，公司决定开展打车业务，技术方案你这边能提供下吗？“。</p>
+<p>为了不辜负领导的信任，晚上回去就肝出来了打车软件的后台派单系统。第二天就将系统的设计的思路、系统概要、未来系统的发展路线做了简单的汇报。</p>
+<p>下面就简单介绍下我设计的打车软件后台派单系统的设计思路和技术实现思路。</p>
+<p><a name="2"><font  size=4 face="黑体"><strong>2. 打车派单系统概要设计</strong></font></a></p>
+<p>打车软件目前top的公司，应该算是滴滴了，大家都应该用过滴滴软件。在使用滴滴打车的时候，相信大家都遇到过下面的一些情况：</p>
+<p>情况一：选择完起始地点和终点信息后，发出订单【不出意外，后面会称为行程单】立马就有司机接单成功，然后司机往你这开。</p>
+<p>情况二：在偏僻的地方，例如北京的城郊，你发出一个行程单，app上显示一直未有司机接单，然后你要么一直空等着，要么取消订单选择其他交通方式。</p>
+<p>情况三：在城市的CBD、天气晴朗的玉渊潭门口、演唱会结束后的门口、996晚上下班后的公司楼下。这些场景下，你发出一个行程单，显示前面有几十个甚至几百个人在排队，你需要等待很长的时间才能有司机接你的行程单。</p>
+<p>从上面经常出现的场景，我们就可以知道，后台派单系统派的单其实就是乘客发出的行程单。然而行程单除了出发地和目的地不一样外，其他属性没有太大区别。当然出发地还有另外一个重要的属性体现，那就是订单发出的GPS经纬度数据。
+class TripOrder {</p>
+<pre><code>private String userName;//用户名
+private String departure;//出发地点
+private String destination ;//目的地
+private int latitude;//维度
+private int longtude;//经度
+</code></pre>
+<p>}</p>
+<p>上面三个场景还涉及到一个概念，就是排队。也就是说，在热闹的地方，发出的行程单就会非常多，但是因为这时候滴滴司机就成了稀缺资源了，不是所有的用户都能打到车，所以打不到车的乘客就需要排队，而代替乘客排队的就是他们发出的行程单了。</p>
+<p>因此，用户的行程单就会进入一个队列里面，而司机就是从这个队列里面去接单的，每次都是去队列里面pop出来一笔行程单，然后进入行程单的下一阶段业务：接乘客，提供交通服务【接下来的就不是本文探讨范围了】。</p>
+<p>emmm....，说到这里，技术专家大佬到这里应该都已经知道了整体的系统设计方案了吧。如果你是个小白，那没关系，先收藏，以后再看。</p>
+<p><a name="3"><font  size=4 face="黑体"><strong>3. 打车派单系统核心逻辑</strong></font></a></p>
+<p>说到核心逻辑，其实上面的概要模块已经说道了。打车业务的整个业务过程，最重要的业务活动是乘客发出行程单，以及司机去行程单队列接单。</p>
+<p>现在有个问题，你如何将北京市所有的乘客的行程单放入到队列去维护，你不可能将所有的行程单都放到同一个队列中去，然后让所有北京司机都去队列里面接单。这种设计方案显然是不可取的。</p>
+<p>那如果不是放在一个队列，而是进入不同的队列，那有该如何拆分队列呢？</p>
+<p>我们知道，每个行程单都有GPS经纬度数据，我们能不能根据这个特有的信息来设计维护队列呢？思路就是：让每个乘客的行程单进入到离他最近的队列中去。这就是最核心的逻辑点。</p>
+<p>到这里，其实大家都已经明白了，如何去设计维护一个城市的行程单队列。但是对于打车派单系统来说，最难的不是如何实现派单，而是动态调度司机的资源，因为城市的每个角落的情况是无法预先知道的，而滴滴司机的分布情况在没有干预的情况下是未知的。如果某地出现大量的行程单，你再调度司机往那里赶，可能司机到了，而乘客的行程单都已经取消了。</p>
+<p>所以，在我们使用打车app的时候，才会出现场景三那样的情况。反正目前没有看到任何一家平台能完美解决这些打车问题。在这里也没有这方面的解决方案。</p>
+<p>另外，乘客除了发出行程单，还会有取消行程单的活动操作，因此你的系统还要支持从队列中删除对应的行程单，而且乘客还需要在app上看到行程单的排队情况，所以每个行程单的前面排队情况还要实时更新并推送给用户app。</p>
+<p><a name="4"><font  size=4 face="黑体"><strong>4. 派单系统长远发展规划</strong></font></a></p>
+<p><strong>高可用性建设</strong></p>
+<p>刚也说到了这个平台的问题，对于平台的发展，派单系统最重要的还是高可用性，因此派单系统的长远发展，高可用性的相关建设是非常重要的。滴滴平台之前就发生过好多次线上事故，好长时间无法使用滴滴打车软件，乘客无法发出订单，司机无法接到订单。派单系统是多个核心的一个业务系统，不可用就等于公司业务无法进行。</p>
+<p><strong>行程单拥挤情况的改善</strong></p>
+<p>上文提到的场景三问题，目前没有任何一家打车平台能解决，因为生活中有太多的情况无法预估。提前预估行程单的分布情况，引导更多的司机资源聚集到行程单密集的区域。</p>
+<p><strong>派单场景多样化支持</strong></p>
+<p>本文提到的派单场景还比较简单，其实派单还需要支持更复杂的业务，例如拼单业务，如果乘客选择拼单，那么行程单被司机接到后，还没有结束处理，还需要跟后续的新订单进行行程路径的对比，如果相似度高，就行程拼单。甚至是多人拼单。</p>
+<p><a name="5"><font  size=4 face="黑体"><strong>5. 测试派单系统</strong></font></a></p>
+<p>派单系统第一个版本落地建设好后，选择了某一区域进行简单的测试，发现系统总共维护了4个队列，如下所示：</p>
+<pre><code class="language-js">127.0.0.1:6379&gt; keys *net_point*
+1) &quot;net_point:1044:361&quot;
+2) &quot;net_point:1045:361&quot;
+3) &quot;net_point:1044:360&quot;
+4) &quot;net_point:1045:360&quot;
+</code></pre>
+<p>对列信息是根据gps数据得到的。因此在测试的固定区域内，系统安排了4个队列来维护这篇区域的行程单，然后这篇区域的司机可以去对应的队列中接单。</p>
+<p>完整的demo项目，目前是不对外开放的，请关注公众号“前沿科技bot“公众号，待优化完成后开源给广大架构技术爱好者。</p>
+<p><img src="/upload/2020/05/6s8d58g77ehftpcen62h4v4bss.png" alt="alt" /></p>
+</div>
+    <div id="guanzhu" class= "asb-post-01"  style="display:block">
+    		<div class ="mask"></div>
+    		<div class="info">
+			        <div>扫码或搜索：<span style="color: #E9405A; font-weight: bold;">前沿科技</span></div>
+			        <div>
+			            <span>发送 </span><span class="token" style="color: #e9415a; font-weight: bold; font-size: 17px; margin-bottom: 45px;">290992</span>
+			        </div>
+			        <div>
+			           	 即可<span style="color: #e9415a; font-weight: bold;">立即永久</span>解锁本站全部文章
+			        </div>
+				    <div>
+				        <img class="code-img" style="width: 300px;display:unset" src="http://bittechblog.com/upload/2020/09/of9o9sfuumiego54aepd7dq05b.jpg">
+				        <div class="qrcodeMask" id="qrcodeMask">
+							<img src="http://bittechblog.com/upload/2020/11/v1er4cnlt2j5joun03bo53b5vk.png" class="maskImg" onclick="refresh()">
+						</div>
+				    </div>
+				    <div style="height:500px;"></div>
+			</div>
+    </div>
+</article>
+</div>
+<html lang="en">
+<body>
+<div>
+    <div id="179" class="comment-container">
+        <div id="comments" class="clearfix">
+            <div>
+                <span class="response">
+                
+            </span>
+                <form method="post" id="comment-form" class="comment-form" role="form"
+                      onsubmit="return TaleComment.subComment();">
+                    <input type="hidden" name="coid" id="coid"/>
+                    <input type="hidden" name="cid" id="cid" value="179"/>
+                    <input type="hidden" name="_csrf_token" value=""/>
+                    <input type="text" name="author" maxlength="12" id="author"
+                           class="form-control input-control clearfix"
+                           placeholder="姓名 (*)"
+                    />
+                    <input type="email" name="mail" id="mail" class="form-control input-control clearfix"
+                           placeholder="邮箱 (*)"
+                    />
+                    <input type="url" name="url" id="url" class="form-control input-control clearfix"
+                           placeholder="网址 (http://)"
+                    />
+                    <textarea name="text" id="textarea" class="form-control" placeholder="以上信息可以为空,评论不能为空哦!"
+                              required="required" minlength="5"
+                              maxlength="2000"></textarea>
+                    <button type="submit" class="submit" id="misubmit">提交</button>
+                </form>
+            </div>
+            
+
+            <div>
+                <ol class="comment-list">
+                    
+                </ol>
+                <div class="lists-navigator clearfix">
+                    <ol class="page-navigator">
+                        
+                        
+                        
+                    </ol>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<html lang="en">
+<body>
+<script type="text/javascript">
+    /*<![CDATA[*/
+    (function () {
+        window.TaleComment = {
+            dom: function (id) {
+                return document.getElementById(id);
+            },
+            create: function (tag, attr) {
+                var el = document.createElement(tag);
+                for (var key in attr) {
+                    el.setAttribute(key, attr[key]);
+                }
+                return el;
+            },
+            reply: function (coid) {
+                $('#comment-form input[name=coid]').val(coid);
+                $("html,body").animate({scrollTop: $('div.comment-container').offset().top}, 500);
+                $('#comment-form #textarea').focus();
+            },
+            subComment: function () {
+                $.ajax({
+                    type: 'post',
+                    url: '/comment',
+                    data: $('#comment-form').serialize(),
+                    async: false,
+                    dataType: 'json',
+                    success: function (result) {
+                        $('#comment-form input[name=coid]').val('');
+                        if (result && result.success) {
+                            alert("评论已提交至后台审核!");
+                            window.location.reload();
+                        } else {
+                            if (result.msg) {
+                                alert(result.msg);
+                            }
+                        }
+                    }
+                });
+                return false;
+            }
+        };
+    })();
+    function getCommentCookie(name) {
+        var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+        if (arr = document.cookie.match(reg))
+            return unescape(decodeURI(arr[2]));
+        else
+            return null;
+    }
+    function addCommentInputValue() {
+        document.getElementById('author').value = getCommentCookie('tale_remember_author');
+        document.getElementById('mail').value = getCommentCookie('tale_remember_mail');
+        document.getElementById('url').value = getCommentCookie('tale_remember_url');
+    }
+    addCommentInputValue();
+    /*]]>*/
+</script>
+</body>
+</html>
+</html>
+<html lang="en">
+<body>
+<footer class="footer bg-white">
+    <div class="footer-social">
+        <div class="footer-container clearfix">
+            <div class="social-list">
+            </div>
+        </div>
+    </div>
+    <div class="footer-meta">
+        <div class="footer-container">
+            <div class="meta-item meta-copyright">
+                <div class="meta-copyright-info">
+                    <div class="info-text">
+                        <a href="/page/1"  style="display: block;margin: 0 auto;" class="info-logo">
+                            <img style="display: block;margin: 0 auto;" src="/user/img/logo.png"/>
+                        </a>
+                        <br/>
+                        <p >&copy; Powered by <a style="color: #0e90d2" href="https://github.com/wmsJackWang/JDKBlog" target="_blank"
+                                          rel="nofollow">JDKBlog</a>
+                        </p>
+                        <p> 喜欢就去github上点个star吧 </p>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</footer>
+
+
+    <div id="directory-content" class="directory-content">
+        <div id="directory"></div>
+    </div>
+    <script>
+        /*<![CDATA[*/
+        var postDirectoryBuild = function () {
+            var postChildren = function children(childNodes, reg) {
+                        var result = [],
+                                isReg = typeof reg === 'object',
+                                isStr = typeof reg === 'string',
+                                node, i, len;
+                        for (i = 0, len = childNodes.length; i < len; i++) {
+                            node = childNodes[i];
+                            if ((node.nodeType === 1 || node.nodeType === 9) &&
+                                    (!reg ||
+                                    isReg && reg.test(node.tagName.toLowerCase()) ||
+                                    isStr && node.tagName.toLowerCase() === reg)) {
+                                result.push(node);
+                            }
+                        }
+                        return result;
+                    },
+                    createPostDirectory = function (article, directory, isDirNum) {
+                        var contentArr = [],
+                                titleId = [],
+                                levelArr, root, level,
+                                currentList, list, li, link, i, len;
+                        levelArr = (function (article, contentArr, titleId) {
+                            var titleElem = postChildren(article.childNodes, /^h\d$/),
+                                    levelArr = [],
+                                    lastNum = 1,
+                                    lastRevNum = 1,
+                                    count = 0,
+                                    guid = 1,
+                                    id = 'directory' + (Math.random() + '').replace(/\D/, ''),
+                                    lastRevNum, num, elem;
+                            while (titleElem.length) {
+                                elem = titleElem.shift();
+                                contentArr.push(elem.innerHTML);
+                                num = +elem.tagName.match(/\d/)[0];
+                                if (num > lastNum) {
+                                    levelArr.push(1);
+                                    lastRevNum += 1;
+                                } else if (num === lastRevNum ||
+                                        num > lastRevNum && num <= lastNum) {
+                                    levelArr.push(0);
+                                    lastRevNum = lastRevNum;
+                                } else if (num < lastRevNum) {
+                                    levelArr.push(num - lastRevNum);
+                                    lastRevNum = num;
+                                }
+                                count += levelArr[levelArr.length - 1];
+                                lastNum = num;
+                                elem.id = elem.id || (id + guid++);
+                                titleId.push(elem.id);
+                            }
+                            if (count !== 0 && levelArr[0] === 1) levelArr[0] = 0;
+
+                            return levelArr;
+                        })(article, contentArr, titleId);
+                        currentList = root = document.createElement('ul');
+                        dirNum = [0];
+                        for (i = 0, len = levelArr.length; i < len; i++) {
+                            level = levelArr[i];
+                            if (level === 1) {
+                                list = document.createElement('ul');
+                                if (!currentList.lastElementChild) {
+                                    currentList.appendChild(document.createElement('li'));
+                                }
+                                currentList.lastElementChild.appendChild(list);
+                                currentList = list;
+                                dirNum.push(0);
+                            } else if (level < 0) {
+                                level *= 2;
+                                while (level++) {
+                                    if (level % 2) dirNum.pop();
+                                    currentList = currentList.parentNode;
+                                }
+                            }
+                            dirNum[dirNum.length - 1]++;
+                            li = document.createElement('li');
+                            link = document.createElement('a');
+                            link.href = '#' + titleId[i];
+                            link.innerHTML = !isDirNum ? contentArr[i] :
+                            dirNum.join('.') + ' ' + contentArr[i];
+                            li.appendChild(link);
+                            currentList.appendChild(li);
+                        }
+                        directory.appendChild(root);
+                    };
+            createPostDirectory(document.getElementById('post-content'), document.getElementById('directory'), true);
+        };
+        postDirectoryBuild();
+        /*]]>*/
+    </script>
+
+
+<script src="//cdn.bootcss.com/headroom/0.9.1/headroom.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.9.0/highlight.min.js"></script>
+<script src="//cdn.bootcss.com/instantclick/3.0.1/instantclick.min.js"></script>
+<script>
+    /*<![CDATA[*/
+    var isOk = true;
+    if (isOk) {
+        var postDirectory = new Headroom(document.getElementById("directory-content"), {
+            tolerance: 0,
+            offset: 100,
+            classes: {
+                initial: "initial",
+                pinned: "pinned",
+                unpinned: "unpinned"
+            }
+        });
+    }
+
+
+    var header = new Headroom(document.getElementById("header"), {
+        tolerance: 10,
+        offset: 80,
+        classes: {
+            initial: "animated",
+            pinned: "slideDown",
+            unpinned: "slideUp"
+        }
+    });
+    header.init();
+    $('#search-inp').keypress(function (e) {
+        var key = e.which; //e.which是按键的值
+        if (key == 13) {
+            var q = $(this).val();
+            if (q && q != '') {
+                window.location.href = '/search/' + q;
+            }
+        }
+    });
+    /*]]>*/
+</script>
+<script data-no-instant="">
+    /*<![CDATA[*/
+    InstantClick.on('change', function (isInitialLoad) {
+        var blocks = document.querySelectorAll('pre code');
+        for (var i = 0; i < blocks.length; i++) {
+            hljs.highlightBlock(blocks[i]);
+        }
+        if (isInitialLoad === false) {
+            if (typeof ga !== 'undefined') ga('send', 'pageview', location.pathname + location.search);
+        }
+    });
+    InstantClick.init('mousedown');
+    /*]]>*/
+</script>
+</body>
+</html>
+</body>
+</html>

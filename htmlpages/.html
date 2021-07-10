@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<html lang="en">
+
+<head>
+    <meta name="baidu-site-verification" content="code-L413BKVJUv" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
+    <meta name="renderer" content="webkit"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta http-equiv="Cache-Control" content="no-transform"/>
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <meta name="keywords"/>
+    <meta name="description"/>
+    <link rel="shortcut icon" href="/user/img/logo.png"/>
+    <link rel="apple-touch-icon" href="/user/img/apple-touch-icon.png"/>
+    <title>微服务社区 - 分布式架构+SpringCloud微服务+Redis+Mysql</title>
+    <link href="//cdn.bootcss.com/highlight.js/9.9.0/styles/xcode.min.css" rel="stylesheet"/>
+    <link href="/user/css/style.min.css" rel="stylesheet"/>
+    
+    <!-- Third-Party CSS -->
+    <link rel="stylesheet" href="http://favorites.ren/bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" th:href="@{/jantent/assets/css/octicons/octicons.css}"> -->
+    <link rel="stylesheet" href="http://favorites.ren/bower_components/hover/css/hover-min.css">
+    <link rel="stylesheet" href="http://favorites.ren/bower_components/primer-markdown/dist/user-content.min.css">
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/syntax.css">
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/gitalk.css">
+       
+
+    <!-- My CSS -->
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/common.css">
+
+    <!-- CSS set in page -->
+    
+    <link rel="stylesheet" href="http://favorites.ren/assets/css/blog-page.css">
+    
+    
+    <!-- CSS set in layout -->
+    
+
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    
+    <script type="text/javascript" src="http://favorites.ren/bower_components/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="http://favorites.ren/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/jantent/assets/js/lock.js"></script>
+    
+    
+    <script src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script>
+    <script src="/jantent/assets/js/amazeui.min.js"></script>
+    <script src="/jantent/assets/js/readmore.js"></script>
+    <script src="/jantent/assets/js/readmore.min.js"></script>
+    <link rel="stylesheet" href="/jantent/assets/css/amazeui.min.css"/>
+    <link rel="stylesheet" href="/jantent/assets/css/app.css"/>
+    <!--[if lt IE 9]>
+    <script src="//cdn.bootcss.com/html5shiv/r29/html5.min.js"></script>
+    <script src="//cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        /*让每一个下拉按钮占据的宽度与居中*/
+        .am-dropdown{
+            width:25%;
+            text-align:center;
+        }
+        .index-page>div>div{
+		  position: relative;
+		}
+		.settop{
+		  position: absolute;
+		  right: -16px !important;
+		  top: -30px !important;
+		}
+    </style>
+</head>
+
+<script type="text/javascript">
+
+document.write(unescape("%3Cspan id='cnzz_stat_icon_1279171775'%3E%3C/span%3E%3Cscript src='https://s4.cnzz.com/z_stat.php%3Fid%3D1279171775%26online%3D1' type='text/javascript'%3E%3C/script%3E"));
+document.getElementById("cnzz_stat_icon_1279171775").style.display="none";//隐藏
+
+</script>
+
+<body  gtools_scp_screen_capture_injected="true" class="bg-
+">
+<!--[if lt IE 8]>
+<div class="browsehappy" role="dialog">
+    当前网页 <strong>不支持</strong> 你正在使用的浏览器. 为了正常的访问, 请 <a href="http://browsehappy.com/" target="_blank">升级你的浏览器</a>。
+</div>
+<![endif]-->
+<header id="header" style="background-color: rgba(0,0,0,0.1);" class="header bg-white">
+    <div class="navbar-container" style="width: 90%;">
+        <a href="/page/1" class="navbar-logo">微服务社区</a>
+
+
+        <div class="navbar-menu" >        
+
+            <a style="color: #fff" href="/archives">归档</a>
+            <a style="color: #fff" href="/links">友链</a> 
+            <a style="color: #fff" href="/article/about-me">关于</a>
+            <!--<a  style="color: #fff"  th:href="${#httpServletRequest.getScheme() + '://' + #httpServletRequest.getServerName() + ':' + #request.getServerPort()  + #request.getContextPath() + '/article/about-me'}">
+            	关于</a>
+            -->
+            
+            <!--
+            <div class="am-dropdown" data-am-dropdown style="color: #fff">
+                <button style="color: #fff"  class="am-btn am-btn-primary am-dropdown-toggle" data-am-dropdown-toggle >Redis<span class="am-icon-caret-down"></span></button>
+                <ul class="am-dropdown-content ">
+                    <li><a href="#" >Redis主从模式</a></li>
+                    <li><a href="#" >Redis哨兵模式</a></li>
+                    <li class="am-divider"></li>
+                    <li><a href="#" >Redis集群模式</a></li>
+                </ul>
+		    </div>
+		    -->
+        </div>
+        <div class="navbar-search" onclick="">
+            <span class="icon-search"></span>
+            <form role="search" onsubmit="return false;">
+                <span class="search-box">
+                    <input type="text" id="search-inp" class="input" placeholder="搜索..." maxlength="30"
+                           autocomplete="off"/>
+                </span>
+            </form>
+        </div>
+        
+        <div class="navbar-mobile-menu" onclick="">
+            <span class="icon-menu cross"><span class="middle"></span></span>
+            <ul>
+                <li><a style="color: #fff" href="/archives">归档</a></li>
+                <li><a style="color: #fff" href="/links">友链</a></li>
+                <li>
+                <!--<a style="color: #fff" th:href="${commons.site_url('/about')}">关于</a>
+                -->
+	                <a  style="color: #fff"  href="http://localhost:8081/article/about-me">
+	            	关于</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <div style="background:#87CEFA;color:#FFF;width:100%" class="container" >
+            
+        <div style="background:#87CEFA;color:#FFF;width:90%;" class="navbar-container" >
+        	<nav class="site-header-nav" role="navigation">
+        
+	        	<div class="navbar-menu" >      
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/page/1"
+		                   target="_self"
+		                   title="首页">首页
+		                </a>
+		                
+		            </div>
+		            
+<!-- 		            <div class=" site-header-nav-item hvr-underline-from-center"> -->
+<!-- 		                <a href="/article/23" -->
+<!-- 		                   target="_self" -->
+<!-- 		                   title="新基建与数字化转型">新基建与数字化转型 -->
+<!-- 		                </a> -->
+<!-- 		            </div> -->
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/category/Java架构方案"
+		                   target="_self"
+		                   title="Java架构师方案宝典">Java架构师方案宝典
+		                </a>
+		                
+		            </div>
+		            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/category/SpringBoot"
+		                   target="_self"
+		                   title="Spring Boot">
+		                    Spring Boot
+		                </a>
+		                
+		                <ul class="submenu">
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Spring Boot</a></li>
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Spring Cloud</a></li>
+		                    
+		                </ul>
+		                
+		            </div>
+	            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/category/Java"
+		                   target="_self"
+		                   title="Java">
+		                    Java
+		                </a>
+		                
+		                <ul class="submenu">
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Jvm 系列文章</a></li>
+		                    
+		                    <li><a href="" 
+		                           target="_blank"
+		                     >Java 极客技术</a></li>
+		                    
+		                </ul>
+		                
+		            </div>
+	            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/category/Redis"
+		                   target=""
+		                   title="Redis">
+		                    Redis
+		                </a>
+		                
+		                <ul class="submenu">
+		                    
+		                    <li><a href="/" 
+		                           target=""
+		                     >Python 教程</a></li>
+		                    
+		                    <li><a href="" 
+		                           target="_blank"
+		                     >Python 技术</a></li>
+		                    
+		                </ul>
+		                
+		            </div>
+	            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/archives"
+		                   target="_self"
+		                   title="Archives">
+		                    Archives
+		                </a>
+		                
+		            </div>
+		            	            
+		            <div class=" site-header-nav-item hvr-underline-from-center">
+		                <a href="/index"
+		                   target="_self"
+		                   title="登录/注册">
+		                   	     登录/注册
+		                </a>
+		                
+		            </div>
+		           
+		        </div>
+        	</nav>
+        	
+		</div>
+	</div>
+</header>
+</body>
+</html>
+<html lang="en">
+<head>
+<style type="text/css">
+		.intro {
+				background: url(http://bittechblog.com/upload/2020/09/q8k9tdeo4eht1parhc0vgm4mlp.jpg) no-repeat center 0 ; 
+				background-size: 100% 100% ;
+				}
+</style>
+</head>
+<body>
+<section class="jumbotron intro" data-pattern-id="本站 所有文章">
+    <div class="container" >
+        <div id="jumbotron-meta-info" style="color: #FFFFFF;">        
+            <h1>聊技术，谈架构，重业务，在共图社</h1>
+            <br/>
+            <span class="meta-info" style="color: #FFFFFF;" >
+                <span class="octicon octicon-calendar"></span> 
+            	博主：空白
+            	
+ 				
+            </span>
+        </div>
+    </div>
+</section>
+</body>
+</html>
+<body>
+<div class="am-g am-g-fixed blog-fixed index-page" style="max-width: 90%;">
+    <div class="am-u-md-8 am-u-sm-12"  style="width:70%;">
+        <div>
+        
+           	
+            <img class="settop" src="/jack/img/settop.png" >
+            
+            
+            <article class="am-g blog-entry-article">
+<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+<!--                 </div> -->
+                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+                    <h2>
+                        <div><a href="/article/180">Java架构师方案——打车平台派单系统的DDD领域分析与代码设计(附完整项目代码)</a>
+                        </div>
+                    </h2>
+                    <!-- 文章摘要-->
+                    <div style="font-size: 15px;"> 1. 派单系统领域建模 2. 代码设计与实现 3. 打车场景测试 1. 派单系统领域建模 问题域 打车派单系统要解决什么问题？ 派单系统要成为乘客和</div>
+                    <!-- 文章分类 -->
+                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/Java%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88">Java架构方案</a><span>&nbsp;&nbsp;</span></span>
+                    <!-- 发布时间 -->
+                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2021-04-17</span>
+                    
+                </div>
+            </article>
+
+        </div>
+        <div>
+        
+           	
+            <img class="settop" src="/jack/img/settop.png" >
+            
+            
+            <article class="am-g blog-entry-article">
+<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+<!--                 </div> -->
+                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+                    <h2>
+                        <div><a href="/article/179">Java架构师方案——CTO说：“小王，设计并落地一个滴滴打车后端派单系统吧”</a>
+                        </div>
+                    </h2>
+                    <!-- 文章摘要-->
+                    <div style="font-size: 15px;"> 1. 今天接到了CTO的任务 2. 打车派单系统概要设计 3. 打车派单系统核心逻辑 4. 派单系统长远发展规划 5. 测试派单系统 1. 今天接到</div>
+                    <!-- 文章分类 -->
+                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/Java%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88">Java架构方案</a><span>&nbsp;&nbsp;</span></span>
+                    <!-- 发布时间 -->
+                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2021-04-15</span>
+                    
+                </div>
+            </article>
+
+        </div>
+        <div>
+        
+           	
+            <img class="settop" src="/jack/img/settop.png" >
+            
+            
+            <article class="am-g blog-entry-article">
+<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+<!--                 </div> -->
+                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+                    <h2>
+                        <div><a href="/article/168">Spring Security（5）—— 控制用户并发登入，并剔除前一个用户(附完整项目代码)</a>
+                        </div>
+                    </h2>
+                    <!-- 文章摘要-->
+                    <div style="font-size: 15px;"> 1. 安全框架Security实现：只允许一个用户登入 2. 两种控制方式：只允许一个用户登入 3. 用户登入控制出现的问题及解决方案 4. 简单谈</div>
+                    <!-- 文章分类 -->
+                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/SpringSecurity">SpringSecurity</a><span>&nbsp;&nbsp;</span></span>
+                    <!-- 发布时间 -->
+                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2021-02-08</span>
+                    
+                </div>
+            </article>
+
+        </div>
+        <div>
+        
+           	
+            <img class="settop" src="/jack/img/settop.png" >
+            
+            
+            <article class="am-g blog-entry-article">
+<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+<!--                 </div> -->
+                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+                    <h2>
+                        <div><a href="/article/167">Spring Security（4）——springSecurity框架如何使用多个过滤器链(附完整项目代码)</a>
+                        </div>
+                    </h2>
+                    <!-- 文章摘要-->
+                    <div style="font-size: 15px;"> 1. 先看看多个过滤器链项目启动日志 2. springSecurity添加多个过滤器链的方法 3. 多个过滤器链配置类实现代码 1. 先看看多个过</div>
+                    <!-- 文章分类 -->
+                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/SpringSecurity">SpringSecurity</a><span>&nbsp;&nbsp;</span></span>
+                    <!-- 发布时间 -->
+                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2021-02-08</span>
+                    
+                </div>
+            </article>
+
+        </div>
+        <div>
+        
+           	
+            <img class="settop" src="/jack/img/settop.png" >
+            
+            
+            <article class="am-g blog-entry-article">
+<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+<!--                 </div> -->
+                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+                    <h2>
+                        <div><a href="/article/161">SpringBoot学习示例——主动回滚，@Transactional注解捕获异常事务回滚，开发人员根据业务情况主动回滚</a>
+                        </div>
+                    </h2>
+                    <!-- 文章摘要-->
+                    <div style="font-size: 15px;"> 1. 不便利的@Transactional，无法定制回滚节点 2. try...catch让@Transactional失效 3. 解决方案 1. </div>
+                    <!-- 文章分类 -->
+                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/SpringBoot">SpringBoot</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/%E9%97%AE%E9%A2%98%E5%8F%8A%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88">问题及解决方案</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/%E9%BB%98%E8%AE%A4%E5%88%86%E7%B1%BB">默认分类</a><span>&nbsp;&nbsp;</span></span>
+                    <!-- 发布时间 -->
+                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2021-02-02</span>
+                    
+                </div>
+            </article>
+
+        </div>
+        <div>
+        
+           	
+            <img class="settop" src="/jack/img/settop.png" >
+            
+            
+            <article class="am-g blog-entry-article">
+<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+<!--                 </div> -->
+                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+                    <h2>
+                        <div><a href="/article/160">Spring Security（3）——实现基于数据库的Remember Me功能(附完整项目代码)</a>
+                        </div>
+                    </h2>
+                    <!-- 文章摘要-->
+                    <div style="font-size: 15px;"> 1. 基于内存实现Remember Me功能的问题 2. 基于数据库的RememberMe功能开发 3. 测试效果 4. 基于数据库的Remembe</div>
+                    <!-- 文章分类 -->
+                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/SpringSecurity">SpringSecurity</a><span>&nbsp;&nbsp;</span></span>
+                    <!-- 发布时间 -->
+                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2021-01-03</span>
+                    
+                </div>
+            </article>
+
+        </div>
+        <div>
+        
+           	
+            <img class="settop" src="/jack/img/settop.png" >
+            
+            
+            <article class="am-g blog-entry-article">
+<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+<!--                 </div> -->
+                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+                    <h2>
+                        <div><a href="/article/142">Mybatis——xml配置文件编译报错问题及使用小于号出错的三种解决方案（已解决）</a>
+                        </div>
+                    </h2>
+                    <!-- 文章摘要-->
+                    <div style="font-size: 15px;"> 1. 错误说明 2. 错误原因分析 3. 解决方案 1. 错误说明 mybatis的xml配置文件*Mapper xml，出现编译错误，报错内容如下</div>
+                    <!-- 文章分类 -->
+                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/springboot%E5%BC%80%E5%8F%91%E9%97%AE%E9%A2%98%E6%95%B4%E7%90%86">springboot开发问题整理</a><span>&nbsp;&nbsp;</span></span>
+                    <!-- 发布时间 -->
+                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-12-20</span>
+                    
+                </div>
+            </article>
+
+        </div>
+        <div>
+        
+           	
+            <img class="settop" src="/jack/img/settop.png" >
+            
+            
+            <article class="am-g blog-entry-article">
+<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+<!--                 </div> -->
+                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+                    <h2>
+                        <div><a href="/article/130">SpringBoot学习示例—AOP切面编程在内部方法调用时候切面逻辑失效问题(已解决,附完整项目代码)</a>
+                        </div>
+                    </h2>
+                    <!-- 文章摘要-->
+                    <div style="font-size: 15px;"> 1. 切面逻辑失效 2. 问题定位 3. 问题分析 4. 解决方案 5. 测试方案效果 1. 切面逻辑失效 切面编程方式来做增强逻辑，在我们系统中很</div>
+                    <!-- 文章分类 -->
+                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/SpringBoot">SpringBoot</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/%E9%BB%98%E8%AE%A4%E5%88%86%E7%B1%BB">默认分类</a><span>&nbsp;&nbsp;</span></span>
+                    <!-- 发布时间 -->
+                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-11-27</span>
+                    
+                </div>
+            </article>
+
+        </div>
+        <div>
+        
+           	
+            <img class="settop" src="/jack/img/settop.png" >
+            
+            
+            <article class="am-g blog-entry-article">
+<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+<!--                 </div> -->
+                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+                    <h2>
+                        <div><a href="/article/122">Java架构师方案——Spring Security（一）快速入门</a>
+                        </div>
+                    </h2>
+                    <!-- 文章摘要-->
+                    <div style="font-size: 15px;"> 1. 导读 2. 快速认识Spring Security 3. 运行Spring Security项目 4. 架构师角色对web安全服务的理解 1.</div>
+                    <!-- 文章分类 -->
+                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/SpringSecurity">SpringSecurity</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/%E9%BB%98%E8%AE%A4%E5%88%86%E7%B1%BB">默认分类</a><span>&nbsp;&nbsp;</span></span>
+                    <!-- 发布时间 -->
+                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-11-09</span>
+                    
+                </div>
+            </article>
+
+        </div>
+        <div>
+        
+           	
+            <img class="settop" src="/jack/img/settop.png" >
+            
+            
+            <article class="am-g blog-entry-article">
+<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+<!--                 </div> -->
+                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+                    <h2>
+                        <div><a href="/article/116">Java架构师方案——模拟Spring Security，我徒手写了一个简单的安全框架</a>
+                        </div>
+                    </h2>
+                    <!-- 文章摘要-->
+                    <div style="font-size: 15px;"> 1. 导读 2. 核心的组件和逻辑 3. 运行测试 4. Spring Security分析总结 1. 导读 阅读这篇文章，跟着笔者一起从0到1开始</div>
+                    <!-- 文章分类 -->
+                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/SpringSecurity">SpringSecurity</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/Java%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88">Java架构方案</a><span>&nbsp;&nbsp;</span></span>
+                    <!-- 发布时间 -->
+                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-10-31</span>
+                    
+                </div>
+            </article>
+
+        </div>
+        <div>
+        
+           	
+            <img class="settop" src="/jack/img/settop.png" >
+            
+            
+            <article class="am-g blog-entry-article">
+<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+<!--                 </div> -->
+                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+                    <h2>
+                        <div><a href="/article/multiple-datasource">Java架构师方案—多数据源开发详解及原理(二)(附完整项目代码)</a>
+                        </div>
+                    </h2>
+                    <!-- 文章摘要-->
+                    <div style="font-size: 15px;"> 1. mybatis下数据源开发工作 2. 数据源与DAO的关系原理模型 3. 为什么要配置SqlSessionTemplate类的bean 4. </div>
+                    <!-- 文章分类 -->
+                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/Java%E6%9E%B6%E6%9E%84%E6%96%B9%E6%A1%88">Java架构方案</a><span>&nbsp;&nbsp;</span><a class="blog-color" href="/category/SpringBoot">SpringBoot</a><span>&nbsp;&nbsp;</span></span>
+                    <!-- 发布时间 -->
+                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2020-09-15</span>
+                    
+                </div>
+            </article>
+
+        </div>
+        <div>
+        
+           	
+            
+            <article class="am-g blog-entry-article">
+<!--                 <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-img"> -->
+<!--                     <img th:src="@{${commons.show_thumb(article)}}" alt="" class="am-u-sm-12"/> -->
+<!--                 </div> -->
+                <div class="am-u-lg-6 am-u-md-12 am-u-sm-12 blog-entry-text" style="width:100%;">
+                    <h2>
+                        <div><a href="/article/177">2021/2/23面试复盘——阿里巴巴高德高级java研发</a>
+                        </div>
+                    </h2>
+                    <!-- 文章摘要-->
+                    <div style="font-size: 15px;"> 2021/2/23面试复盘——阿里巴巴高德高级java研发 面试各个阶段：自我介绍、讨论解决方案、代码算法编写、java基础。 **解决方案讨论 *</div>
+                    <!-- 文章分类 -->
+                    <span class="blog-color  fa fa-tags fa-fw icon" style="font-size: 15px;width: auto;"><a class="blog-color" href="/category/%E9%BB%98%E8%AE%A4%E5%88%86%E7%B1%BB">默认分类</a><span>&nbsp;&nbsp;</span></span>
+                    <!-- 发布时间 -->
+                    <span class="fa fa-clock-o fa-fw" style="font-size: 15px;width: auto;">发布于 2021-02-24</span>
+                    
+                </div>
+            </article>
+
+        </div>
+
+        <div class="am-pagination">
+            <ol class="am-pagination">
+    
+
+
+    
+        <li class="current"><a href="/page/1">1</a></li>
+    
+        <li><a href="/page/2">2</a></li>
+    
+        <li><a href="/page/3">3</a></li>
+    
+        <li><a href="/page/4">4</a></li>
+    
+        <li><a href="/page/5">5</a></li>
+    
+
+
+    
+        <li class="am-pagination-next"><a href="/page/2">→</a></li>
+    
+
+</ol>
+        </div>
+    </div>
+
+
+    <div class="am-u-md-4 am-u-sm-12 blog-sidebar"  style="width:30%;">
+        <div class="blog-sidebar-widget blog-bor">
+            <h2 class="blog-text-center blog-title"><span>About ME</span></h2>
+            <!--<img th:src="@{/jantent/assets/img/f10.jpg}" alt="about me" class="blog-entry-img"/>-->
+            <img src="/jack/img/gongzhonghao.jpg" alt="about me"  style="width:70%;" class="blog-entry-img"/>
+            <p>
+                                         关注“前沿科技bot”公众号,发送“共图社” 消息,加入我们这一群兴趣相投的开发者队伍。
+            </p>
+            <p>
+            	<b> 加入共图社,一起做开源项目</b>	
+            </p>
+            
+            <p>
+                Java后台开发&&支付业务
+            </p>
+            <p>个人博客小站，主要发表关于Java技术栈,redis,mysql,大型网站架构设计等相关文章</p>
+            
+            <p>
+            	<!--<a th:href="${#httpServletRequest.getScheme() + '://' + #httpServletRequest.getServerName() + ':' + #request.getServerPort()  + #request.getContextPath() + '/article/about-me'}">点击了解关于我的更多</a>-->
+            <a href="/article/about-me" target="_self" >点击了解空白的更多</a>
+            </p>
+        </div>
+        <div class="blog-sidebar-widget blog-bor">
+            <h2 class="blog-text-center blog-title"><span>Contact ME</span></h2>
+            <p>
+                <a href="https://github.com/wmsJackWang"><span class="am-icon-github am-icon-fw blog-icon"></span></a>
+                <a href=""><span class="am-icon-weibo am-icon-fw blog-icon"></span></a>
+            </p>
+        </div>
+        
+        <div class="blog-clear-margin blog-sidebar-widget blog-bor am-g ">
+            <h2 class="blog-title  fa fa-tags fa-fw icon" style="width: auto;font-size: 25px;font-weight: 700;"><span>TAG cloud</span></h2>
+            <div class="am-u-sm-12 blog-clear-padding">
+                    
+                            
+                            
+                                <a href="/tag/Java" style="font-size: 11.74px;margin: 5px;" >
+                                    Java
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/ThreadLocal" style="font-size: 11.74px;margin: 5px;" >
+                                    ThreadLocal
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/Lua" style="font-size: 11.74px;margin: 5px;" >
+                                    Lua
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/Redis" style="font-size: 11.74px;margin: 5px;" >
+                                    Redis
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/Jedis" style="font-size: 11.74px;margin: 5px;" >
+                                    Jedis
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/高可用" style="font-size: 11.74px;margin: 5px;" >
+                                    高可用
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/架构设计" style="font-size: 11.74px;margin: 5px;" >
+                                    架构设计
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/高性能" style="font-size: 11.74px;margin: 5px;" >
+                                    高性能
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/哨兵模式原理" style="font-size: 11.74px;margin: 5px;" >
+                                    哨兵模式原理
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/易伸缩" style="font-size: 11.74px;margin: 5px;" >
+                                    易伸缩
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/关于我" style="font-size: 11.74px;margin: 5px;" >
+                                    关于我
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/工作巨坑" style="font-size: 11.74px;margin: 5px;" >
+                                    工作巨坑
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/Mysql" style="font-size: 11.74px;margin: 5px;" >
+                                    Mysql
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/控制层偏门需求及解决方案" style="font-size: 11.74px;margin: 5px;" >
+                                    控制层偏门需求及解决方案
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/重定向原理" style="font-size: 11.74px;margin: 5px;" >
+                                    重定向原理
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/重定向前后端方式" style="font-size: 11.74px;margin: 5px;" >
+                                    重定向前后端方式
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/分库分表技术实现" style="font-size: 11.74px;margin: 5px;" >
+                                    分库分表技术实现
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/目标计划" style="font-size: 11.74px;margin: 5px;" >
+                                    目标计划
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/springboot开发问题整理" style="font-size: 11.74px;margin: 5px;" >
+                                    springboot开发问题整理
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/数据库事务" style="font-size: 11.74px;margin: 5px;" >
+                                    数据库事务
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/Github" style="font-size: 11.74px;margin: 5px;" >
+                                    Github
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/springboot教程系列" style="font-size: 11.74px;margin: 5px;" >
+                                    springboot教程系列
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/复习" style="font-size: 11.74px;margin: 5px;" >
+                                    复习
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/状态机" style="font-size: 11.74px;margin: 5px;" >
+                                    状态机
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/JDKBlog" style="font-size: 11.74px;margin: 5px;" >
+                                    JDKBlog
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/共图社" style="font-size: 11.74px;margin: 5px;" >
+                                    共图社
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/springboot" style="font-size: 11.74px;margin: 5px;" >
+                                    springboot
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/重试" style="font-size: 11.74px;margin: 5px;" >
+                                    重试
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/线程池" style="font-size: 11.74px;margin: 5px;" >
+                                    线程池
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/Spring Security" style="font-size: 11.74px;margin: 5px;" >
+                                    Spring Security
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/SpringSecurity" style="font-size: 11.74px;margin: 5px;" >
+                                    SpringSecurity
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/tag/简历" style="font-size: 11.74px;margin: 5px;" >
+                                    简历
+                                    <!--<th:block th:text="' ('+${c.count}+')'"/>-->
+                                    <!--<span class="caret"></span>-->
+                                </a>
+                            
+
+                    
+            </div>
+        </div>
+        
+        <div class="blog-clear-margin blog-sidebar-widget blog-bor am-g ">
+            <h2 class="blog-title  fa fa-tags fa-fw icon" style="width: auto;font-size: 25px;font-weight: 700;"><span>分类</span></h2>
+            <div class="am-u-sm-12 blog-clear-padding">
+                    
+                            
+                                <a href="/category/默认分类" class="blog-tag">
+                                    默认分类
+                                     (52)
+                                </a>
+                            
+                            
+
+                    
+                            
+                            
+                                <a href="/category/Java" class="blog-tag">
+                                    Java
+                                     (6)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/Redis" class="blog-tag">
+                                    Redis
+                                     (6)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/架构设计" class="blog-tag">
+                                    架构设计
+                                     (6)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/高性能" class="blog-tag">
+                                    高性能
+                                     (5)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/高可用" class="blog-tag">
+                                    高可用
+                                     (5)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/易伸缩" class="blog-tag">
+                                    易伸缩
+                                     (1)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/问题及解决方案" class="blog-tag">
+                                    问题及解决方案
+                                     (5)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/Mysql" class="blog-tag">
+                                    Mysql
+                                     (2)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/控制层" class="blog-tag">
+                                    控制层
+                                     (2)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/Controller" class="blog-tag">
+                                    Controller
+                                     (2)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/ShardingJdbc" class="blog-tag">
+                                    ShardingJdbc
+                                     (1)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/springboot开发问题整理" class="blog-tag">
+                                    springboot开发问题整理
+                                     (3)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/SpringBoot" class="blog-tag">
+                                    SpringBoot
+                                     (14)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/事务" class="blog-tag">
+                                    事务
+                                     (2)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/Github" class="blog-tag">
+                                    Github
+                                     (2)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/Java架构方案" class="blog-tag">
+                                    Java架构方案
+                                     (10)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/算法" class="blog-tag">
+                                    算法
+                                     (4)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/复习" class="blog-tag">
+                                    复习
+                                     (5)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/Nginx" class="blog-tag">
+                                    Nginx
+                                     (2)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/SpringSecurity" class="blog-tag">
+                                    SpringSecurity
+                                     (10)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/龙果支付" class="blog-tag">
+                                    龙果支付
+                                     (0)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/高并发" class="blog-tag">
+                                    高并发
+                                     (0)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+                            
+                            
+                                <a href="/category/JDKBlog" class="blog-tag">
+                                    JDKBlog
+                                     (0)
+                                    <span class="caret"></span>
+                                </a>
+                            
+
+                    
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<html lang="en">
+<body>
+<footer class="footer bg-white">
+    <div class="footer-social">
+        <div class="footer-container clearfix">
+            <div class="social-list">
+            </div>
+        </div>
+    </div>
+    <div class="footer-meta">
+        <div class="footer-container">
+            <div class="meta-item meta-copyright">
+                <div class="meta-copyright-info">
+                    <div class="info-text">
+                        <a href="/page/1"  style="display: block;margin: 0 auto;" class="info-logo">
+                            <img style="display: block;margin: 0 auto;" src="/user/img/logo.png"/>
+                        </a>
+                        <br/>
+                        <p >&copy; Powered by <a style="color: #0e90d2" href="https://github.com/wmsJackWang/JDKBlog" target="_blank"
+                                          rel="nofollow">JDKBlog</a>
+                        </p>
+                        <p> 喜欢就去github上点个star吧 </p>
+                        <br/>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</footer>
+
+
+
+<script src="//cdn.bootcss.com/headroom/0.9.1/headroom.min.js"></script>
+<script src="//cdn.bootcss.com/highlight.js/9.9.0/highlight.min.js"></script>
+<script src="//cdn.bootcss.com/instantclick/3.0.1/instantclick.min.js"></script>
+<script>
+    /*<![CDATA[*/
+    var isOk = null;
+    if (isOk) {
+        var postDirectory = new Headroom(document.getElementById("directory-content"), {
+            tolerance: 0,
+            offset: 100,
+            classes: {
+                initial: "initial",
+                pinned: "pinned",
+                unpinned: "unpinned"
+            }
+        });
+    }
+
+
+    var header = new Headroom(document.getElementById("header"), {
+        tolerance: 10,
+        offset: 80,
+        classes: {
+            initial: "animated",
+            pinned: "slideDown",
+            unpinned: "slideUp"
+        }
+    });
+    header.init();
+    $('#search-inp').keypress(function (e) {
+        var key = e.which; //e.which是按键的值
+        if (key == 13) {
+            var q = $(this).val();
+            if (q && q != '') {
+                window.location.href = '/search/' + q;
+            }
+        }
+    });
+    /*]]>*/
+</script>
+<script data-no-instant="">
+    /*<![CDATA[*/
+    InstantClick.on('change', function (isInitialLoad) {
+        var blocks = document.querySelectorAll('pre code');
+        for (var i = 0; i < blocks.length; i++) {
+            hljs.highlightBlock(blocks[i]);
+        }
+        if (isInitialLoad === false) {
+            if (typeof ga !== 'undefined') ga('send', 'pageview', location.pathname + location.search);
+        }
+    });
+    InstantClick.init('mousedown');
+    /*]]>*/
+</script>
+</body>
+</html>
+</html>
