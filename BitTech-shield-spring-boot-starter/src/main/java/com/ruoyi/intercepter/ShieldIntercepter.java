@@ -48,9 +48,10 @@ public class ShieldIntercepter implements HandlerInterceptor {
         ShieldResponse br = processor.process(request);
         String requestUri = request.getRequestURI();
         //开启限制静态url  则不再区分静态资源， 未开启  则区分静态资源，静态资源直接通过
-        if(!shieldProperties.getLimitStaticPath() && !"null".equals(Arrays.stream(staticPathSurfix.split(",")).filter(surfix->
-                requestUri.contains(surfix)).findAny().orElse("null")))
+        if(!shieldProperties.getLimitStaticPath() && isStaticResource(requestUri)) {
+
             return true;
+        }
 
         log.info("enter ShieldIntercepter begin to limit  requestUri:{}",requestUri);
         if(br.getCode() == SUCCESS || shieldforbidenurl.equals(requestUri)) {
@@ -87,5 +88,10 @@ public class ShieldIntercepter implements HandlerInterceptor {
 
         String result = "{"+ "\"errMsg\":\"" + errMsg + "\",\"status\":" + "\"FAIL\"" +"}";
         return result.toString();
+    }
+
+    private boolean isStaticResource(String requestUri){
+        return !"null".equals(Arrays.stream(staticPathSurfix.split(",")).filter(surfix->
+                requestUri.contains(surfix)).findAny().orElse("null"));
     }
 }

@@ -7,12 +7,6 @@
   <artifactId>BitTech-shield-spring-boot-starter</artifactId>
   <version>4.2.0</version>
 
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-dependencies</artifactId>
-    <version>1.5.10.RELEASE</version>
-	<relativePath/> <!-- lookup parent from repository -->
-  </parent>
   <modelVersion>4.0.0</modelVersion>
   <name>BitTech-shield-spring-boot-starter</name>
   <!-- FIXME change it to the project's website -->
@@ -26,6 +20,7 @@
     <encoding>UTF-8</encoding>
     <java.version>1.8</java.version>
     <redis-jedis.version>2.4.2</redis-jedis.version>
+    <spring-boot.version>1.5.10.RELEASE</spring-boot.version>
     <maven-compiler.source>${java.version}</maven-compiler.source>
     <maven-compiler.target>${java.version}</maven-compiler.target>
     <jedis.version>3.0.0</jedis.version>
@@ -72,7 +67,7 @@
     </dependency>
   </dependencies>
 
-<!--   <dependencyManagement>
+  <dependencyManagement>
     <dependencies>
       <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -83,7 +78,7 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
- -->
+
 
   <build>
     <plugins>
@@ -123,13 +118,6 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-           <artifactId>maven-compiler-plugin</artifactId>
-           <configuration>
-              <source>1.8</source>
-              <target>1.8</target>
-           </configuration>
-	  </plugin>
     </plugins>
   </build>
 </project>

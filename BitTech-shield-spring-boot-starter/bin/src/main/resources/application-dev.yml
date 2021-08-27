@@ -1,0 +1,10 @@
+# shield过滤器，用于过滤恶意请求
+shield:
+    limit:
+        access:
+            type: redis
+                threshold: 15
+                interval: 5000
+                #谢尔顿 switcher open-开启 ， close-关闭
+                switcher: open
+                limitStaticPath: false
