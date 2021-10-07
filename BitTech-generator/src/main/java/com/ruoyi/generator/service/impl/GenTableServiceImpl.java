@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+import com.ruoyi.system.domain.SysUser;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -145,10 +148,13 @@ public class GenTableServiceImpl implements IGenTableService
     @Transactional
     public void importGenTable(List<GenTable> tableList, String operName)
     {
+
+        SysUser user = GenUtils.getUserInfo();
         for (GenTable table : tableList)
         {
             try
             {
+                table.setUserId(user.getUserId());
                 String tableName = table.getTableName();
                 GenUtils.initTable(table, operName);
                 int row = genTableMapper.insertGenTable(table);
@@ -158,6 +164,7 @@ public class GenTableServiceImpl implements IGenTableService
                     List<GenTableColumn> genTableColumns = selectDbTableColumnsByName(tableName);
                     for (GenTableColumn column : genTableColumns)
                     {
+                        column.setUserId(user.getUserId());
                         GenUtils.initColumnField(column, table);
                         genTableColumnMapper.insertGenTableColumn(column);
                     }

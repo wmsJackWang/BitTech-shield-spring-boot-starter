@@ -36,6 +36,12 @@
     <!-- 依赖声明 -->
     <dependencyManagement>
         <dependencies>
+
+			<dependency>
+				<groupId>bittech.spring.boot</groupId>
+				<artifactId>BitTech-shield-spring-boot-starter</artifactId>
+				<version>4.2.1</version>
+			</dependency>
         
         	<dependency>
 			    <groupId>org.springframework</groupId>

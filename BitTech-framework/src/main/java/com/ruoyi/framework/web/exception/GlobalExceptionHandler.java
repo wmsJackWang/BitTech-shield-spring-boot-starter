@@ -1,6 +1,8 @@
 package com.ruoyi.framework.web.exception;
 
 import javax.servlet.http.HttpServletRequest;
+
+import com.ruoyi.framework.exception.ValidateException;
 import org.apache.shiro.authz.AuthorizationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,6 +74,13 @@ public class GlobalExceptionHandler
     {
         log.error(e.getMessage(), e);
         return AjaxResult.error("服务器错误，请联系管理员");
+    }
+
+    @ExceptionHandler(ValidateException.class)
+    public AjaxResult handleValidateException(Exception e)
+    {
+        log.error(e.getMessage(), e);
+        return AjaxResult.error(e.getMessage());
     }
 
     /**

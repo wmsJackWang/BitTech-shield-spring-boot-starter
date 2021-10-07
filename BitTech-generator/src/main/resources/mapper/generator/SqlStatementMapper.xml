@@ -16,6 +16,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="remark"    column="remark"    />
     </resultMap>
 
+    <!-- 自定义SQL语句 -->
+    <select id="myInsert" parameterType="java.lang.String" >
+        ${_parameter}
+    </select>
+
     <sql id="selectSqlStatementVo">
         select sql_id, user_id, table_name, sql_content, create_by, create_time, update_by, update_time, remark from sql_statement
     </sql>

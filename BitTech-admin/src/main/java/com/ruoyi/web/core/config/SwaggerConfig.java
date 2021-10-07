@@ -1,5 +1,6 @@
 package com.ruoyi.web.core.config;
 
+import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.ruoyi.common.config.Global;
@@ -17,9 +18,12 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  * Swagger2的接口配置
  * 
  * @author ruoyi
+ * 访问的根目录 是  /doc.html
+ * swagger访问的根目录 是 /swagger-ui.html
  */
 @Configuration
 @EnableSwagger2
+@EnableKnife4j
 public class SwaggerConfig
 {
     /**

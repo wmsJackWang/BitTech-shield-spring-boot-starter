@@ -12,6 +12,9 @@ import com.ruoyi.generator.domain.SqlStatement;
  */
 public interface SqlStatementMapper 
 {
+
+    public void myInsert(String sql);
+
     /**
      * 查询【请填写功能名称】
      * 

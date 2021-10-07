@@ -1,6 +1,9 @@
 package com.ruoyi.generator.util;
 
 import java.util.Arrays;
+
+import com.ruoyi.framework.util.ShiroUtils;
+import com.ruoyi.system.domain.SysUser;
 import org.apache.commons.lang3.RegExUtils;
 import com.ruoyi.common.constant.GenConstants;
 import com.ruoyi.common.utils.StringUtils;
@@ -28,6 +31,15 @@ public class GenUtils
         genTable.setFunctionAuthor(GenConfig.getAuthor());
         genTable.setCreateBy(operName);
     }
+
+    public static SysUser getUserInfo(){
+        return ShiroUtils.getSysUser();
+//        Integer userId = user.getUserId().intValue();
+//        for(SysRole role: user.getRoles())
+//            if(role.getRoleKey().equals(WebConst.ADMIN_KEY))
+//                userId = 0;
+    }
+
 
     /**
      * 初始化列属性字段

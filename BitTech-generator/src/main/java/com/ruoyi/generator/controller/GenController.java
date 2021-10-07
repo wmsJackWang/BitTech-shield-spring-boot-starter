@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
+
+import com.ruoyi.framework.exception.ValidateException;
 import org.apache.commons.io.IOUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,9 +141,14 @@ public class GenController extends BaseController
     @ResponseBody
     public AjaxResult editSave(@Validated GenTable genTable)
     {
-        genTableService.validateEdit(genTable);
-        genTableService.updateGenTable(genTable);
-        return AjaxResult.success();
+        AjaxResult result = AjaxResult.success();
+        try {
+            genTableService.validateEdit(genTable);
+            genTableService.updateGenTable(genTable);
+        }catch (Exception e) {
+            throw new ValidateException(e.getMessage());
+        }
+        return result;
     }
 
     @RequiresPermissions("tool:gen:remove")

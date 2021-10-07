@@ -35,7 +35,7 @@ public class DataSourceAspect
     @Pointcut("execution(* springboot.controller..*.*(..))" )
     public void jdkBlogDsPointCut() {}
 
-    @Pointcut("execution(* com.ruoyi.generator.controller..*.*(..))" )
+    @Pointcut("execution(* com.ruoyi.generator.service.impl..*.*(..))" )
     public void genCodeDsPointCut() {}
 
 //    com.ruoyi.generator.service.impl.GenTableServiceImpl.selectDbTableColumnsByName(String tableName)

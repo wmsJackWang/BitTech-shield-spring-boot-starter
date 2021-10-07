@@ -55,6 +55,7 @@ public class SqlStatementServiceImpl implements ISqlStatementService
     public int insertSqlStatement(SqlStatement sqlStatement)
     {
         sqlStatement.setCreateTime(DateUtils.getNowDate());
+        sqlStatementMapper.myInsert(sqlStatement.getSqlContent());
         return sqlStatementMapper.insertSqlStatement(sqlStatement);
     }
 

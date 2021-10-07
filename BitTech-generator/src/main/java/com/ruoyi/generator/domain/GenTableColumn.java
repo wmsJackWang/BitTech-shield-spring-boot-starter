@@ -19,6 +19,9 @@ public class GenTableColumn extends BaseEntity
     /** 归属表编号 */
     private Long tableId;
 
+    /** userid **/
+    private Long userId;
+
     /** 列名称 */
     private String columnName;
 
@@ -67,6 +70,14 @@ public class GenTableColumn extends BaseEntity
 
     /** 排序 */
     private Integer sort;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public void setColumnId(Long columnId)
     {

@@ -5,6 +5,7 @@ import java.util.List;
 import com.ruoyi.framework.util.ShiroUtils;
 import com.ruoyi.generator.domain.SqlStatement;
 import com.ruoyi.generator.service.ISqlStatementService;
+import com.ruoyi.generator.util.GenUtils;
 import com.ruoyi.system.domain.SysUser;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +54,7 @@ public class SqlStatementController extends BaseController
     @ResponseBody
     public TableDataInfo list(SqlStatement sqlStatement)
     {
-        SysUser user = getUserInfo();
+        SysUser user = GenUtils.getUserInfo();
         sqlStatement.setUserId(user.getUserId());//查出这个用户的sql语句
         user.getRoles().forEach((role)->{
             if(role.getRoleKey().equals(WebConst.ADMIN_KEY))
@@ -96,10 +97,18 @@ public class SqlStatementController extends BaseController
     @ResponseBody
     public AjaxResult addSave(SqlStatement sqlStatement)
     {
+        int result = 0;
+        String message = "";
+        try{
 
-        SysUser user = getUserInfo();
-        sqlStatement.setUserId(user.getUserId());//查出这个用户的sql语句
-        return toAjax(sqlStatementService.insertSqlStatement(sqlStatement));
+            SysUser user = GenUtils.getUserInfo();
+            sqlStatement.setUserId(user.getUserId());//查出这个用户的sql语句
+            result = sqlStatementService.insertSqlStatement(sqlStatement);
+        }catch (Exception exception){
+            message = exception.getMessage();
+            return AjaxResult.error(message);
+        }
+        return toAjax(result);
     }
 
     /**
@@ -137,14 +146,5 @@ public class SqlStatementController extends BaseController
         return toAjax(sqlStatementService.deleteSqlStatementByIds(ids));
     }
 
-
-
-    public static SysUser getUserInfo(){
-        return ShiroUtils.getSysUser();
-//        Integer userId = user.getUserId().intValue();
-//        for(SysRole role: user.getRoles())
-//            if(role.getRoleKey().equals(WebConst.ADMIN_KEY))
-//                userId = 0;
-    }
 
 }

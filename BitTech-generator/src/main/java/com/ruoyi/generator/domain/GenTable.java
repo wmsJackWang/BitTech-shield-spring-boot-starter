@@ -3,6 +3,8 @@ package com.ruoyi.generator.domain;
 import java.util.List;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import org.apache.commons.lang3.ArrayUtils;
 import com.ruoyi.common.constant.GenConstants;
 import com.ruoyi.common.core.domain.BaseEntity;
@@ -23,6 +25,9 @@ public class GenTable extends BaseEntity
     /** 表名称 */
     @NotBlank(message = "表名称不能为空")
     private String tableName;
+
+    /** userid **/
+    private Long userId;
 
     /** 表描述 */
     @NotBlank(message = "表描述不能为空")
@@ -73,6 +78,14 @@ public class GenTable extends BaseEntity
 
     /** 树名称字段 */
     private String treeName;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
     public Long getTableId()
     {

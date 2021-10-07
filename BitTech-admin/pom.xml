@@ -55,6 +55,12 @@
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
 		</dependency>
+
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+            <version>2.0.4</version>
+        </dependency>
 		 
     	 <!-- Mysql驱动包 -->
         <dependency>
@@ -90,9 +96,8 @@
         <dependency>
             <groupId>bittech.spring.boot</groupId>
             <artifactId>BitTech-shield-spring-boot-starter</artifactId>
-            <version>4.2.0</version>
+            <version>4.2.1</version>
         </dependency>
-
 
     </dependencies>
 

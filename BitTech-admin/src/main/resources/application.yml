@@ -18,10 +18,11 @@ shield:
   limit:
     access:
       type: redis
-      threshold: 20
+      threshold: 40
       interval: 5000
       #谢尔顿 switcher open-开启 ， close-关闭
       switcher: open
+      #不对静态资源进行限制
       limitStaticPath: false
 
 # 开发环境配置
