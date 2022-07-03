@@ -1,5 +1,6 @@
 package com.ruoyi.generator.service.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.generator.domain.SqlStatement;
@@ -18,6 +19,7 @@ import com.ruoyi.common.core.text.Convert;
 @Service
 public class SqlStatementServiceImpl implements ISqlStatementService
 {
+
     @Autowired
     private SqlStatementMapper sqlStatementMapper;
 
@@ -68,7 +70,17 @@ public class SqlStatementServiceImpl implements ISqlStatementService
     @Override
     public int updateSqlStatement(SqlStatement sqlStatement)
     {
+
         sqlStatement.setUpdateTime(DateUtils.getNowDate());
+
+        //先删除库中的table，然后创建新的
+        String tableName = sqlStatement.getTableName();
+        String deleteSql = "drop table if exists " + tableName;
+        sqlStatementMapper.myInsert(deleteSql);//删除掉要删除的sql
+
+        //创建sql
+        sqlStatementMapper.myInsert(sqlStatement.getSqlContent());
+
         return sqlStatementMapper.updateSqlStatement(sqlStatement);
     }
 
@@ -81,6 +93,15 @@ public class SqlStatementServiceImpl implements ISqlStatementService
     @Override
     public int deleteSqlStatementByIds(String ids)
     {
+        //批量删除sql
+        Arrays.stream(Convert.toStrArray(ids))
+                .forEach(sqlId -> {
+                    SqlStatement sqlStatement = sqlStatementMapper.selectSqlStatementById(Long.valueOf(sqlId));
+                    String tableName = sqlStatement.getTableName();
+                    String deleteSql = "drop table if exists " + tableName;
+                    sqlStatementMapper.myInsert(deleteSql);//删除掉要删除的sql
+                });
+
         return sqlStatementMapper.deleteSqlStatementByIds(Convert.toStrArray(ids));
     }
 
@@ -93,6 +114,12 @@ public class SqlStatementServiceImpl implements ISqlStatementService
     @Override
     public int deleteSqlStatementById(Long sqlId)
     {
+
+        SqlStatement sqlStatement = sqlStatementMapper.selectSqlStatementById(Long.valueOf(sqlId));
+        String tableName = sqlStatement.getTableName();
+        String deleteSql = "drop table if exists " + tableName;
+        sqlStatementMapper.myInsert(deleteSql);//删除掉要删除的sql
+
         return sqlStatementMapper.deleteSqlStatementById(sqlId);
     }
 }

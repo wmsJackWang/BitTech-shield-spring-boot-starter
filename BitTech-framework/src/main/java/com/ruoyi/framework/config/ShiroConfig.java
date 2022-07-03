@@ -256,7 +256,7 @@ public class ShiroConfig
         filterChainDefinitionMap.put("/ajax/**", "anon");
         filterChainDefinitionMap.put("/js/**", "anon");
         filterChainDefinitionMap.put("/ruoyi/**", "anon");
-        
+
         //jdkblog的主页url不需要验证
         filterChainDefinitionMap.put("/", "anon");
         filterChainDefinitionMap.put("/archives/**", "anon");

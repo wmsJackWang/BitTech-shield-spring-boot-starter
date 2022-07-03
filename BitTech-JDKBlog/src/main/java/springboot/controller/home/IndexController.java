@@ -2,7 +2,7 @@ package springboot.controller.home;
 
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.util.List;
+import java.util.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.Cookie;
@@ -10,18 +10,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.ruoyi.common.utils.bean.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.github.pagehelper.PageInfo;
 import com.ruoyi.framework.anoation.StaticPage;
@@ -36,6 +32,7 @@ import springboot.exception.TipException;
 import springboot.modal.bo.ArchiveBo;
 import springboot.modal.bo.CommentBo;
 import springboot.modal.bo.RestResponseBo;
+import springboot.modal.dto.ContentDto;
 import springboot.modal.vo.CommentVo;
 import springboot.modal.vo.ContentVo;
 import springboot.modal.vo.MetaVo;
@@ -43,9 +40,7 @@ import springboot.service.ICommentService;
 import springboot.service.IContentService;
 import springboot.service.IMetaService;
 import springboot.service.ISiteService;
-import springboot.util.IpUtil;
-import springboot.util.MyUtils;
-import springboot.util.PatternKit;
+import springboot.util.*;
 
 /**
  * 首页控制
@@ -111,6 +106,46 @@ public class IndexController extends AbstractController {
         return this.render("index");
     }
 
+
+    /**
+     * 文章页
+     *
+     * @param request
+     * @param p
+     * @param limit
+     * @return
+     */
+    @GetMapping(value = "page/json")
+    @ResponseBody
+    public Map<String, Object> articleList(HttpServletRequest request, int pageIndex, int pageSize) {
+
+        Map<String, Object> result = new HashMap<>();
+        // 开启thymeleaf缓存，加快访问速度
+        pageIndex = pageIndex < 0 || pageIndex > WebConst.MAX_PAGE ? 1 : pageIndex;
+        //内容服务contentService
+        PageInfo<ContentVo> queryResult = contentService.getContents(pageIndex, pageSize);
+
+        PageInfo<ContentDto> articles = PageInfoHelper.copyMap(queryResult, e -> {
+
+            ContentDto contentDto = new ContentDto();
+            BeanUtils.copyBeanProp(contentDto, e);
+            contentDto.setCreatedOn(DateTimeUtil.dateShortFormat(new Date(e.getCreated())));
+            return contentDto;
+        });
+
+        //获取标签  categories分类
+        List<MetaDto> categories = metaService.getMetaList(Types.CATEGORY.getType(), null, WebConst.MAX_POSTS);
+        List<MetaDto> tags = metaService.getMetaList(Types.TAG.getType(), null, WebConst.MAX_POSTS);
+        result.put("categories", categories);
+        result.put("tags", tags);
+        result.put("articles", articles);
+        if (pageIndex > 1) {
+            result.put("title", "第" + pageIndex + "页");
+        }
+        System.out.println("###################################################");
+        return result;
+    }
+
     /**
      * 文章内容页
      *
@@ -130,6 +165,22 @@ public class IndexController extends AbstractController {
         completeArticle(request, contents);
         updateArticleHit(contents.getCid(), contents.getHits());
         return this.render("page");
+    }
+
+    @GetMapping(value = {"article/detail"})
+    @StaticPage(enable=false)
+    @ResponseBody
+    public RestResponseBo getArticleMdContent(HttpServletRequest request, String cid) {
+        ContentVo contents = contentService.getContents(cid);
+        if (null == contents || "draft".equals(contents.getStatus()) || "review".equals(contents.getStatus())) {
+            return RestResponseBo.fail();
+        }
+
+        Map<String, Object> result = completeArticleMiniProgram(request, contents);
+        result.put("article", contents);
+        result.put("is_post", true);
+
+        return RestResponseBo.ok(result);
     }
 
     /**
@@ -474,6 +525,30 @@ public class IndexController extends AbstractController {
             PageInfo<CommentBo> commentsPaginator = commentService.getComments(contents.getCid(), Integer.parseInt(cp), 6);
             request.setAttribute("comments", commentsPaginator);
         }
+    }
+
+    /**
+     * 查询文章的评论信息，并补充到里面，返回小程序
+     *
+     * @param request
+     * @param contents
+     */
+    private Map<String, Object> completeArticleMiniProgram(HttpServletRequest request, ContentVo contents) {
+        Map<String, Object> commentData = new HashMap<>();
+        if (contents.getAllowComment()) {
+            String cp = request.getParameter("cp");
+            if (StringUtils.isBlank(cp)) {
+                cp = "1";
+            }
+            request.setAttribute("cp", cp);
+            PageInfo<CommentBo> commentsPaginator = commentService.getComments(contents.getCid(), Integer.parseInt(cp), 6);
+            request.setAttribute("comments", commentsPaginator);
+
+            commentData.put("cp", cp);
+            commentData.put("comments", commentsPaginator);
+            return commentData;
+        }
+        return commentData;
     }
 
     /**
