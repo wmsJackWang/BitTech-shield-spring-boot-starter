@@ -75,16 +75,13 @@ public class ArticleController extends AbstractController {
                         HttpServletRequest request) {
     	
     	logger.info("page:{}",page);
-    	
 
         SysUser user = ShiroUtils.getSysUser();
         Integer userId = user.getUserId().intValue();
         for(SysRole role: user.getRoles())
         	if(role.getRoleKey().equals(WebConst.ADMIN_KEY))
         		userId = 0;
-        
-        	
-        
+
         ContentVoExample contentVoExample = new ContentVoExample();
         contentVoExample.setOrderByClause("isTop desc, created desc");
         List<String> statuss = new ArrayList<>();
@@ -143,8 +140,6 @@ public class ArticleController extends AbstractController {
         
     }
     
-    
-    
     /**
      * 文章列表页面
      *
@@ -180,7 +175,6 @@ public class ArticleController extends AbstractController {
         
     }
     
-    
     /**
      * 文章列表页面
      *
@@ -211,8 +205,6 @@ public class ArticleController extends AbstractController {
         return "admin/articletemplate_list";
         
     }
-    
-    
 
     /**
      * 文章发表页面
@@ -226,6 +218,20 @@ public class ArticleController extends AbstractController {
         request.setAttribute("categories", categories);
         request.setAttribute(Types.ATTACH_URL.getType(), Commons.site_option(Types.ATTACH_URL.getType()));
         return "admin/article_edit";
+    }
+
+    /**
+     * 文章发表页面v2
+     *
+     * @param request
+     * @return
+     */
+    @GetMapping(value = "/publish_v2")
+    public String newArticle_v2(HttpServletRequest request) {
+        List<MetaVo> categories = metaService.getMetas(Types.CATEGORY.getType());
+        request.setAttribute("categories", categories);
+        request.setAttribute(Types.ATTACH_URL.getType(), Commons.site_option(Types.ATTACH_URL.getType()));
+        return "admin/article_edit_v2";
     }
 
     /**

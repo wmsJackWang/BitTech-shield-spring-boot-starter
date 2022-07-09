@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:with="title='保存文章',active='publish'">
+<header th:replace="admin/header::headerFragment(${title},${active})"></header>
+<link th:href="@{/admin/plugins/tagsinput/jquery.tagsinput.css}" rel="stylesheet"/>
+<link th:href="@{/admin/plugins/select2.dist.css/select2-bootstrap.css}" rel="stylesheet"/>
+<link th:href="@{/admin/plugins/toggles/toggles.css}" rel="stylesheet"/>
+
+<link href="//cdn.bootcss.com/multi-select/0.9.12/css/multi-select.css" rel="stylesheet"/>
+<link href="//cdn.bootcss.com/select2/3.4.8/select2.min.css" rel="stylesheet"/>
+<link th:href="@{/admin/plugins/mditor/css/mditor.min.css}" rel="stylesheet"/>
+<link th:href="@{/admin/plugins/dropzone/4.3.0/min/dropzone.min.css}" rel="stylesheet">
+<head>
+    <meta charset="utf-8"/>
+    <!--引入所需依赖-->
+    <link rel="stylesheet" href="../static/editormd/css/style.css"
+          th:href="@{/editormd/css/style.css}"/>
+    <link rel="stylesheet" href="../static/editormd/css/editormd.css"
+          th:href="@{/editormd/css/editormd.css}"/>
+</head>
+<style>
+    #tags_tagsinput {
+        background-color: #fafafa;
+        border: 1px solid #eeeeee;
+    }
+
+    #tags_addTag input {
+        width: 100%;
+    }
+
+    #tags_addTag {
+        margin-top: -5px;
+    }
+
+    .mditor .editor{
+        font-size: 14px;
+        font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    }
+    .mditor .backdrop, .mditor .textarea, .mditor .viewer{
+        font-size: 14px;
+    }
+    .markdown-body{
+        font-size: 14px;
+    }
+    .note-toolbar {
+        text-align: center;
+    }
+
+    .note-editor.note-frame {
+        border: none;
+    }
+
+    .note-editor .note-toolbar {
+        background-color: #f5f5f5;
+        padding-bottom: 10px;
+    }
+
+    .note-toolbar .note-btn-group {
+        margin: 0;
+    }
+
+    .note-toolbar .note-btn {
+        border: none;
+    }
+
+    #articleForm #dropzone {
+        min-height: 200px;
+        background-color: #dbdde0;
+        line-height:200px;
+        margin-bottom: 10px;
+    }
+    #articleForm .dropzone {
+        border: 1px dashed #8662c6;
+        border-radius: 5px;
+        background: white;
+    }
+    #articleForm .dropzone .dz-message {
+        font-weight: 400;
+    }
+    #articleForm .dropzone .dz-message .note {
+        font-size: 0.8em;
+        font-weight: 200;
+        display: block;
+        margin-top: 1.4rem;
+    }
+</style>
+
+<body>
+<div class="content" style="margin-top:30px">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h4 class="page-title">
+                    <th:block th:if="${null != contents}">
+                        编辑文章
+                    </th:block>
+                    <th:block th:unless="${null != contents}">
+                        发布文章
+                    </th:block>
+                </h4>
+            </div>
+            <div class="col-md-12">
+
+                <input type="hidden" id="attach_url" th:value="${attach_url}" />
+
+                <form id="articleForm">
+                    <input type="hidden" name="categories" id="categories"/>
+                    <input type="hidden" name="cid"
+                           th:value="${contents!=null and contents.cid!=null}?${contents.cid}: ''" id="cid"/>
+                    <input type="hidden" name="status"
+                           th:value="${contents!=null and contents.status !=null}?${contents.status}: 'publish'"
+                           id="status"/>
+                    <input type="hidden" name="allowComment"
+                           th:value="${contents!=null and contents.allowComment !=null}?${contents.allowComment}: true"
+                           id="allow_comment"/>
+                    <input type="hidden" name="allowPing"
+                           th:value="${contents!=null and contents.allowPing !=null}?${contents.allowPing}: true"
+                           id="allow_ping"/>
+                    <input type="hidden" name="allowFeed"
+                           th:value="${contents!=null and contents.allowFeed !=null}?${contents.allowFeed}: true"
+                           id="allow_feed"/>
+                    <input type="hidden" name="content" id="content-editor"/>
+                    <input type="hidden" name="fmtType" id="fmtType"/>
+
+
+                    <div class="form-group col-md-6" style="padding: 0 10px 0 0;">
+                        <input type="text" class="form-control" placeholder="请输入文章标题（必须）" name="title"
+                               required="required"
+                               aria-required="true"
+                               th:value="${contents!=null and contents.title!=null }?${contents.title}: ''"/>
+                    </div>
+
+                    <div class="form-group col-md-6" style="padding: 0 0 0 10px;">
+                        <input type="text" class="form-control"
+                               placeholder="自定义访问路径，如：my-first-article  默认为文章id" name="slug"
+                               th:value="${contents!=null and contents.slug !=null}?${contents.slug}: ''"/>
+                    </div>
+
+                    <div class="form-group col-md-6" style="padding: 0 10px 0 0;">
+                        <input name="tags" id="tags" type="text" class="form-control" placeholder="请填写文章标签"
+                               th:value="${contents!=null and contents.tags !=null}?${contents.tags}: ''"/>
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <select id="multiple-sel" class="select2 form-control" multiple="multiple"
+                                data-placeholder="请选择分类...">
+                            <th:block th:if="${null == categories}">
+                                <option value="默认分类" selected="selected">默认分类</option>
+                            </th:block>
+                            <th:block th:unless="${null == categories}">
+                                <th:block th:each="c : ${categories}">
+                                    <option th:value="${c.name}" th:text="${c.name}"
+                                            th:selected="${null !=contents and adminCommons.exist_cat(c, contents.categories)}?true:false"></option>
+                                </th:block>
+                            </th:block>
+                        </select>
+                    </div>
+                    <!--这里的id=editormd_id就是下面的初始化editorMD的editormd_id-->
+                    <div id="editormd_id">
+                        <!-- 第一个textarea是文本输入区域-->
+                        <textarea id="htmlContent" class="editorMd-html-textarea" name="editorMd-html-textarea" placeholder="请输入内容...">
+                        </textarea>
+
+                        <!--第二个textarea 是展示文本区域 要隐藏起来 display->none-->
+                        <textarea class="editorMd-text-textarea" name="editorMd-text-textarea" style="display:none;" id="textContent">
+                        </textarea>
+                    </div>
+
+                    <div class="clearfix"></div>
+
+                    <div class="text-right">
+                        <a class="btn btn-default waves-effect waves-light" th:href="@{/admin/article}">返回列表</a>
+                        <button type="button" class="btn btn-primary waves-effect waves-light"
+                                onclick="uploadContent('publish');">
+                            保存文章
+                        </button>
+                        <button type="button" class="btn btn-warning waves-effect waves-light"
+                                onclick="uploadContent('review');">
+                            复习模板
+                        </button>
+                        <button type="button" class="btn btn-warning waves-effect waves-light"
+                                onclick="uploadContent('draft');">
+                            存为草稿
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div th:replace="admin/footer :: footer"></div>
+<!--引入所需依赖-->
+<script src="../static/editormd/js/jquery.min.js"
+        th:src="@{/editormd/js/jquery.min.js}"></script>
+<script src="../static/editormd/editormd.js"
+        th:src="@{/editormd/editormd.js}"></script>
+<script>
+
+    // var contentVal = contents!=null && contents.content !=null ? contents.content: ''
+    var contentVal = ''
+    //初始化editorMD
+    let testEditor;
+    $(function () {
+        testEditor = editormd("editormd_id", {
+            width   : "100%",
+            height  : 640,
+            content : contentVal,
+            syncScrolling : "single",
+            path    : "/editormd/lib/",
+            codeFold : true,
+            saveHTMLToTextarea : true,    // 保存 HTML 到 Textarea
+            searchReplace : true,
+            emoji : true,
+            taskList : true,
+            tocm : true,         // Using [TOCM]
+            tex : true,                   // 开启科学公式TeX语言支持，默认关闭
+            flowChart : true,             // 开启流程图支持，默认关闭
+            sequenceDiagram : true,       // 开启时序/序列图支持，默认关闭,
+            imageUpload : true,
+            imageFormats : ["jpg", "jpeg", "gif", "png", "bmp", "webp"],
+            imageUploadURL : "/admin/attach/uploadImg", //这个是上传图片时的访问地址
+            toolbarIcons : function() {
+                return [
+                    "undo", "redo", "|",
+                    "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|",
+                    "h1", "h2", "h3", "h4", "h5", "h6", "|",
+                    "list-ul", "list-ol", "hr", "|",
+                    "link", "reference-link", "image", "code", "preformatted-text", "code-block", "table", "datetime", "emoji", "html-entities", "pagebreak", "|",
+                    "goto-line", "watch", "preview", "fullscreen", "clear", "search", "|",
+                    "help", "info","releaseIcon","index"
+                ]
+            }
+        });
+    });
+
+    function uploadContent(status) {
+        var finalUrl = $('#articleForm #cid').val() != '' ? '/admin/article/modify' : '/admin/article/publish';
+
+        $.ajax({
+            type: 'POST',
+            contentType: 'application/json;charset=utf-8',
+            url: finalUrl,
+            data :JSON.stringify({mdContent:$('#mdContent').val(),content:$('#content').val()
+                ,editorType:2,title:$('#title').val(),newsType:$('#newsType').val(),status:status
+                ,title:$('#articleForm input[name=title]').val()}),
+            dataType: 'json',
+            success: function (data) {
+                var result = data['message'];
+                if(result=="上传成功"){
+                    alert(result);
+                    $(location).attr('href',"/admin/article");
+                }
+            },
+            error: function (err) {
+                alert(JSON.stringify(err));
+            }
+        });
+    }
+</script>
+
+<script th:src="@{/admin/plugins/tagsinput/jquery.tagsinput.min.js}"></script>
+<script th:src="@{/admin/plugins/jquery-multi-select/jquery.quicksearch.js}"></script>
+
+<script th:src="@{/admin/plugins/mditor/js/mditor.min.js}"></script>
+<script th:src="@{/admin/plugins/multi-select/0.9.12/js/jquery.multi-select.min.js}"></script>
+<script th:src="@{/admin/plugins/select2/3.4.8/select2.min.js}"></script>
+<script th:src="@{//cdn.bootcss.com/jquery-toggles/2.0.4/toggles.min.js}"></script>
+<script th:src="@{/admin/plugins/dropzone/4.3.0/min/dropzone.min.js}"></script>
+<script th:src="@{/admin/plugins/to-markdown/3.1.0/to-markdown.min.js}"></script>
+
+<script th:src="@{/admin/js/article.js}"></script>
+</body>
+</html>
