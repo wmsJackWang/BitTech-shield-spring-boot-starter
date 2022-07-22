@@ -140,24 +140,24 @@
                                th:value="${contents!=null and contents.tags !=null}?${contents.tags}: ''"/>
                     </div>
 
-                    <div class="form-group col-md-6">
-                        <select id="multiple-sel" class="select2 form-control" multiple="multiple"
-                                data-placeholder="请选择分类...">
-                            <th:block th:if="${null == categories}">
-                                <option value="默认分类" selected="selected">默认分类</option>
-                            </th:block>
-                            <th:block th:unless="${null == categories}">
-                                <th:block th:each="c : ${categories}">
-                                    <option th:value="${c.name}" th:text="${c.name}"
-                                            th:selected="${null !=contents and adminCommons.exist_cat(c, contents.categories)}?true:false"></option>
-                                </th:block>
-                            </th:block>
-                        </select>
-                    </div>
+<!--                    <div class="form-group col-md-6">-->
+<!--                        <select id="multiple-sel" class="select2 form-control" multiple="multiple"-->
+<!--                                data-placeholder="请选择分类...">-->
+<!--                            <th:block th:if="${null == categories}">-->
+<!--                                <option value="默认分类" selected="selected">默认分类</option>-->
+<!--                            </th:block>-->
+<!--                            <th:block th:unless="${null == categories}">-->
+<!--                                <th:block th:each="c : ${categories}">-->
+<!--                                    <option th:value="${c.name}" th:text="${c.name}"-->
+<!--                                            th:selected="${null !=contents and adminCommons.exist_cat(c, contents.categories)}?true:false"></option>-->
+<!--                                </th:block>-->
+<!--                            </th:block>-->
+<!--                        </select>-->
+<!--                    </div>-->
                     <!--这里的id=editormd_id就是下面的初始化editorMD的editormd_id-->
                     <div id="editormd_id">
                         <!-- 第一个textarea是文本输入区域-->
-                        <textarea id="htmlContent" class="editorMd-html-textarea" name="editorMd-html-textarea" placeholder="请输入内容...">
+                        <textarea id="htmlContent"  th:utext="${contents!=null and contents.content !=null}?${contents.content}: ''" class="editorMd-html-textarea" name="editorMd-html-textarea" placeholder="请输入内容...">
                         </textarea>
 
                         <!--第二个textarea 是展示文本区域 要隐藏起来 display->none-->
@@ -234,20 +234,37 @@
 
     function uploadContent(status) {
         var finalUrl = $('#articleForm #cid').val() != '' ? '/admin/article/modify' : '/admin/article/publish';
-
+        var title = $('#articleForm input[name=title]').val();
+        var content =  $('#textContent').val();
+        if (title == '') {
+            tale.alertWarn('请输入文章标题');
+            return;
+        }
+        if (content == '') {
+            tale.alertWarn('请输入文章内容');
+            return;
+        }
+        $('#content-editor').val(content);
+        $("#articleForm #status").val(status);
+        $("#articleForm #categories").val($('#multiple-sel').val());
+        var params = $("#articleForm").serialize();
         $.ajax({
             type: 'POST',
-            contentType: 'application/json;charset=utf-8',
             url: finalUrl,
-            data :JSON.stringify({mdContent:$('#mdContent').val(),content:$('#content').val()
-                ,editorType:2,title:$('#title').val(),newsType:$('#newsType').val(),status:status
-                ,title:$('#articleForm input[name=title]').val()}),
+            data : params,
             dataType: 'json',
-            success: function (data) {
-                var result = data['message'];
-                if(result=="上传成功"){
-                    alert(result);
-                    $(location).attr('href',"/admin/article");
+            success: function (result) {
+                if (result && result.success) {
+                    tale.alertOk({
+                        text:'文章保存成功',
+                        then: function () {
+                            setTimeout(function () {
+                                window.location.href = '/admin/article';
+                            }, 500);
+                        }
+                    });
+                } else {
+                    tale.alertError(result.msg || '保存文章失败');
                 }
             },
             error: function (err) {

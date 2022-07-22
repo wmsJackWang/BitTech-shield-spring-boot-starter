@@ -253,6 +253,24 @@ public class ArticleController extends AbstractController {
     }
 
     /**
+     * 文章编辑页面
+     *
+     * @param cid
+     * @param request
+     * @return
+     */
+    @GetMapping(value = "/md/{cid}")
+    public String editArticleMd(@PathVariable String cid, HttpServletRequest request) {
+        ContentVo contents = contentService.getContents(cid);
+        request.setAttribute("contents", contents);
+        List<MetaVo> categories = metaService.getMetas(Types.CATEGORY.getType());
+        request.setAttribute("categories", categories);
+        request.setAttribute(Types.ATTACH_URL.getType(), Commons.site_option(Types.ATTACH_URL.getType()));
+        request.setAttribute("active", "article");
+        return "admin/article_edit_v2";
+    }
+
+    /**
      * 文章发表 post
      *
      * @param contents
@@ -400,9 +418,7 @@ public class ArticleController extends AbstractController {
         }
         return RestResponseBo.ok();
     }    
-    
-    
-    
+
     /**
      * 置顶文章 post
      *
